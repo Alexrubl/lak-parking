@@ -1,0 +1,24 @@
+2023-10-26 00:33:53,034:DEBUG:certbot._internal.main:certbot version: 2.7.3
+2023-10-26 00:33:53,034:DEBUG:certbot._internal.main:Location of certbot entry point: /usr/local/bin/certbot
+2023-10-26 00:33:53,034:DEBUG:certbot._internal.main:Arguments: ['--nginx', '-v', '--webroot-path=/var/www/public', '--email', 'alexrubl@mail.ru', '--agree-tos', '--no-eff-email', '--staging', '-d', 'cinemapay.shtorm-cinema.ru:26443']
+2023-10-26 00:33:53,034:DEBUG:certbot._internal.main:Discovered plugins: PluginsRegistry(PluginEntryPoint#manual,PluginEntryPoint#null,PluginEntryPoint#standalone,PluginEntryPoint#webroot)
+2023-10-26 00:33:53,040:DEBUG:certbot._internal.log:Root logging level set at 20
+2023-10-26 00:33:53,040:DEBUG:certbot._internal.plugins.selection:Requested authenticator nginx and installer nginx
+2023-10-26 00:33:53,041:DEBUG:certbot._internal.plugins.selection:No candidate plugin
+2023-10-26 00:33:53,041:DEBUG:certbot._internal.plugins.selection:No candidate plugin
+2023-10-26 00:33:53,041:DEBUG:certbot._internal.log:Exiting abnormally:
+Traceback (most recent call last):
+  File "/usr/local/bin/certbot", line 33, in <module>
+    sys.exit(load_entry_point('certbot', 'console_scripts', 'certbot')())
+  File "/opt/certbot/src/certbot/certbot/main.py", line 19, in main
+    return internal_main.main(cli_args)
+  File "/opt/certbot/src/certbot/certbot/_internal/main.py", line 1873, in main
+    return config.func(config, plugins)
+  File "/opt/certbot/src/certbot/certbot/_internal/main.py", line 1581, in certonly
+    installer, auth = plug_sel.choose_configurator_plugins(config, plugins, "certonly")
+  File "/opt/certbot/src/certbot/certbot/_internal/plugins/selection.py", line 256, in choose_configurator_plugins
+    diagnose_configurator_problem("authenticator", req_auth, plugins)
+  File "/opt/certbot/src/certbot/certbot/_internal/plugins/selection.py", line 374, in diagnose_configurator_problem
+    raise errors.PluginSelectionError(msg)
+certbot.errors.PluginSelectionError: The requested nginx plugin does not appear to be installed
+2023-10-26 00:33:53,041:ERROR:certbot._internal.log:The requested nginx plugin does not appear to be installed
