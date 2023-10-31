@@ -174,7 +174,7 @@ class Transport extends Resource
         return [
             // Boolean::make('Гостевой', 'guest'),
             
-            AdvancedNumber::make('Ограничение по тайауту', 'time_limit')->default(0)->step(1)->hideFromIndex()->help('Задаётся в часах'),
+            AdvancedNumber::make('Ограничение по таймауту', 'time_limit')->default(0)->step(1)->hideFromIndex()->help('Задаётся в часах'),
             TimeRange::make('Временной интервал', ['fromTime', 'toTime'])->hideFromIndex(),
             DateRange::make('Период', ['fromDate', 'toDate'])->hideFromIndex(),
             BooleanGroup::make('Дни недели', 'week')->options([

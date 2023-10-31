@@ -9,6 +9,7 @@ use App\Models\Tenant;
 use App\Models\Rate;
 use App\Models\Controller;
 use Carbon\Carbon;
+use ProtoneMedia\LaravelFFMpeg\Support\FFMpeg;
 
 class ApiController extends Controller
 {
@@ -124,6 +125,11 @@ class ApiController extends Controller
                 'request_id' => Carbon::now()->format('Ymdhms'),
                 'ev_date' => Carbon::now()->format('Y.m.d H:m:s'),
                 'create' => [ 
+                    'parent' => [
+                        'name' => $transport->tenant->name,
+                        'id' => $transport->tenant->id,
+                        'access' => $transport->balance <= 0 ? 0 : 1, 
+                    ],
                     'plate' => $transport->number,
                     'fio' => $transport->driver,
                     'access' => intval($transport->access),
@@ -131,8 +137,8 @@ class ApiController extends Controller
                 'access' => [
                     'time_limit' => intval($transport->time_limit),
                     'week' => $week,
-                    'time_interval' => str_replace([':'], '', $transport->fromDate) .'-'.str_replace([':'], '', $transport->toDate),
-                    'date_interval' => Carbon::parse($transport->fromDate)->format('Ymd').'-'.Carbon::parse($transport->toDate)->format('Ymd'),
+                    'time_interval' => str_replace([':'], '', $transport->fromTime) .'-'.str_replace([':'], '', $transport->toTime),
+                    'date_interval' => (isset($transport->fromDate) ? Carbon::parse($transport->fromDate)->format('Ymd') : Carbon::now()->format('Ymd')).'-'. (isset($transport->toDate) ? Carbon::parse($transport->toDate)->format('Ymd') : '21191231'),
                 ]
             ];
 
@@ -168,8 +174,10 @@ class ApiController extends Controller
     }
 
     public function test_createTransport(Request $request) {        
-        $transport = Transport::where('number', $request->plate)->first();
-        //dd($transport);
+        $transport = Transport::where('number', 'A456OA25')->first();
+        if (!isset($transport)) {
+            return response()->json(['message' => 'Не найдено авто'], 200);
+        }
         $week = '';
         foreach ($transport->week as $key => $value) {
             $week .= ($value == 1) ? '1':'0';
@@ -179,6 +187,11 @@ class ApiController extends Controller
             'request_id' => Carbon::now()->format('Ymdhms'),
             'ev_date' => Carbon::now()->format('Y.m.d H:m:s'),
             'create' => [ 
+                'parent' => [
+                        'name' => $transport->tenant->name,
+                        'id' => $transport->tenant->id,
+                        'access' => $transport->balance <= 0 ? 0 : 1, 
+                    ],
                 'plate' => $transport->number,
                 'fio' => $transport->driver,
                 'access' => $transport->access == 'enable' ? 1: 0,
@@ -192,5 +205,37 @@ class ApiController extends Controller
         ];
 
         return response()->json($data, 200);
+    }
+
+    public function ffmpeg() {
+        info('ffmpeg');
+        // FFMpeg::openUrl('rtsp://test:123456789qQ@5.165.25.145:55554')
+        // ->export()
+        // ->inFormat(new X264)
+        // ->concatWithTranscoding($hasVideo = true, $hasAudio = true)
+        // ->save('concat.mp4');
+        // FFMpeg::openUrl('rtsp://test:123456789qQ@5.165.25.145:55554')
+        //     ->export()
+        //     ->onProgress(function ($percentage) {
+        //         echo "{$percentage}% transcoded";
+        //     });
+
+        $lowBitrate = (new \FFMpeg\Format\Video\X264)->setKiloBitrate(250);
+        $midBitrate = (new \FFMpeg\Format\Video\X264)->setKiloBitrate(500);
+        $highBitrate = (new \FFMpeg\Format\Video\X264)->setKiloBitrate(1000);
+
+        FFMpeg::$transport->fromDate
+        ->openUrl('rtsp://test:123456789qQ@5.165.25.145:55554')
+        ->exportForHLS()
+        ->toDisk('public')
+        ->setSegmentLength(10) // optional
+        ->setKeyFrameInterval(48) // optional
+        ->addFormat($lowBitrate)
+        ->addFormat($midBitrate)
+        ->addFormat($highBitrate)
+        ->save('adaptive_steve.m3u8');
+
+        return 'ok';
+        
     }
 }
