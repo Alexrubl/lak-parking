@@ -7,8 +7,10 @@ use App\Models\History;
 use App\Models\Tenant;
 use App\Models\Controller;
 use App\Models\TypeTransport;
+use App\Models\Transport;
 use App\Models\Rate;
 use App\Policies\TenantPolicy;
+use App\Policies\TransportPolicy;
 use App\Policies\HistoryPolicy;
 use App\Policies\AdminPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -25,6 +27,7 @@ class AuthServiceProvider extends ServiceProvider
         Tenant::class => TenantPolicy::class,
         Controller::class => AdminPolicy::class,
         TypeTransport::class => AdminPolicy::class,
+        Transport::class => TransportPolicy::class,
         Rate::class => AdminPolicy::class,
     ];
 

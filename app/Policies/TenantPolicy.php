@@ -37,7 +37,7 @@ class TenantPolicy
      */
     public function update(User $user, Tenant $tenant): bool
     {
-        return $user->isAdmin();
+        return true;
     }
 
     /**

@@ -40,7 +40,14 @@ class ApiController extends Controller
             $history->comment = 'Списание';
             $history->price = $rate->getPrice($transport);
             $history->save();
-            
+
+            if ($tenant->balance < 1) {
+                foreach ($tenant->transport as $key => $transp) {
+                    $transp->access = 0;
+                    $transp->save();
+                }
+            }
+
             return response()->json([
                     'apikey' => $request->apikey,
                     'request_id' => $request->request_id,
@@ -52,67 +59,6 @@ class ApiController extends Controller
     }
  
     
-    // public static function sendNewTransportToControllers(Request $request) {  
-    //     $controllers = Controller::all();
-    //     foreach ($controllers as $key => $controller) {
-    //         $week = '';
-    //         foreach (json_decode($request->week) as $key => $value) {
-    //             $week .= ($value == 1) ? '1':'0';
-    //         }
-    //         //info($week);
-    //         $dateInterval = explode(' - ', $request->{'fromDate-toDate'});
-    //         $timeInterval = explode(',', $request->{'fromTime-toTime'});
-    //         $data = [
-    //             'apikey' => $controller->apikey,
-    //             'request_id' => Carbon::now()->format('Ymdhms'),
-    //             'ev_date' => Carbon::now()->format('Y.m.d H:m:s'),
-    //             'create' => [ 
-    //                 'plate' => $request->number,
-    //                 'fio' => $request->driver,
-    //                 'access' => intval($request->access),
-    //             ],
-    //             'access' => [
-    //                 'time_limit' => intval($request->time_limit),
-    //                 'week' => $week,
-    //                 'time_interval' => str_replace([':'], '', $timeInterval[0]) .'-'.str_replace([':'], '', $timeInterval[1]),
-    //                 'date_interval' => Carbon::parse($dateInterval[0])->format('Ymd').'-'.Carbon::parse($dateInterval[1])->format('Ymd'),
-    //             ]
-    //         ];
-    //         // info('data:');
-    //         // info(json_encode($data));
-
-    //         $curl = curl_init();
-
-    //         curl_setopt_array($curl, [
-    //         //CURLOPT_PORT => "8082",
-    //         CURLOPT_URL => $controller->ip. '/api/plate/srv',
-    //         CURLOPT_RETURNTRANSFER => true,
-    //         CURLOPT_ENCODING => "",
-    //         CURLOPT_MAXREDIRS => 10,
-    //         CURLOPT_TIMEOUT => 30,
-    //         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-    //         CURLOPT_CUSTOMREQUEST => "POST",
-    //         CURLOPT_POSTFIELDS => json_encode($data), //http_build_query($data),
-    //         CURLOPT_HTTPHEADER => [
-    //             "Content-Type: application/json"
-    //         ],
-    //         ]);
-
-    //         $response = curl_exec($curl);
-    //         $err = curl_error($curl);
-
-    //         curl_close($curl);
-
-    //         if ($err) {
-    //             info("cURL Error #: " . $err);
-    //         } else {
-    //             //info($response);
-    //         }
-    //     }
-    //     //info(json_encode($data));       
-
-    // }
-
         public static function sendNewTransportToControllers($transport) {  
         $controllers = Controller::all();
         foreach ($controllers as $key => $controller) {
