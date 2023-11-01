@@ -7,9 +7,12 @@ use App\Models\Transport;
 use App\Models\History;
 use App\Models\Tenant;
 use App\Models\Rate;
+use App\Models\User;
 use App\Models\Controller;
 use Carbon\Carbon;
 use ProtoneMedia\LaravelFFMpeg\Support\FFMpeg;
+use Laravel\Nova\Notifications\NovaNotification;
+use Illuminate\Support\Facades\Notification;
 
 class ApiController extends Controller
 {
@@ -26,12 +29,12 @@ class ApiController extends Controller
             return response()->json($fail->put('message', 'Неизвестный apikey.'), 401);
         }
         $transport = Transport::where('number', $request->plate)->first();
-        if (!isset($transport)) {
-            return response()->json($fail->put('message', 'Не найден транспорт с таким номером.'), 200);
+        if (!isset($transport) || !isset($transport->tenant)) {
+            return response()->json($fail->put('message', 'Не найден транспорт с таким номером или некорректно заполнены данные.'), 200);
         }
         $tenant = $transport->tenant;
         $rate = $transport->rate;
-        if ($request->access == 'enable') {
+        if ($request->access == 'enable' || $request->access == 1) {
             $tenant->balance = $tenant->balance - $rate->getPrice($transport);            
             $tenant->save();
             $history = new History;
@@ -42,6 +45,19 @@ class ApiController extends Controller
             $history->save();
 
             if ($tenant->balance < 1) {
+                foreach (User::all() as $key => $user) {
+                    foreach ($user->tenant as $t) {
+                        if ($t->id == $tenant->id) {
+                            Notification::send(
+                                $user,
+                                NovaNotification::make()
+                                    ->message('У арендатора '. $tenant->name .' отрицательный баланс!')
+                                    ->type('info')
+                                
+                            );
+                        }
+                    }                    
+                }
                 foreach ($tenant->transport as $key => $transp) {
                     $transp->access = 0;
                     $transp->save();

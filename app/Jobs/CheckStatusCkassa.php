@@ -10,6 +10,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\Events\JobFailed;
 use App\Models\Tenant;
+use App\Models\Transport;
 use App\Models\History;
 use App\Models\User;
 use Laravel\Nova\Notifications\NovaNotification;
@@ -84,7 +85,12 @@ class CheckStatusCkassa implements ShouldQueue
                     $tenant = Tenant::find(intval($value->tgInvPayer));
                     $tenant->balance = $tenant->balance + (intval($value->amount) / 100);                    
                     $tenant->save();
-                                        
+
+                    foreach (Transport::where('tenant_id', $tenant->id) as $key => $transport) {
+                        $transport->access = 1;
+                        $transport->save();
+                    }
+
                     $history = new History;
                     $history->tenant_id = $tenant->id;
                     $history->price = intval($value->amount) / 100;
