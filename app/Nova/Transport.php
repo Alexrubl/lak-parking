@@ -103,9 +103,9 @@ class Transport extends Resource
             
             BelongsTo::make('Тип ТС', 'type', 'App\Nova\TypeTransport')->showCreateRelationButton()->rules('required'),            
 
-            BelongsTo::make('Арендатор', 'tenant', 'App\Nova\Tenant'),
+            BelongsTo::make('Арендатор', 'tenant', 'App\Nova\Tenant')->rules('required'),
 
-            BelongsTo::make('Тариф', 'rate', 'App\Nova\Rate'), 
+            BelongsTo::make('Тариф', 'rate', 'App\Nova\Rate')->rules('required'), 
             
             Boolean::make('Гостевой', 'guest'),
             

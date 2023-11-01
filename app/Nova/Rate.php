@@ -46,6 +46,13 @@ class Rate extends Resource
         'id',
     ];
 
+    public static function indexQuery(NovaRequest $request, $query)
+    {
+        if (!$request->user()->isAdmin()) {       
+            $query->where('type', '<>', 'Постоянный');
+        }
+    }
+
     /**
      * Get the fields displayed by the resource.
      *
