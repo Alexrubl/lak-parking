@@ -28,7 +28,6 @@ class Video extends Card
      */
     public function component()
     {
-        $this->exec_ffmpeg();
         return 'video';
     }
 
