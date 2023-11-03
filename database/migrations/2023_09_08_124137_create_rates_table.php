@@ -15,6 +15,7 @@ class CreateRatesTable extends Migration
         Schema::create('rates', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name', 100);
+            $table->boolean('default_guest')->default(0);
             $table->text('items')->nullabled();
             $table->timestamps();
         });

@@ -19,6 +19,7 @@ Route::post('event', [ApiController::class, 'event']);
 Route::post('ckassa/callback', [CkassaController::class, 'callback']);
 Route::get('test_ctreate_transport', [ApiController::class, 'test_createTransport']);
 Route::get('ffmpeg', [ApiController::class, 'ffmpeg']);
+Route::get('test_234', [ApiController::class, 'test_234']);
 
 // Route::group(['middleware' => 'auth:sanctum'], function () {
 //     Route::post('event', [ApiController::class, 'event']); 

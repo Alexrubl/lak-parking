@@ -7,6 +7,7 @@ use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Repeater;
+use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use NormanHuth\NovaRadioField\Radio;
 
@@ -77,6 +78,8 @@ class Rate extends Resource
                     'Разовый' => 'при въезде',
                     'Постоянный' => 'раз в день',
                 ])->inline()->rules('required'),
+            
+            Boolean::make('Использовать по умолчанию для Гостевого', 'default_guest')->default(0),
             
             Repeater::make('Тариф', 'items')
                 ->repeatables([

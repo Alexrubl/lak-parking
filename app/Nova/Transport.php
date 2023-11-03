@@ -16,6 +16,7 @@ use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\FormData;
 use Laravel\Nova\Fields\HasOne;
 use Ganyicz\NovaCallbacks\HasCallbacks;
+use Illuminate\Database\Eloquent\Builder;
 use App\Models\Controller;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
@@ -105,8 +106,15 @@ class Transport extends Resource
 
             BelongsTo::make('Арендатор', 'tenant', 'App\Nova\Tenant')->rules('required'),
 
-            BelongsTo::make('Тариф', 'rate', 'App\Nova\Rate')->rules('required'), 
-            
+            BelongsTo::make('Тариф', 'rate', 'App\Nova\Rate')->rules('required')
+                ->dependsOn('guest', function (BelongsTo $field, NovaRequest $request, FormData $formData) {
+                    if ($formData->guest === true) {
+                        $field->relatableQueryUsing(function (NovaRequest $request, Builder $query) {
+                            $query->where('default_guest', true);
+                        });
+                    }
+                }), 
+        
             Boolean::make('Гостевой', 'guest'),
             
             Boolean::make('Доступ', 'access'),

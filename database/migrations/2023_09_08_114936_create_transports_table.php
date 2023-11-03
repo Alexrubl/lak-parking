@@ -28,6 +28,7 @@ class CreateTransportsTable extends Migration
             $table->string('toTime')->nullable();
             $table->string('fromDate')->nullable();
             $table->string('toDate')->nullable();
+            $table->boolean('inside')->default(0)->nullabled();
             $table->softDeletes();
             $table->timestamps();
         });

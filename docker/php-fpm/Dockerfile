@@ -26,6 +26,8 @@ RUN apt-get update && \
     mariadb-client \
     unzip
 
+RUN apt-get -y install ffmpeg
+
 # Install soap extention
 RUN docker-php-ext-install soap
 

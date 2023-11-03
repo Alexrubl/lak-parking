@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ec212ac74c99715628cc9c4ff2deedbb",
+    "content-hash": "eb751cadf4d434a49757c6c63f448676",
     "packages": [
         {
             "name": "acme/analytics",

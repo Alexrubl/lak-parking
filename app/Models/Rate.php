@@ -49,8 +49,6 @@ class Rate extends Model
                 ->latest()
                 ->first();
             if (isset($history) && $history->created_at > Carbon::now()->startOfDay()) {
-                //info('Cегодня уже списывали');
-                //info(collect($history));
             } else {
                 foreach ($this->items as $key => $value) {          
                     if ($value['fields']['тип_тс'] == $transport->type->id) {

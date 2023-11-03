@@ -17,6 +17,7 @@
         "formfeed-uk/nova-dependable-panel": "^1.2",
         "ganyicz/nova-callbacks": "^1.1",
         "guzzlehttp/guzzle": "^7.2",
+        "inertiajs/inertia-laravel": "^0.6.11",
         "laravel/framework": "^10.10",
         "laravel/nova": "*",
         "laravel/sanctum": "^3.2",
@@ -27,6 +28,7 @@
         "pbmedia/laravel-ffmpeg": "^8.3",
         "php-junior/nova-logs": "^1.1",
         "simplesquid/nova-advanced-number-field": "^3.1",
+        "symfony/process": "^6.3",
         "test/test": "@dev",
         "vyuldashev/nova-permission": "^3.2"
     },

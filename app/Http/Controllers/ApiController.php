@@ -33,15 +33,26 @@ class ApiController extends Controller
             return response()->json($fail->put('message', 'Не найден транспорт с таким номером или некорректно заполнены данные.'), 200);
         }
         $tenant = $transport->tenant;
-        $rate = $transport->rate;
+        $rate = $transport->rate;        
         if ($request->access == 'enable' || $request->access == 1) {
-            $tenant->balance = $tenant->balance - $rate->getPrice($transport);            
+            $sum = 0;
+            if ($transport->inside == 0) {
+                $transport->inside = 1;
+                $sum = $rate->getPrice($transport);
+            } else {
+                $transport->inside = 0;
+                if ($transport->guest == true) {
+                    $transport->access= 0;
+                } 
+            }
+            $transport->save(); 
+            $tenant->balance -= $sum;            
             $tenant->save();
             $history = new History;
             $history->tenant_id = $tenant->id;
             $history->transport_id = $transport->id;
-            $history->comment = 'Списание';
-            $history->price = $rate->getPrice($transport);
+            $history->comment = 'Списание, '. $transport->inside? 'Въезд' : 'Выезд';
+            $history->price = $sum;
             $history->save();
 
             if ($tenant->balance < 1) {
@@ -199,5 +210,50 @@ class ApiController extends Controller
 
         return 'ok';
         
+    }
+
+    public function test_234(Request $request) {
+        //return response()->json([], 200);
+        $path = 'http://89.109.239.73:26084/ISAPI/Streaming/channels/101/picture';
+        // $type = pathinfo($path, PATHINFO_EXTENSION);
+        // info($type);
+        $auth = base64_encode("user:password12345678");
+        $context = stream_context_create([
+            "http" => [
+                "header" => "Authorization: Basic $auth"
+            ]
+        ]);
+        $data = file_get_contents($path, true, $context);
+        info($data);
+        // $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+        // file_put_contents("file.png", file_get_contents($base64));
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, [
+        //CURLOPT_PORT => "8082",
+        CURLOPT_URL => 'http://89.109.239.73:26084/ISAPI/Streaming/channels/101/picture',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => "",
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => "GET",
+        // CURLOPT_POSTFIELDS => json_encode($data), //http_build_query($data),
+        CURLOPT_HTTPHEADER => [
+            "Content-Type: application/json"
+        ],
+        ]);
+
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+
+        curl_close($curl);
+
+        if ($err) {
+            info("cURL Error #: " . $err);
+        } else {
+            //info($response);
+        }
     }
 }
