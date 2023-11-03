@@ -56,7 +56,7 @@ export default {
         sources: [
           {
             src:
-              '/1/file.m3u8',
+              '/stream/camera1/file.m3u8',
             type: 'application/x-mpegURL'
           }
         ]

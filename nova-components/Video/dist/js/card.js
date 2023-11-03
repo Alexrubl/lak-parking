@@ -5683,7 +5683,7 @@ __webpack_require__.r(__webpack_exports__);
         },
         techOrder: ['flash', 'html5'],
         sources: [{
-          src: '/1/file.m3u8',
+          src: '/stream/camera1/file.m3u8',
           type: 'application/x-mpegURL'
         }]
       }
