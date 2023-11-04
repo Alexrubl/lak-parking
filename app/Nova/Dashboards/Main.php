@@ -5,6 +5,7 @@ namespace App\Nova\Dashboards;
 use Laravel\Nova\Cards\Help;
 use Test\Test\Test;
 use Alexrubl\Video\Video;
+use App\Models\Controller;
 use Laravel\Nova\Dashboards\Main as Dashboard;
 
 class Main extends Dashboard
@@ -27,11 +28,12 @@ class Main extends Dashboard
      */
     public function cards()
     {
-        return [
-            new Video,
-            //new Video,
-            //new Test,
-            //new Help,
-        ];
+        $val = [];
+        foreach (Controller::all() as $controller) {
+            foreach ($controller->cameras as $key => $camera) {
+                $val[] = new Video($controller, $camera);
+            }            
+        }
+        return $val;
     }
 }

@@ -4,15 +4,15 @@
       <video-player :options="videoOptions" class="" />      
     </div>    
     <div class="flex px-3 pb-3">
-      <a size="md" href="#" class="flex-shrink-0 h-9 px-4 focus:outline-none ring-primary-200 dark:ring-gray-600 focus:ring text-white dark:text-gray-800 inline-flex items-center font-bold shadow rounded focus:outline-none ring-primary-200 dark:ring-gray-600 focus:ring bg-primary-500 hover:bg-primary-400 active:bg-primary-600 text-white dark:text-gray-800 inline-flex items-center font-bold px-4 h-9 text-sm flex-shrink-0 h-9 px-4 focus:outline-none ring-primary-200 dark:ring-gray-600 focus:ring text-white dark:text-gray-800 inline-flex items-center font-bold" >
-        <span class="hidden md:inline-block">Открыть</span><span class="inline-block md:hidden">Открыть</span>
+      <a @click="clickOpen" size="md" href="#" class="flex-shrink-0 h-9 px-4 focus:outline-none ring-primary-200 dark:ring-gray-600 focus:ring text-white dark:text-gray-800 inline-flex items-center font-bold shadow rounded focus:outline-none ring-primary-200 dark:ring-gray-600 focus:ring bg-primary-500 hover:bg-primary-400 active:bg-primary-600 text-white dark:text-gray-800 inline-flex items-center font-bold px-4 h-9 text-sm flex-shrink-0 h-9 px-4 focus:outline-none ring-primary-200 dark:ring-gray-600 focus:ring text-white dark:text-gray-800 inline-flex items-center font-bold" >
+        <span class="hidden md:inline-block">Открыть проезд</span><span class="inline-block md:hidden">Открыть проезд</span>
       </a>
          
-    <div class="inline-flex items-center space-x-2 ml-auto">
-      <a size="md" href="#" class="flex-shrink-0 h-9 px-4 focus:outline-none ring-primary-200 dark:ring-gray-600 focus:ring text-white dark:text-gray-800 inline-flex items-center font-bold shadow rounded focus:outline-none ring-primary-200 dark:ring-gray-600 focus:ring bg-red-500 hover:bg-red-400 active:bg-primary-600 text-white dark:text-gray-800 inline-flex items-center font-bold px-4 h-9 text-sm flex-shrink-0 h-9 px-4 focus:outline-none ring-primary-200 dark:ring-gray-600 focus:ring text-white dark:text-gray-800 inline-flex items-center font-bold" >
+    <!-- <div class="inline-flex items-center space-x-2 ml-auto">
+      <a @click="clickClose" size="md" href="#" class="flex-shrink-0 h-9 px-4 focus:outline-none ring-primary-200 dark:ring-gray-600 focus:ring text-white dark:text-gray-800 inline-flex items-center font-bold shadow rounded focus:outline-none ring-primary-200 dark:ring-gray-600 focus:ring bg-red-500 hover:bg-red-400 active:bg-primary-600 text-white dark:text-gray-800 inline-flex items-center font-bold px-4 h-9 text-sm flex-shrink-0 h-9 px-4 focus:outline-none ring-primary-200 dark:ring-gray-600 focus:ring text-white dark:text-gray-800 inline-flex items-center font-bold" >
         <span class="hidden md:inline-block">Закрыть</span><span class="inline-block md:hidden">Закрыть</span>
       </a>
-    </div>  
+    </div>   -->
     </div>   
   </Card>
 </template>
@@ -36,7 +36,7 @@ export default {
   },
   data() {
     return {
-      heightCard: 0,
+      heightCard: 250,
       videoOptions: {
         autoplay: 'any',
         controls: true,
@@ -55,8 +55,7 @@ export default {
         techOrder: ['flash', 'html5'],
         sources: [
           {
-            src:
-              '/stream/camera1/file.m3u8',
+            src: this.card.camera.fields.url,
             type: 'application/x-mpegURL'
           }
         ]
@@ -68,10 +67,21 @@ export default {
   },
   methods: {
     resizeEventHandler(e) {
-      console.log('resize');
       var $ref = this.$refs.card.$el
-      console.log($ref, $ref.offsetWidth);
       this.heightCard = $ref.offsetWidth * (9/16) + 58      
+    },
+    clickOpen(e) {
+      console.log('clickOpen');
+      axios.post('/api/openGate', {
+        controller_id: this.card.controller.id
+      }).then(resp => {
+        console.log(resp);
+      })
+    },
+    clickClose(e) {
+      axios.post('/api/closeGate').then(resp => {
+        console.log(resp);
+      })
     }
   },
 
@@ -80,7 +90,7 @@ export default {
     // axios.get('/api/test_234').then(response => {
     //   console.log(response)
     // })
-    //console.log(axios);
+    console.log(this.card.controller, this.card.camera);
   },
   destroyed() {
     window.removeEventListener("resize", this.resizeEventHandler);

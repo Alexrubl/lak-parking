@@ -17,7 +17,8 @@ use Illuminate\Support\Facades\Notification;
 class ApiController extends Controller
 {
     public function event(Request $request) {
-        //info($request);
+        info('event:');
+        info($request);
         //$data = $request;
         $fail = collect([
             'apikey' => $request->apikey,
@@ -86,7 +87,7 @@ class ApiController extends Controller
     }
  
     
-        public static function sendNewTransportToControllers($transport) {  
+    public static function sendNewTransportToControllers($transport) {  
         $controllers = Controller::all();
         foreach ($controllers as $key => $controller) {
             $week = '';
@@ -144,6 +145,68 @@ class ApiController extends Controller
             }
         }
         //info(json_encode($data));
+    }
+
+    function openGate(Request $request) {
+        if( $request->has('controller_id')) {
+            $controller = Controller::find($request->controller_id);
+            info(collect($controller));
+        }
+        if (!isset($controller)) {
+            return response()->json(['status' => false,'message' => 'Не найден контроллер'], 200);
+        }
+
+        $curl = curl_init();
+
+        if ($controller->method == 'url') {
+            $url = $controller->url_open;
+            $CURLOPT_CUSTOMREQUEST = 'GET';
+            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'GET');
+            $header = [
+                    "Content-Type: application/x-www-form-urlencoded"
+                ];
+        } else {
+            if(isset($controller->id_open_stream)) {
+                return response()->json(['status' => false,'message' => 'Не заполнен ID Stream'], 200);
+            } 
+            $url = $controller->ip.'/api/plate/serv';
+            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'POST');
+            $data = [
+                'apikey' => Controller::first()->apikey,
+                'request_id' => Carbon::now()->format('Ymdhms'),
+                'stream_uuid' => $controller->id_open_stream,
+                'p_open' => 1
+            ];
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+            $header = [
+                    "Content-Type: application/json"
+                ];
+        }
+
+        curl_setopt_array($curl, [
+            //CURLOPT_PORT => "8082",
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_HTTPHEADER => $header
+        ]);
+
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+
+        curl_close($curl);
+
+        if ($err) {
+            info("cURL Error #: " . $err);
+        } else {
+            info('openGate:');
+            info($response);
+        }
+        
+        return response()->json($response, 200);        
     }
 
     public function test_createTransport(Request $request) {        

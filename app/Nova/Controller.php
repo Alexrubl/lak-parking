@@ -5,8 +5,14 @@ namespace App\Nova;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Number;
+use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Fields\Repeater;
+use Laravel\Nova\Fields\Heading;
+use NormanHuth\NovaRadioField\Radio;
+use Formfeed\DependablePanel\DependablePanel;
+use Laravel\Nova\Fields\FormData;
 
 class Controller extends Resource
 {
@@ -66,11 +72,39 @@ class Controller extends Resource
                 ->sortable()
                 ->rules('required', 'max:255'),
 
-            Repeater::make('Камеры', 'cameras')
+            Heading::make('Метод открытия'),
+            Radio::make('Открыть по', 'method')
+                ->options([
+                    'id' => 'id',
+                    'url' => 'url',
+                ])->inline()->rules('required')->hideFromIndex(),
+            Text::make('ID потока', 'id_open_stream')
+                ->sortable()
+                ->rules('max:255')->hideFromIndex(), 
+            Text::make('URL на открытие', 'url_open')
+                ->sortable()
+                ->rules('max:255')->hideFromIndex(), 
+            
+            Boolean::make('Автоматическое закрытие', 'auto_close'),           
+
+            DependablePanel::make('Параметры закрытия', $this->methodCloseFields())
+            ->dependsOn(
+                ['auto_close'],
+                function (DependablePanel $panel, NovaRequest $request, FormData $formData) {
+                    if ($formData->auto_close == false) {
+                        $panel->hide();
+                    }
+                }
+            )->separatePanel(true),
+                
+                 
+            Heading::make('Камеры'),           
+
+            Repeater::make('', 'cameras')
                 ->repeatables([
                     \App\Nova\Repeater\Camera::make(),
                 ])
-                ->asJson(),
+                ->asJson()->fullWidth(),
         ];
     }
 
@@ -116,5 +150,17 @@ class Controller extends Resource
     public function actions(NovaRequest $request)
     {
         return [];
+    }
+
+    protected function methodCloseFields() {
+        return [
+            Text::make('ID потока', 'id_close_stream')
+                ->sortable()
+                ->rules('max:255')->hideFromIndex(),
+            Text::make('URL на закрытие', 'url_close')
+                ->sortable()
+                ->rules('max:255')->hideFromIndex(),
+            Number::make('Пауза', 'pausa')->default(60)->help('пауза перед отправкой запроса на закрытие после открытия, в сек.'),
+        ];        
     }
 }

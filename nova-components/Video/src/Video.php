@@ -4,11 +4,13 @@ namespace Alexrubl\Video;
 
 use Laravel\Nova\Card;
 use Symfony\Component\Process\Process;
+use App\Models\Controller;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class Video extends Card
 {
     public $controller = null;
+    public $camera = null;
     /**
      * The width of the card (1/3, 1/2, or full).
      *
@@ -16,9 +18,10 @@ class Video extends Card
      */
     public $width = '1/2';
 
-    public function __construct(Controller $controller = null) {
+    public function __construct(Controller $controller, $camera) {
         $this->controller = $controller;
-        // $this->exec_ffmpeg();
+        $this->camera = $camera;
+        $this->withMeta(['controller' => $this->controller, 'camera' => $this->camera]);
     }
 
     /**

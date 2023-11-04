@@ -4,6 +4,8 @@ namespace App\Nova\Repeater;
 
 use Laravel\Nova\Fields\Repeater\Repeatable;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Heading;
+use NormanHuth\NovaRadioField\Radio;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Camera extends Repeatable
@@ -27,10 +29,13 @@ class Camera extends Repeatable
     public function fields(NovaRequest $request)
     {
         return [
-            Text::make('Наименование', 'name'),
-            Text::make('Url', 'url')
+            Text::make('Наименование', 'name')
+                ->fullWidth(),
+            Text::make('URL Stream', 'url')
                 ->sortable()
-                ->rules('required', 'max:255'),
+                ->rules('required', 'max:255')
+                ->help('ссылка на поток с камеры в формате hls. Например /stream/camera1/file.m3u8')
+                ->fullWidth(),           
         ];
     }
 }

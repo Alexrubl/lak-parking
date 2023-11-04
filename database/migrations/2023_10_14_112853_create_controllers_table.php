@@ -16,7 +16,12 @@ return new class extends Migration
             $table->string('name');
             $table->string('ip');
             $table->string('apikey');
-            $table->text('cameras');
+            $table->string('id_stream')->nullabled();
+            $table->string('url_open')->nullabled();
+            $table->string('Url_close')->nullabled();
+            $table->string('method')->nullabled();
+            $table->number('pause')->nullabled()->default(10);
+            $table->text('cameras')->nullabled();
             $table->timestamps();
         });
     }
