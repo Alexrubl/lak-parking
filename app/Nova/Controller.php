@@ -70,7 +70,15 @@ class Controller extends Resource
             
             Text::make('apikey', 'apikey')
                 ->sortable()
-                ->rules('required', 'max:255'),
+                ->rules('required', 'max:255'),          
+                
+            Heading::make('Камеры'),           
+
+            Repeater::make('', 'cameras')
+                ->repeatables([
+                    \App\Nova\Repeater\Camera::make(),
+                ])
+                ->asJson()->fullWidth(),
 
             Heading::make('Метод открытия'),
             Radio::make('Открыть по', 'method')
@@ -96,15 +104,6 @@ class Controller extends Resource
                     }
                 }
             )->separatePanel(true),
-                
-                 
-            Heading::make('Камеры'),           
-
-            Repeater::make('', 'cameras')
-                ->repeatables([
-                    \App\Nova\Repeater\Camera::make(),
-                ])
-                ->asJson()->fullWidth(),
         ];
     }
 

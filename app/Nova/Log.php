@@ -32,7 +32,7 @@ class Log extends Resource
      * @var array
      */
     public static $search = [
-        'id',
+        'text', 'created_at'
     ];
 
     public static function label() {
@@ -53,7 +53,7 @@ class Log extends Resource
     {
         return [
             ID::make()->sortable()->hideFromIndex(),
-            Text::make('Событие', 'log')->readonly(true)->nullable(),
+            Text::make('Событие', 'text')->readonly(true)->nullable(),
             DateTime::make('Создано', 'created_at')->default(Carbon::now())->rules('required')->readonly(true),
         ];
     }

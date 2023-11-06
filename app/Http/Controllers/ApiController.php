@@ -37,7 +37,7 @@ class ApiController extends Controller
         $rate = $transport->rate;        
         if ($request->access == 'enable' || $request->access == 1) {
             $sum = 0;
-            if ($transport->inside == 0) {
+            if ($request->entry == 'in' || $request->entry == 1) {
                 $transport->inside = 1;
                 $sum = $rate->getPrice($transport);
             } else {
@@ -45,14 +45,14 @@ class ApiController extends Controller
                 if ($transport->guest == true) {
                     $transport->access= 0;
                 } 
-            }
-            $transport->save(); 
+            }            
+            // $transport->save(); # Отключил пока логику внутри снаружи
             $tenant->balance -= $sum;            
             $tenant->save();
             $history = new History;
             $history->tenant_id = $tenant->id;
             $history->transport_id = $transport->id;
-            $history->comment = 'Списание, '. $transport->inside? 'Въезд' : 'Выезд';
+            $history->comment = ', '. $request->entry ? 'Списание, Въезд' : 'Выезд';
             $history->price = $sum;
             $history->save();
 
@@ -75,7 +75,7 @@ class ApiController extends Controller
                     $transp->save();
                 }
             }
-
+            logist('Запрос на '.($request->entry == "in" ? 'въезд':'выезд').'. Номер транспорта: '.$request->plate.', доступ '.($request->access = 1 ? 'РАЗРЕШЁН':'ЗАПРЕЩЁН').($sum > 0 ? ', Списано '.$sum.' руб.' :''));
             return response()->json([
                     'apikey' => $request->apikey,
                     'request_id' => $request->request_id,
@@ -83,6 +83,7 @@ class ApiController extends Controller
                     'message' => 'Успешно.'
                 ], 200);
         } 
+        logist('Запрос на '.($request->entry == "in" ? 'въезд':'выезд').'. Номер транспорта: '.$request->plate.', доступ ЗАПРЕЩЁН');
         return response()->json($fail->put('message', 'неизвестная ошибка.'), 200);
     }
  
@@ -189,20 +190,22 @@ class ApiController extends Controller
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
+            CURLOPT_TIMEOUT => 5,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_HTTPHEADER => $header
         ]);
 
         $response = curl_exec($curl);
         $err = curl_error($curl);
+        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
         curl_close($curl);
 
         if ($err) {
-            info("cURL Error #: " . $err);
+            info("cURL Error #: " . $err.'. Code http status: '.$httpcode);
+            return response()->json(['message' => 'cURL Error #: '.$err, 'status' => $httpcode], 503); 
         } else {
-            info('openGate:');
+            info('openGate (Code http status: '.$httpcode.'):');
             info($response);
         }
         

@@ -6,6 +6,7 @@ use Laravel\Nova\Fields\Repeater\Repeatable;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Heading;
 use NormanHuth\NovaRadioField\Radio;
+use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Camera extends Repeatable
@@ -35,7 +36,12 @@ class Camera extends Repeatable
                 ->sortable()
                 ->rules('required', 'max:255')
                 ->help('ссылка на поток с камеры в формате hls. Например /stream/camera1/file.m3u8')
-                ->fullWidth(),           
+                ->fullWidth(),
+            Select::make('Смотрит', 'entry')
+                ->options([
+                    'in' => 'in',
+                    'out' => 'out'
+                ])->rules('required')           
         ];
     }
 }

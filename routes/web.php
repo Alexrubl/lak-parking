@@ -19,8 +19,6 @@ use App\Http\Controllers\CkassaController;
 //     return view('welcome');
 // });
 
-
-
 Route::get('/ckassa', [CkassaController::class, 'show']);
 
 Route::get('/getOrder', [CkassaController::class, 'getOrder']);

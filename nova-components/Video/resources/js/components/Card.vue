@@ -4,24 +4,32 @@
       <video-player :options="videoOptions" class="" />      
     </div>    
     <div class="flex px-3 pb-3">
-      <a @click="clickOpen" size="md" href="#" class="flex-shrink-0 h-9 px-4 focus:outline-none ring-primary-200 dark:ring-gray-600 focus:ring text-white dark:text-gray-800 inline-flex items-center font-bold shadow rounded focus:outline-none ring-primary-200 dark:ring-gray-600 focus:ring bg-primary-500 hover:bg-primary-400 active:bg-primary-600 text-white dark:text-gray-800 inline-flex items-center font-bold px-4 h-9 text-sm flex-shrink-0 h-9 px-4 focus:outline-none ring-primary-200 dark:ring-gray-600 focus:ring text-white dark:text-gray-800 inline-flex items-center font-bold" >
+      <a @click="clickOpen" size="md" href="#" class="flex-shrink-0 h-9 px-4 focus:outline-none ring-primary-200 dark:ring-gray-600 focus:ring text-white dark:text-gray-800 inline-flex items-center font-bold shadow rounded focus:outline-none ring-primary-200 dark:ring-gray-600 focus:ring bg-primary-500 hover:bg-primary-400 active:bg-primary-600 text-white dark:text-gray-800 inline-flex items-center font-bold text-sm flex-shrink-0 focus:outline-none ring-primary-200 dark:ring-gray-600 focus:ring text-white dark:text-gray-800 inline-flex items-center font-bold" >
         <span class="hidden md:inline-block">Открыть проезд</span><span class="inline-block md:hidden">Открыть проезд</span>
       </a>
-         
-    <!-- <div class="inline-flex items-center space-x-2 ml-auto">
-      <a @click="clickClose" size="md" href="#" class="flex-shrink-0 h-9 px-4 focus:outline-none ring-primary-200 dark:ring-gray-600 focus:ring text-white dark:text-gray-800 inline-flex items-center font-bold shadow rounded focus:outline-none ring-primary-200 dark:ring-gray-600 focus:ring bg-red-500 hover:bg-red-400 active:bg-primary-600 text-white dark:text-gray-800 inline-flex items-center font-bold px-4 h-9 text-sm flex-shrink-0 h-9 px-4 focus:outline-none ring-primary-200 dark:ring-gray-600 focus:ring text-white dark:text-gray-800 inline-flex items-center font-bold" >
-        <span class="hidden md:inline-block">Закрыть</span><span class="inline-block md:hidden">Закрыть</span>
-      </a>
-    </div>   -->
-    </div>   
+    </div>
+    <div class="flex logs px-3 pb-3">
+      <div>
+        <h5>10.10.2023 10:00</h5>
+        <p>Тестовове событие</p>
+      </div>
+      <div class="flex-grow"></div>
+      <div class="flex items-center">
+        <a
+          class="flex-shrink-0 h-6 px-2 hover:bg-gray-100 dark:hover:bg-gray-700 h-10 focus:outline-none focus:ring rounded-lg flex items-center text-sm font-semibold text-gray-600 dark:text-gray-400" 
+          href="#">
+            <svg class="flex-shrink-0" xmlns="http://www.w3.org/2000/svg" width="10" height="6" viewBox="0 0 10 6">
+              <path class="fill-current" d="M8.292893.292893c.390525-.390524 1.023689-.390524 1.414214 0 .390524.390525.390524 1.023689 0 1.414214l-4 4c-.390525.390524-1.023689.390524-1.414214 0l-4-4c-.390524-.390525-.390524-1.023689 0-1.414214.390525-.390524 1.023689-.390524 1.414214 0L5 3.585786 8.292893.292893z"></path>
+            </svg>
+        </a>
+      </div>      
+    </div>            
   </Card>
 </template>
 
 <script>
 import VideoPlayer from './VideoPlayer.vue';
 import axios from 'axios'
-
-
 
 export default {
   props: [
@@ -75,7 +83,15 @@ export default {
       axios.post('/api/openGate', {
         controller_id: this.card.controller.id
       }).then(resp => {
-        console.log(resp);
+        if (resp.status == 200) {
+          Nova.success('Команда отправлена.')
+        }
+      }).catch(err => {
+        if (err.response.status == 503) {
+          Nova.error('Команда не отправлена. Устройство недоступно.')
+        } else {
+          Nova.error('Команда не доставлена.')
+        }
       })
     },
     clickClose(e) {
