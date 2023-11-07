@@ -71,9 +71,9 @@ return [
     */
 
     //'timezone' => 'UTC',
-    //'timezone' => 'Asia/Yakutsk',
+    'timezone' => 'Asia/Yakutsk',
 
-    'timezone' => 'Europe/Moscow',
+    //'timezone' => 'Europe/Moscow',
 
     /*
     |--------------------------------------------------------------------------

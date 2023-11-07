@@ -20,6 +20,7 @@ Route::post('openGate', [ApiController::class, 'openGate']);
 Route::post('closeGate', [ApiController::class, 'closeGate']); 
 Route::post('ckassa/callback', [CkassaController::class, 'callback']);
 Route::get('test_ctreate_transport', [ApiController::class, 'test_createTransport']);
+Route::get('getLogs', [ApiController::class, 'getLogs']);
 Route::get('ffmpeg', [ApiController::class, 'ffmpeg']);
 Route::get('test_234', [ApiController::class, 'test_234']);
 

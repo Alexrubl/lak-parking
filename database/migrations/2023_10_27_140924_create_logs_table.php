@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('logs', function (Blueprint $table) {
             $table->id();
+            $table->number('controller_id')->nullabled();
+            $table->string('entry')->nullabled();
             $table->text('text')->nullabled();
             $table->timestamps();
         });

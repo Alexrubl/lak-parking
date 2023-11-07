@@ -50,6 +50,7 @@ class ApiController extends Controller
             $tenant->balance -= $sum;            
             $tenant->save();
             $history = new History;
+            $history->controller_id = $request->apikey;
             $history->tenant_id = $tenant->id;
             $history->transport_id = $transport->id;
             $history->comment = ', '. $request->entry ? 'Списание, Въезд' : 'Выезд';
@@ -75,7 +76,7 @@ class ApiController extends Controller
                     $transp->save();
                 }
             }
-            logist('Запрос на '.($request->entry == "in" ? 'въезд':'выезд').'. Номер транспорта: '.$request->plate.', доступ '.($request->access = 1 ? 'РАЗРЕШЁН':'ЗАПРЕЩЁН').($sum > 0 ? ', Списано '.$sum.' руб.' :''));
+            logist('Запрос на '.($request->entry == "in" ? 'въезд':'выезд').'. Номер транспорта: '.$request->plate.', доступ '.($request->access = 1 ? 'РАЗРЕШЁН':'ЗАПРЕЩЁН').($sum > 0 ? ', Списано '.$sum.' руб.' :''), Controller::where('apikey', $request->apikey)->first()->id, $request->entry);
             return response()->json([
                     'apikey' => $request->apikey,
                     'request_id' => $request->request_id,
@@ -83,7 +84,7 @@ class ApiController extends Controller
                     'message' => 'Успешно.'
                 ], 200);
         } 
-        logist('Запрос на '.($request->entry == "in" ? 'въезд':'выезд').'. Номер транспорта: '.$request->plate.', доступ ЗАПРЕЩЁН');
+        logist('Запрос на '.($request->entry == "in" ? 'въезд':'выезд').'. Номер транспорта: '.$request->plate.', доступ ЗАПРЕЩЁН', Controller::where('apikey', $request->apikey)->first()->id, $request->entry);
         return response()->json($fail->put('message', 'неизвестная ошибка.'), 200);
     }
  
@@ -210,6 +211,15 @@ class ApiController extends Controller
         }
         
         return response()->json($response, 200);        
+    }
+
+    public function getLogs(Request $request) {
+        info($request);
+        return response()->json(\App\Models\Log::where('controller_id', $request->controller_id)
+                                                ->where('entry', $request->entry)
+                                                ->latest('id')
+                                                ->take(25)
+                                                ->get());
     }
 
     public function test_createTransport(Request $request) {        

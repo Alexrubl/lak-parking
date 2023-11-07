@@ -4,18 +4,20 @@
       <video-player :options="videoOptions" class="" />      
     </div>    
     <div class="flex px-3 pb-3">
-      <a @click="clickOpen" size="md" href="#" class="flex-shrink-0 h-9 px-4 focus:outline-none ring-primary-200 dark:ring-gray-600 focus:ring text-white dark:text-gray-800 inline-flex items-center font-bold shadow rounded focus:outline-none ring-primary-200 dark:ring-gray-600 focus:ring bg-primary-500 hover:bg-primary-400 active:bg-primary-600 text-white dark:text-gray-800 inline-flex items-center font-bold text-sm flex-shrink-0 focus:outline-none ring-primary-200 dark:ring-gray-600 focus:ring text-white dark:text-gray-800 inline-flex items-center font-bold" >
-        <span class="hidden md:inline-block">Открыть проезд</span><span class="inline-block md:hidden">Открыть проезд</span>
-      </a>
+      <DefaultButton @click="clickOpen">
+        <span class="inline-block">Открыть проезд</span>
+      </DefaultButton>
     </div>
+    
     <div class="flex logs px-3 pb-3">
-      <div>
-        <h5>10.10.2023 10:00</h5>
-        <p>Тестовове событие</p>
+      <div style="min-height: 60px;">
+        <h5 class="font-bold" v-html="formattedDate(message.created_at)"></h5>
+        <p class="font-bold text-red-400" v-html="message.text"></p>
       </div>
       <div class="flex-grow"></div>
       <div class="flex items-center">
         <a
+          @click="showModal = true"
           class="flex-shrink-0 h-6 px-2 hover:bg-gray-100 dark:hover:bg-gray-700 h-10 focus:outline-none focus:ring rounded-lg flex items-center text-sm font-semibold text-gray-600 dark:text-gray-400" 
           href="#">
             <svg class="flex-shrink-0" xmlns="http://www.w3.org/2000/svg" width="10" height="6" viewBox="0 0 10 6">
@@ -23,13 +25,42 @@
             </svg>
         </a>
       </div>      
-    </div>            
+    </div>  
+    <Modal :show="showModal" modal_style="window" size="4xl">
+      <ModalHeader v-text="'Headline of Modal'" class="bg-gray-100 dark:bg-gray-700" />
+      <ModalContent class="bg-gray-100 dark:bg-gray-700">
+        <EasyDataTable
+          :headers="table.headers"
+          :items="table.items"
+          :rows-items="[10,15,20]"
+          :rows-per-page="10"
+          show-index
+        >
+          <template #item-created_at="{ created_at }">
+              {{ formattedDate(created_at) }}
+          </template>
+        </EasyDataTable>
+      </ModalContent>
+      <ModalFooter>
+        <div class="flex items-center ml-auto">
+          <DefaultButton
+              type="submit" 
+              @click="showModal = false"
+          >
+            Закрыть
+          </DefaultButton>
+        </div>
+      </ModalFooter>
+    </Modal>    
   </Card>
 </template>
 
 <script>
 import VideoPlayer from './VideoPlayer.vue';
 import axios from 'axios'
+import moment from 'moment'
+import EasyDataTable from "vue3-easy-data-table";
+import 'vue3-easy-data-table/dist/style.css';
 
 export default {
   props: [
@@ -40,10 +71,18 @@ export default {
     // 'resourceName',
   ],
   components: {
-    VideoPlayer
+    VideoPlayer,
+    EasyDataTable,
   },
   data() {
     return {
+      message: {
+        created_at: '',
+        text: ''
+      },
+      alert: false,
+      showModal: false,
+      logs: [],
       heightCard: 250,
       videoOptions: {
         autoplay: 'any',
@@ -67,16 +106,28 @@ export default {
             type: 'application/x-mpegURL'
           }
         ]
-      }
+      },
+      table: {
+          headers: [
+            { text: "Дата", value: "created_at" },
+            { text: "Текст", value: "text" }
+          ],
+          items: [
+            { created_at: '', text: ''}
+          ]
+        },
     }
   },
   created() {
     window.addEventListener("resize", this.resizeEventHandler);
   },
   methods: {
+    formattedDate(val) {
+      return val ? moment(val).format('DD-MM-YYYY HH:mm') : '';
+    },
     resizeEventHandler(e) {
       var $ref = this.$refs.card.$el
-      this.heightCard = $ref.offsetWidth * (9/16) + 58      
+      this.heightCard = $ref.offsetWidth * (9/16) + 130      
     },
     clickOpen(e) {
       console.log('clickOpen');
@@ -95,18 +146,48 @@ export default {
       })
     },
     clickClose(e) {
-      axios.post('/api/closeGate').then(resp => {
-        console.log(resp);
+      axios.post('/api/closeGate', {
+        controller_id: this.card.controller.id
+      }).then(resp => {
+        if (resp.status == 200) {
+          Nova.success('Команда отправлена.')
+        }
+      }).catch(err => {
+        if (err.response.status == 503) {
+          Nova.error('Команда не отправлена. Устройство недоступно.')
+        } else {
+          Nova.error('Команда не доставлена.')
+        }
       })
+    },
+    async get_logs() {
+      var { data } =  await axios.get('/api/getLogs', { params: { controller_id: this.card.controller.id, entry: this.card.camera.fields.entry } })
+      if (data.length > 0) {
+        this.table.items = data
+      }
+      console.log(moment(this.table.items[0].created_at).unix() >= moment().subtract(60, 'seconds').unix());
+      if (moment(this.table.items[0].created_at).unix() >= moment().subtract(60, 'seconds').unix()) {
+        this.message = this.table.items[0]
+        if (this.alert == 0) {
+          Nova.error(this.message.text)
+          this.alert = 1
+        }
+      } else {
+        this.message.created_at = ''; this.message.text = ''
+        this.alert = 0
+      }
     }
   },
 
   mounted() {
+    this.get_logs()
+    setInterval(() => {
+      this.get_logs()      
+    }, 10000);
+    
     this.resizeEventHandler()
-    // axios.get('/api/test_234').then(response => {
-    //   console.log(response)
-    // })
-    console.log(this.card.controller, this.card.camera);
+
+    //console.log(this.card.controller, this.card.camera);
   },
   destroyed() {
     window.removeEventListener("resize", this.resizeEventHandler);

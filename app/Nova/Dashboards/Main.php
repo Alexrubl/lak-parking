@@ -32,8 +32,10 @@ class Main extends Dashboard
         foreach (Controller::all() as $controller) {
             foreach ($controller->cameras as $key => $camera) {
                 $val[] = new Video($controller, $camera);
+                break;
             }            
         }
         return $val;
+
     }
 }

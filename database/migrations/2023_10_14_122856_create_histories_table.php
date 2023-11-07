@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('histories', function (Blueprint $table) {
             $table->id();
+            $table->integer('controller_id')->nullabled();
             $table->integer('tenant_id')->nullabled();
             $table->integer('transport_id')->nullabled();
             $table->integer('price')->nullabled();
