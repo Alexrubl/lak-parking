@@ -127,13 +127,13 @@ return [
             'path' => storage_path('logs/laravel.log'),
         ],
 
-        // 'entry' => [
-        //     'driver' => 'daily',
-        //     'path' => storage_path('logs/entry/entry.log'),
-        //     'level' => env('LOG_LEVEL', 'info'),
-        //     'days' => 90,
-        //     'replace_placeholders' => true,
-        // ],
+        'entry' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/entry/entry.log'),
+            'level' => env('LOG_LEVEL', 'info'),
+            'days' => 90,
+            'replace_placeholders' => true,
+        ],
     ],
 
 ];
