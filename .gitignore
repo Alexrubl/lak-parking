@@ -2,6 +2,7 @@
 /node_modules
 /public/build
 /public/hot
+/bootstrap/cache
 /public/storage
 /public/stream
 /storage/*.key
@@ -10,8 +11,8 @@
 .env.backup
 .env.production
 .phpunit.result.cache
-docker-compose.yaml
-docker-compose-dev.yaml
+docker-compose.yml
+docker-compose-dev.yml
 docker-compose-prod.yml
 /storage/log
 /storage/framework

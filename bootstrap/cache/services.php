@@ -60,6 +60,7 @@
     56 => 'App\\Providers\\NovaServiceProvider',
     57 => 'App\\Providers\\RouteServiceProvider',
     58 => 'ProtoneMedia\\LaravelFFMpeg\\Support\\ServiceProvider',
+    59 => 'App\\Providers\\HelpersLoaderProvider',
   ),
   'eager' => 
   array (
@@ -107,6 +108,7 @@
     41 => 'App\\Providers\\NovaServiceProvider',
     42 => 'App\\Providers\\RouteServiceProvider',
     43 => 'ProtoneMedia\\LaravelFFMpeg\\Support\\ServiceProvider',
+    44 => 'App\\Providers\\HelpersLoaderProvider',
   ),
   'deferred' => 
   array (
