@@ -47,8 +47,8 @@ export default {
      * Set the initial, internal value for the field.
      */
     setInitialValue() {
-      this.value = this.field.value.split(' - ')[0] || '08:00'
-      this.value2 = this.field.value.split(' - ')[1] || '19:00'
+      this.value = this.field.value.split(' - ')[0] || '00:00'
+      this.value2 = this.field.value.split(' - ')[1] || '23:59'
     },
 
     /**

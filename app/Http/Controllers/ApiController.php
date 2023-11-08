@@ -118,7 +118,7 @@ class ApiController extends Controller
                 'access' => [
                     'time_limit' => intval($transport->time_limit),
                     'week' => $week,
-                    'time_interval' => str_replace([':'], '', $transport->fromTime) .'-'.str_replace([':'], '', $transport->toTime),
+                    'time_interval' => str_replace([':'], '', isset($transport->fromTime)? $transport->fromTime : '00:00') .'-'.str_replace([':'], '', isset($transport->toTime)? $transport->toTime : '23:59'),
                     'date_interval' => (isset($transport->fromDate) ? Carbon::parse($transport->fromDate)->format('Ymd') : Carbon::now()->format('Ymd')).'-'. (isset($transport->toDate) ? Carbon::parse($transport->toDate)->format('Ymd') : '21191231'),
                 ]
             ];
