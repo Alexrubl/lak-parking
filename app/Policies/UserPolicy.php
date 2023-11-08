@@ -3,32 +3,30 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\Log;
 
-class LogPolicy
+class UserPolicy
 {
     /**
      * Create a new policy instance.
      */
     public function __construct()
     {
-        //
+    
     }
-
-        // /**
-    //  * Determine whether the user can view any models.
-    //  */
+            /**
+     * Determine whether the user can view any models.
+     */
     public function viewAny(User $user): bool
     {
-        return $user->isAdmin();
+        return true;
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Log $log): bool
+    public function view(User $user): bool
     {
-        return $user->isAdmin();
+        return true;
     }
 
     /**
@@ -42,15 +40,15 @@ class LogPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Log $log): bool
+    public function update(User $user): bool
     {
-        return $user->isAdmin();
+        return true;
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Log $log): bool
+    public function delete(User $user): bool
     {
         return $user->isAdmin();
     }
@@ -58,7 +56,7 @@ class LogPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, History $history): bool
+    public function restore(User $user): bool
     {
         return $user->isAdmin();
     }
@@ -66,7 +64,7 @@ class LogPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Log $log): bool
+    public function forceDelete(User $user): bool
     {
         return $user->isAdmin();
     }

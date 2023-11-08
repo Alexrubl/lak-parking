@@ -71,7 +71,7 @@ return [
     */
 
     //'timezone' => 'UTC',
-    'timezone' => env('APP_TIMEZONE', 'Asia/Yakutsk') //'Asia/Yakutsk',
+    'timezone' => env('APP_TIMEZONE', 'Asia/Yakutsk'), //'Asia/Yakutsk',
 
     //'timezone' => 'Europe/Moscow',
 

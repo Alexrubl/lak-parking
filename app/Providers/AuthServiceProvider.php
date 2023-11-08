@@ -32,6 +32,7 @@ class AuthServiceProvider extends ServiceProvider
         TypeTransport::class => AdminPolicy::class,
         Transport::class => TransportPolicy::class,
         Rate::class => AdminPolicy::class,
+        User::class => UserPolicy::class,
     ];
 
     /**

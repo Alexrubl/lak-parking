@@ -6,6 +6,7 @@ use Laravel\Nova\Cards\Help;
 use Test\Test\Test;
 use Alexrubl\Video\Video;
 use App\Models\Controller;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Nova\Dashboards\Main as Dashboard;
 
 class Main extends Dashboard
@@ -31,11 +32,12 @@ class Main extends Dashboard
         $val = [];
         foreach (Controller::all() as $controller) {
             foreach ($controller->cameras as $key => $camera) {
-                $val[] = new Video($controller, $camera);
+                $val[] = (new Video($controller, $camera))->canSee(function ($request) {
+                            return Auth::user()->isAdmin();
+                        });
                 // break;
             }            
         }
         return $val;
-
     }
 }
