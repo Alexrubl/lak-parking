@@ -31,6 +31,7 @@ class ApiController extends Controller
         }
         $transport = Transport::where('number', $request->plate)->first();
         if (!isset($transport) || !isset($transport->tenant)) {
+            logist(($request->entry && $request->entry == "in" ? 'Запрос на въезд. ':'Запрос на выезд. ').'Номер транспорта: '.$request->plate.', доступ ЗАПРЕЩЁН (не найден транспорт с таким номером)', Controller::where('apikey', $request->apikey)->first()->id, $request->entry);
             return response()->json($fail->put('message', 'Не найден транспорт с таким номером или некорректно заполнены данные.'), 200);
         }
         $tenant = $transport->tenant;
@@ -76,7 +77,7 @@ class ApiController extends Controller
                     $transp->save();
                 }
             }
-            logist('Запрос на '.($request->entry == "in" ? 'въезд':'выезд').'. Номер транспорта: '.$request->plate.', доступ '.($request->access = 1 ? 'РАЗРЕШЁН':'ЗАПРЕЩЁН').($sum > 0 ? ', Списано '.$sum.' руб.' :''), Controller::where('apikey', $request->apikey)->first()->id, $request->entry);
+            logist(($request->entry && $request->entry == "in" ? 'Запрос на въезд. ':'Запрос на выезд. ').'Номер транспорта: '.$request->plate.', доступ '.($request->access = 1 ? 'РАЗРЕШЁН':'ЗАПРЕЩЁН').($sum > 0 ? ', Списано '.$sum.' руб.' :''), Controller::where('apikey', $request->apikey)->first()->id, $request->entry);
             return response()->json([
                     'apikey' => $request->apikey,
                     'request_id' => $request->request_id,
@@ -84,7 +85,7 @@ class ApiController extends Controller
                     'message' => 'Успешно.'
                 ], 200);
         } 
-        logist('Запрос на '.($request->entry == "in" ? 'въезд':'выезд').'. Номер транспорта: '.$request->plate.', доступ ЗАПРЕЩЁН', Controller::where('apikey', $request->apikey)->first()->id, $request->entry);
+        logist(($request->entry && $request->entry == "in" ? 'Запрос на въезд. ':'Запрос на выезд. ').'Номер транспорта: '.$request->plate.', доступ ЗАПРЕЩЁН', Controller::where('apikey', $request->apikey)->first()->id, $request->entry);
         return response()->json($fail->put('message', 'неизвестная ошибка.'), 200);
     }
  
