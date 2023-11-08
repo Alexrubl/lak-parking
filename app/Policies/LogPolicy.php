@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\User;
+use App\Models\Log;
 
 class LogPolicy
 {
@@ -25,7 +26,7 @@ class LogPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, History $history): bool
+    public function view(User $user, Log $log): bool
     {
         return true;
     }
@@ -41,7 +42,7 @@ class LogPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, History $history): bool
+    public function update(User $user, Log $log): bool
     {
         return $user->isAdmin();
     }
@@ -49,7 +50,7 @@ class LogPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, History $history): bool
+    public function delete(User $user, Log $log): bool
     {
         return $user->isAdmin();
     }
@@ -65,7 +66,7 @@ class LogPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, History $history): bool
+    public function forceDelete(User $user, Log $log): bool
     {
         return $user->isAdmin();
     }

@@ -53,6 +53,8 @@ class Log extends Resource
     {
         return [
             ID::make()->sortable()->hideFromIndex(),
+            Text::make('Контроллер', 'controller_id')->readonly(true)->nullable()->hideFromIndex(),
+            Text::make('Направление', 'entry')->readonly(true)->nullable()->hideFromIndex(),
             Text::make('Событие', 'text')->readonly(true)->nullable(),
             DateTime::make('Создано', 'created_at')->default(Carbon::now())->rules('required')->readonly(true),
         ];
