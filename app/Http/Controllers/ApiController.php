@@ -217,7 +217,7 @@ class ApiController extends Controller
     public function getLogs(Request $request) {
         // info($request);
         return response()->json(\App\Models\Log::where('controller_id', $request->controller_id)
-                                                ->where('entry', $request->entry)
+                                                ->where('entry', $request->entry == 'NULL' ? 'in': $request->entry)
                                                 ->latest('id')
                                                 ->take(25)
                                                 ->get());
