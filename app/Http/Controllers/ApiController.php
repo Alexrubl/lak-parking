@@ -216,11 +216,19 @@ class ApiController extends Controller
 
     public function getLogs(Request $request) {
         // info($request);
-        return response()->json(\App\Models\Log::where('controller_id', $request->controller_id)
-                                                ->whereIn('entry', $request->entry == 'in' ? ["in",null]: [$request->entry])
-                                                ->latest('id')
-                                                ->take(25)
-                                                ->get());
+        if ($request->entry == 'in') {
+            return response()->json(\App\Models\Log::where('controller_id', $request->controller_id)                                                    
+                                                    ->where('entry', $request->entry)->orWhereNull('entry')
+                                                    ->latest('id')
+                                                    ->take(25)
+                                                    ->get());
+        } else {
+            return response()->json(\App\Models\Log::where('controller_id', $request->controller_id)
+                                                    ->where('entry', $request->entry)
+                                                    ->latest('id')
+                                                    ->take(25)
+                                                    ->get());
+        }
     }
 
     public function test_createTransport(Request $request) {        
