@@ -94,8 +94,12 @@ class ApiController extends Controller
         $controllers = Controller::all();
         foreach ($controllers as $key => $controller) {
             $week = '';
-            foreach ($transport->week as $key => $value) {
-                $week .= ($value == 1) ? '1':'0';
+            if ($transport->week) {
+                foreach ($transport->week as $key => $value) {
+                    $week .= ($value == 1) ? '1':'0';
+                }
+            } else {
+                $week = '0000000';
             }
             $data = [
                 'apikey' => $controller->apikey,
