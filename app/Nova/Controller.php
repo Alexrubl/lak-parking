@@ -16,7 +16,7 @@ use Laravel\Nova\Fields\FormData;
 
 class Controller extends Resource
 {
-    public static $group = 'Настройки';
+    public static $group = '  Справочники';
 
     /**
      * The model the resource corresponds to.

@@ -214,7 +214,7 @@ class ApiController extends Controller
             info('openGate (Code http status: '.$httpcode.'):');
             info($response);
         }
-        
+        logist('Открытие проезжа с кнопки охраны.');
         return response()->json($response, 200);        
     }
 
