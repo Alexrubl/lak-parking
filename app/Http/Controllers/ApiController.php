@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Notification;
 class ApiController extends Controller
 {
     public function event(Request $request) {
-        info('event:');
+        info('event from controller:');
         info($request);
         //$data = $request;
         $fail = collect([
@@ -116,12 +116,15 @@ class ApiController extends Controller
                     'access' => intval($transport->access),
                 ],
                 'access' => [
-                    'time_limit' => intval($transport->time_limit),
-                    'week' => $week,
-                    'time_interval' => str_replace([':'], '', isset($transport->fromTime)? $transport->fromTime : '00:00') .'-'.str_replace([':'], '', isset($transport->toTime)? $transport->toTime : '23:59'),
-                    'date_interval' => (isset($transport->fromDate) ? Carbon::parse($transport->fromDate)->format('Ymd') : Carbon::now()->format('Ymd')).'-'. (isset($transport->toDate) ? Carbon::parse($transport->toDate)->format('Ymd') : '21191231'),
+                    'time_limit' => $transport->restrictions ? intval($transport->time_limit) : 0,
+                    'week' => $transport->restrictions ? $week : '1111111',
+                    'time_interval' => $transport->restrictions ? str_replace([':'], '', isset($transport->fromTime)? $transport->fromTime : '00:00') .'-'.str_replace([':'], '', isset($transport->toTime)? $transport->toTime : '23:59') : '0000-2359',
+                    'date_interval' => $transport->restrictions ? (isset($transport->fromDate) ? Carbon::parse($transport->fromDate)->format('Ymd') : Carbon::now()->format('Ymd')).'-'. (isset($transport->toDate) ? Carbon::parse($transport->toDate)->format('Ymd') : '21191231') : Carbon::now()->format('Ymd').'-21191231',
                 ]
             ];
+
+            // info($data);
+            // dd();
 
             $curl = curl_init();
 

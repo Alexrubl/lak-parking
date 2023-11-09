@@ -73,7 +73,7 @@ export default {
      * Set the initial, internal value for the field.
      */
     setInitialValue() {
-      this.value = this.field.value || ''
+      this.value = this.field.value || moment().format('DD.MM.YYYY') + ' - 31.12.2119';
     },
 
     /**

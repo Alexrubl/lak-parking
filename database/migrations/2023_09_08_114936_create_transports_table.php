@@ -22,6 +22,7 @@ class CreateTransportsTable extends Migration
             $table->boolean('guest')->nullable()->default(true);
             $table->string('driver')->nullable();
             $table->string('access')->nullable();
+            $table->string('restrictions')->nullable();
             $table->text('week')->nullable();
             $table->integer('time_limit')->nullabled()->default(0);
             $table->string('fromTime')->nullable();

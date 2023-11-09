@@ -118,12 +118,14 @@ class Transport extends Resource
             Boolean::make('Гостевой', 'guest'),
             
             Boolean::make('Доступ', 'access'),
+
+            Boolean::make('Ограничения', 'restrictions'),
             
             DependablePanel::make('Расписание', $this->scheduleFields())
                 ->dependsOn(
-                    ['guest', 'access'],
+                    ['guest', 'restrictions'],
                     function (DependablePanel $panel, NovaRequest $request, FormData $formData) {
-                        if ($formData->guest == true || $formData->access == false) {
+                        if ($formData->guest == true || $formData->restrictions == false) {
                             $panel->hide();
                         }
                     }
@@ -194,13 +196,13 @@ class Transport extends Resource
                 'Суббота' => 'Суббота',
                 'Воскресенье' => 'Воскресенье',
             ])->default([
-                'Понедельник' => false,
-                'Вторник' => false,
-                'Среда' => false,
-                'Четверг' => false,
-                'Пятница' => false,
-                'Суббота' => false,
-                'Воскресенье' => false,
+                'Понедельник' => true,
+                'Вторник' => true,
+                'Среда' => true,
+                'Четверг' => true,
+                'Пятница' => true,
+                'Суббота' => true,
+                'Воскресенье' => true,
             ])->hideFromIndex(),
         ];
     }

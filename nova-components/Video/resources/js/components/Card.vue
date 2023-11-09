@@ -165,15 +165,16 @@ export default {
       if (data.length > 0) {
         this.table.items = data
       }
+      this.message = this.table.items[0]
       console.log(moment(this.table.items[0].created_at).unix() >= moment().subtract(60, 'seconds').unix());
       if (moment(this.table.items[0].created_at).unix() >= moment().subtract(60, 'seconds').unix()) {
-        this.message = this.table.items[0]
+        
         if (this.alert == 0) {
           Nova.error(this.message.text)
           this.alert = 1
         }
       } else {
-        this.message.created_at = ''; this.message.text = ''
+        //this.message.created_at = ''; this.message.text = ''
         this.alert = 0
       }
     }

@@ -4,5 +4,6 @@
   "novaSettings.noSettingsFieldsText": "Поля настроек не определены.",
   "novaSettings.settingsSuccessToast": "Настройки успешно обновлены",
   "novaSettings.general": "Основные",
-  "novaSettings.ekvairing-ckassa": "Эквайринг CKassa"
+  "novaSettings.ekvairing-ckassa": "Эквайринг CKassa",
+  "novaSettings.uvedomleniia" : "Уведомления"
 }

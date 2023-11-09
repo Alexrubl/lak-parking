@@ -68,6 +68,17 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                 Text::make('Идентификатор организации', 'identificator')->help('Целое число, мин. 1 символ - макс. 5 '),
             ]),
         ], [], 'Эквайринг Ckassa');
+
+        \Outl1ne\NovaSettings\NovaSettings::addSettingsFields([
+            Panel::make('Электронная почта', [
+                Boolean::make('Тестовые настройки', 'test_ckassa'),
+                Text::make('ApiLoginAuthorization', 'test_ApiLoginAuthorization'),
+                Text::make('ApiAuthorization', 'test_ApiAuthorization'),
+                Text::make('servCode', 'test_servCode'),
+                Text::make('Название организации', 'test_organization')->help('Строка, мин. 1 символ - макс. 200 символов'),
+                Text::make('Идентификатор организации', 'test_identificator')->help('Целое число, мин. 1 символ - макс. 5 '),
+            ])
+        ], [], 'Уведомления');
     }
 
     /**

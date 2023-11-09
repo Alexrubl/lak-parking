@@ -5784,19 +5784,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               if (data.length > 0) {
                 _this.table.items = data;
               }
+              _this.message = _this.table.items[0];
               console.log(moment__WEBPACK_IMPORTED_MODULE_1___default()(_this.table.items[0].created_at).unix() >= moment__WEBPACK_IMPORTED_MODULE_1___default()().subtract(60, 'seconds').unix());
               if (moment__WEBPACK_IMPORTED_MODULE_1___default()(_this.table.items[0].created_at).unix() >= moment__WEBPACK_IMPORTED_MODULE_1___default()().subtract(60, 'seconds').unix()) {
-                _this.message = _this.table.items[0];
                 if (_this.alert == 0) {
                   Nova.error(_this.message.text);
                   _this.alert = 1;
                 }
               } else {
-                _this.message.created_at = '';
-                _this.message.text = '';
+                //this.message.created_at = ''; this.message.text = ''
                 _this.alert = 0;
               }
-            case 7:
+            case 8:
             case "end":
               return _context.stop();
           }

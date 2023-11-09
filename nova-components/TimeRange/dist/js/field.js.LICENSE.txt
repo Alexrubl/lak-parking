@@ -3,7 +3,3 @@
  * (c) 2022 Evan You
  * @license MIT
  */
-
-//! moment.js
-
-//! moment.js locale configuration
