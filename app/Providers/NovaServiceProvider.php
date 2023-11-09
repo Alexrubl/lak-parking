@@ -10,6 +10,7 @@ use Laravel\Nova\NovaApplicationServiceProvider;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Boolean;
+use Laravel\Nova\Fields\Password;
 use Illuminate\Support\Facades\Blade;
 use App\Policies\RolePolicy;
 use App\Policies\PermissionPolicy;
@@ -71,12 +72,9 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
 
         \Outl1ne\NovaSettings\NovaSettings::addSettingsFields([
             Panel::make('Электронная почта', [
-                Boolean::make('Тестовые настройки', 'test_ckassa'),
-                Text::make('ApiLoginAuthorization', 'test_ApiLoginAuthorization'),
-                Text::make('ApiAuthorization', 'test_ApiAuthorization'),
-                Text::make('servCode', 'test_servCode'),
-                Text::make('Название организации', 'test_organization')->help('Строка, мин. 1 символ - макс. 200 символов'),
-                Text::make('Идентификатор организации', 'test_identificator')->help('Целое число, мин. 1 символ - макс. 5 '),
+                Text::make('SMTP сервер', 'smtp_server'),
+                Text::make('Логин', 'email_login'),
+                Password::make('Пароль', 'email_password')
             ])
         ], [], 'Уведомления');
     }
