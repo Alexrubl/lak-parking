@@ -134,6 +134,7 @@ class CkassaController extends Controller
         $response = curl_exec($curl);
         $info = curl_getinfo($curl);
         curl_close($curl);
+        info($response);
         return $response;
     }
 
