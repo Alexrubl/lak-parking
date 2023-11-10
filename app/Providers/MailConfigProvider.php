@@ -28,7 +28,7 @@ class MailConfigProvider extends ServiceProvider
                 'port'       =>     intval(nova_get_setting('smtp_port')),
                 'username'   =>     nova_get_setting('smtp_username'),
                 'password'   =>     nova_get_setting('smtp_password'),
-                'encryption' =>     'tls',
+                'encryption' =>     nova_get_setting('smtp_encryption'),
                 'timeout'    =>     null,
                 'local_domain' =>   null,
                 'from'       =>     array('address' => nova_get_setting('smtp_email'), 'name' => env('APP_NAME')),

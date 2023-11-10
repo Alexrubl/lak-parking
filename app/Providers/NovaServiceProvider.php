@@ -74,6 +74,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
             Panel::make('Электронная почта', [
                 Text::make('SMTP сервер', 'smtp_server'),
                 Number::make('SMTP порт', 'smtp_port')->default(465),
+                Text::make('Шифрование', 'smtp_encryption'),
                 Text::make('Эл.почта', 'smtp_email'),   
                 Text::make('Логин', 'smtp_username'),
                 Text::make('Пароль', 'smtp_password')->withMeta(['type' => 'password'])
