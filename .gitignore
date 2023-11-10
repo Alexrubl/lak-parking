@@ -5,6 +5,7 @@
 /bootstrap/cache
 /public/storage
 /public/stream
+/docker/logs
 /storage/*.key
 /vendor
 .env

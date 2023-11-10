@@ -141,6 +141,7 @@ services:
                 WWWGROUP: '${WWWGROUP}'
         # extra_hosts:
         #     - 'host.docker.internal:host-gateway'
+        restart: always
         environment:
             WWWUSER: '${WWWUSER}'
             LARAVEL_SAIL: 1
