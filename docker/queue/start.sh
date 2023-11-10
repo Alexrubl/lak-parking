@@ -15,7 +15,7 @@ if [ "$role" = "app" ]; then
     exec apache2-foreground
  
 elif [ "$role" = "queue" ]; then
- 
+    sleep 10
     echo "Running the queue..."
     (cd /var/www/html && php artisan queue:work --verbose)
  
