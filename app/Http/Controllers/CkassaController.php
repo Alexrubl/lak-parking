@@ -114,8 +114,10 @@ class CkassaController extends Controller
     {        
         $curl = curl_init();
 
+        $url = nova_get_setting('test_ckassa') ? 'https://demo.ckassa.ru/api-shop/rs/open' : 'https://api2.ckassa.ru/api-shop/rs/open';
+
         curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://demo.ckassa.ru/api-shop/rs/open/payments/new',
+            CURLOPT_URL => $url.'/payments/new',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
@@ -125,8 +127,8 @@ class CkassaController extends Controller
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'GET',
             CURLOPT_HTTPHEADER => array(
-                'ApiLoginAuthorization: tech_lacquercoating_demo',
-                'ApiAuthorization: SVO7RIR0H-HAOO-NPJ-5E4XL-FGXY6SBYLDN',
+                'ApiLoginAuthorization: '.(nova_get_setting('test_ckassa') ? nova_get_setting('test_ApiLoginAuthorization') : nova_get_setting('ApiLoginAuthorization')).'',
+                'ApiAuthorization: '.(nova_get_setting('test_ckassa') ? nova_get_setting('test_ApiAuthorization') : nova_get_setting('ApiAuthorization')).'',
                 'Content-Type: application/json'
             ),
         ));
@@ -140,6 +142,7 @@ class CkassaController extends Controller
     }
 
     public function callback(Request $request) {
+        info('calback');
         info($request);
         return response()->json(['message' => 'success'], 200);        
     }
