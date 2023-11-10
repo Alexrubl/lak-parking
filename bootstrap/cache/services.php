@@ -61,6 +61,7 @@
     57 => 'App\\Providers\\RouteServiceProvider',
     58 => 'ProtoneMedia\\LaravelFFMpeg\\Support\\ServiceProvider',
     59 => 'App\\Providers\\HelpersLoaderProvider',
+    60 => 'App\\Providers\\MailConfigProvider',
   ),
   'eager' => 
   array (
@@ -109,6 +110,7 @@
     42 => 'App\\Providers\\RouteServiceProvider',
     43 => 'ProtoneMedia\\LaravelFFMpeg\\Support\\ServiceProvider',
     44 => 'App\\Providers\\HelpersLoaderProvider',
+    45 => 'App\\Providers\\MailConfigProvider',
   ),
   'deferred' => 
   array (

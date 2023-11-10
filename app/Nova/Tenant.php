@@ -33,7 +33,7 @@ class Tenant extends Resource
 
     public static function indexQuery(NovaRequest $request, $query)
     {
-        if (!$request->user()->isAdmin()) {
+        if (!$request->user()->isAdmin()  && !$request->user()->isSecurity()) {
             $tenant_id = array();
             foreach ($request->user()->tenant as $key => $value) {
                 $tenant_id[] = $value->id;

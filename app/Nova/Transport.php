@@ -67,7 +67,7 @@ class Transport extends Resource
 
     public static function indexQuery(NovaRequest $request, $query)
     {
-        if (!$request->user()->isAdmin()) {
+        if (!$request->user()->isAdmin() && !$request->user()->isSecurity()) {
             $tenant_id = array();
             foreach ($request->user()->tenant as $key => $value) {
                 $tenant_id[] = $value->id;
@@ -113,11 +113,11 @@ class Transport extends Resource
                             $query->where('default_guest', true);
                         });
                     }
-                }), 
-        
-            Boolean::make('Гостевой', 'guest'),
+                }),   
             
             Boolean::make('Доступ', 'access'),
+            
+            Boolean::make('Гостевой', 'guest'),
 
             Boolean::make('Ограничения', 'restrictions'),
             

@@ -10,6 +10,7 @@ use App\Models\Rate;
 use App\Models\User;
 use App\Models\Controller;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Config;
 use ProtoneMedia\LaravelFFMpeg\Support\FFMpeg;
 use Laravel\Nova\Notifications\NovaNotification;
 use Illuminate\Support\Facades\Notification;
@@ -69,6 +70,11 @@ class ApiController extends Controller
                                     ->type('info')
                                 
                             );
+                            if ($user->email) {
+                                $data['text'] = 'Уведомляем Вас, что у арендатора '. $tenant->name .' отрицательный баланс!';
+                                $data['email'] = $user->email;
+                                dispatch(new \App\Jobs\sendMail($data));
+                            }
                         }
                     }                    
                 }

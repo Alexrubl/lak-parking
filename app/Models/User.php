@@ -73,4 +73,12 @@ class User extends Authenticatable
         }
         return false;
     }
+
+    public function isSecurity()
+    {
+        if (in_array('Охрана', $this->getRoleNames()->toArray())) {
+            return true;
+        }
+        return false;
+    }
 }

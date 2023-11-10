@@ -73,8 +73,10 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
         \Outl1ne\NovaSettings\NovaSettings::addSettingsFields([
             Panel::make('Электронная почта', [
                 Text::make('SMTP сервер', 'smtp_server'),
-                Text::make('Логин', 'email_login'),
-                Password::make('Пароль', 'email_password')
+                Number::make('SMTP порт', 'smtp_port')->default(465),
+                Text::make('Эл.почта', 'smtp_email'),   
+                Text::make('Логин', 'smtp_username'),
+                Text::make('Пароль', 'smtp_password')->withMeta(['type' => 'password'])
             ])
         ], [], 'Уведомления');
     }

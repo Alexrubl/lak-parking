@@ -174,6 +174,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         ProtoneMedia\LaravelFFMpeg\Support\ServiceProvider::class,
         App\Providers\HelpersLoaderProvider::class,
+        App\Providers\MailConfigProvider::class,
     ])->toArray(),
 
     /*
