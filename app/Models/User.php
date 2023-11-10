@@ -60,7 +60,15 @@ class User extends Authenticatable
 
     public function isAdmin()
     {
-        if (in_array('Администраторы', $this->getRoleNames()->toArray()) || User::all()->count() == 1) {
+        if (in_array('Администраторы', $this->getRoleNames()->toArray()) || in_array('Root', $this->getRoleNames()->toArray()) || User::all()->count() == 1) {
+            return true;
+        }
+        return false;
+    }
+
+    public function isRoot()
+    {
+        if (in_array('Root', $this->getRoleNames()->toArray()) || User::all()->count() == 1) {
             return true;
         }
         return false;

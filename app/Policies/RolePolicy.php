@@ -35,7 +35,7 @@ class RolePolicy
      */
     public function create(User $user): bool
     {
-        return $user->isAdmin();
+        return $user->isRoot();
     }
 
     /**
@@ -43,7 +43,7 @@ class RolePolicy
      */
     public function update(User $user): bool
     {
-        return $user->isAdmin();
+        return $user->isRoot();
     }
 
     /**
@@ -51,7 +51,7 @@ class RolePolicy
      */
     public function delete(User $user): bool
     {
-        return $user->isAdmin();
+        return $user->isRoot();
     }
 
     /**
@@ -59,7 +59,7 @@ class RolePolicy
      */
     public function restore(User $user): bool
     {
-        return $user->isAdmin();
+        return $user->isRoot();
     }
 
     /**
@@ -67,6 +67,6 @@ class RolePolicy
      */
     public function forceDelete(User $user, Tenant $tenant): bool
     {
-        return $user->isAdmin();
+        return $user->isRoot();
     }
 }

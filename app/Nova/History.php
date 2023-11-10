@@ -46,7 +46,7 @@ class History extends Resource
      * @var array
      */
     public static $search = [
-        'id',
+        'id', 'tenant_id', 'transport_id','comment', 'created_at'
     ];
 
         public static function indexQuery(NovaRequest $request, $query)
