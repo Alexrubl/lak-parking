@@ -3721,3 +3721,4 @@
 172.24.0.1 - - [05/Nov/2023:00:52:55 +0000] "GET /nova-api/nova-notifications HTTP/1.1" 200 46 "http://localhost/resources/controllers/1/edit" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36"
 172.24.0.1 - - [05/Nov/2023:01:04:22 +0000] "GET login.cgi HTTP/1.1" 400 150 "-" "-"
 172.24.0.1 - - [05/Nov/2023:01:13:25 +0000] "GET /manager/html HTTP/1.1" 404 2311 "-" "Mozilla/5.0 zgrab/0.x"
+172.28.0.1 - - [10/Nov/2023:09:57:35 +0000] "POST /api/event HTTP/1.1" 200 132 "-" "insomnia/2023.4.0"
