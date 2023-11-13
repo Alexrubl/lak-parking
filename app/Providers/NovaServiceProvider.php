@@ -135,9 +135,9 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                 ->rolePolicy(RolePolicy::class)
                 ->permissionPolicy(PermissionPolicy::class),            
             \Outl1ne\NovaSettings\NovaSettings::make(), //->canSee(fn ($request) => $request->user()->isAdmin()),
-            // (new \PhpJunior\NovaLogViewer\Tool())->canSee(function ($request) {
-            //     return $request->user()->isAdmin();
-            // }),
+            (new \PhpJunior\NovaLogViewer\Tool())->canSee(function ($request) {
+                return $request->user()->isAdmin();
+            }),
         ];
     }
 
