@@ -14,12 +14,14 @@ use Illuminate\Support\Facades\Config;
 use ProtoneMedia\LaravelFFMpeg\Support\FFMpeg;
 use Laravel\Nova\Notifications\NovaNotification;
 use Illuminate\Support\Facades\Notification;
+use Storage;
 
 class ApiController extends Controller
 {
     public function event(Request $request) {
         info('event from controller:');
         info($request);
+        $image_name = null;
         //$data = $request;
         $fail = collect([
             'apikey' => $request->apikey,
@@ -30,11 +32,15 @@ class ApiController extends Controller
         if (!isset($controller)) {
             return response()->json($fail->put('message', 'Неизвестный apikey.'), 401);
         }
+        if (isset($request->UrlPhoto)) {
+            $image_name = $this->setImage($controller->ip. '/assets/img/'. $request->UrlPhoto, $controller->id.'/'.Carbon::now()->format('Ymd'));
+        }
         $transport = Transport::where('number', $request->plate)->first();
         if (!isset($transport) || !isset($transport->tenant)) {
-            logist(($request->entry == "in" || $request->entry ? 'Запрос на въезд. ':'Запрос на выезд. ').'Номер транспорта: '.$request->plate.', доступ ЗАПРЕЩЁН (не найден транспорт с таким номером)', Controller::where('apikey', $request->apikey)->first()->id, $request->entry);
+            logist(($request->entry == "in" || $request->entry ? 'Запрос на въезд. ':'Запрос на выезд. ').'Номер транспорта: '.$request->plate.', доступ ЗАПРЕЩЁН (не найден транспорт с таким номером)', $image_name, Controller::where('apikey', $request->apikey)->first()->id, $request->entry);
             return response()->json($fail->put('message', 'Не найден транспорт с таким номером или некорректно заполнены данные.'), 200);
         }
+        
         $tenant = $transport->tenant;
         $rate = $transport->rate;        
         if ($request->access == 'enable' || $request->access == 1) {
@@ -57,6 +63,7 @@ class ApiController extends Controller
             $history->transport_id = $transport->id;
             $history->comment = ', '. $request->entry ? 'Списание, Въезд' : 'Выезд';
             $history->price = $sum;
+            $history->image = $image_name;
             $history->save();
 
             if ($tenant->balance < 1) {
@@ -83,7 +90,7 @@ class ApiController extends Controller
                     $transp->save();
                 }
             }
-            logist(($request->entry || $request->entry == "in" ? 'Запрос на въезд. ':'Запрос на выезд. ').'Номер транспорта: '.$request->plate.', доступ '.($request->access = 1 ? 'РАЗРЕШЁН':'ЗАПРЕЩЁН').($sum > 0 ? ', Списано '.$sum.' руб.' :''), Controller::where('apikey', $request->apikey)->first()->id, $request->entry);
+            logist(($request->entry || $request->entry == "in" ? 'Запрос на въезд. ':'Запрос на выезд. ').'Номер транспорта: '.$request->plate.', доступ '.($request->access = 1 ? 'РАЗРЕШЁН':'ЗАПРЕЩЁН').($sum > 0 ? ', Списано '.$sum.' руб.' :''), $image_name, Controller::where('apikey', $request->apikey)->first()->id, $request->entry);
             return response()->json([
                     'apikey' => $request->apikey,
                     'request_id' => $request->request_id,
@@ -91,7 +98,7 @@ class ApiController extends Controller
                     'message' => 'Успешно.'
                 ], 200);
         } 
-        logist(($request->entry || $request->entry == "in" ? 'Запрос на въезд. ':'Запрос на выезд. ').'Номер транспорта: '.$request->plate.', доступ ЗАПРЕЩЁН', Controller::where('apikey', $request->apikey)->first()->id, $request->entry);
+        logist(($request->entry || $request->entry == "in" ? 'Запрос на въезд. ':'Запрос на выезд. ').'Номер транспорта: '.$request->plate.', доступ ЗАПРЕЩЁН', $image_name, Controller::where('apikey', $request->apikey)->first()->id, $request->entry);
         return response()->json($fail->put('message', 'неизвестная ошибка.'), 200);
     }
  
@@ -241,6 +248,29 @@ class ApiController extends Controller
                                                     ->latest('id')
                                                     ->take(25)
                                                     ->get());
+        }
+    }
+
+    public function setImage($value, $path = 'images') {
+        $attribute_name = "image";
+        $disk = "public";
+        $destination_path = $path;
+
+        info($value);
+
+        if (isset($value))
+        {
+            $image = \Image::make($value);
+            if ($image->width() > 1080) {
+                $image->resize(1080, null, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+            }
+            $filename = $attribute_name.Carbon::now()->format('YmdHis').'.jpg';
+            // 2. Store the image on disk.
+            \Storage::disk($disk)->put($destination_path.'/'.$filename, $image->stream('jpg', 85));
+            // 3. Save the path to the database
+            return $destination_path . '/' . $filename;
         }
     }
 

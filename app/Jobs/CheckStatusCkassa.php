@@ -74,8 +74,9 @@ class CheckStatusCkassa implements ShouldQueue
         $response = json_decode(curl_exec($curl));
         $info = curl_getinfo($curl);
         curl_close($curl);
-        //info('payments: ');
-        //info($response->payments);
+        info($url);
+        info('payments status: ');
+        info($response->payments);
         if (isset($response->payments) && !empty($response->payments)) {
             $payedCount = 0;
             foreach ($response->payments as $key => $value) {

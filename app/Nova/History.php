@@ -8,10 +8,12 @@ use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Currency;
 use Laravel\Nova\Fields\Image;
+use Laravel\Nova\Fields\Avatar;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Ganyicz\NovaCallbacks\HasCallbacks;
+use Storage;
 
 class History extends Resource
 {
@@ -75,7 +77,10 @@ class History extends Resource
             BelongsTo::make('Транспорт', 'transport', 'App\Nova\Transport')->rules('required'),
             Currency::make('Движение', 'price')->rules('required','numeric'),
             Text::make('Описание', 'comment')->rules('required'),
-            Image::make('Фото', 'photo'),
+            Image::make('Фото', 'image'),
+                //->thumbnail(function ($value) {
+                //    return "image";
+               // }),   
             DateTime::make('Создано', 'created_at')->default(now())->rules('required')->readonly(true),
         ];
     }

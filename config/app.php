@@ -175,6 +175,7 @@ return [
         ProtoneMedia\LaravelFFMpeg\Support\ServiceProvider::class,
         App\Providers\HelpersLoaderProvider::class,
         App\Providers\MailConfigProvider::class,
+        Intervention\Image\ImageServiceProvider::class,
     ])->toArray(),
 
     /*
@@ -192,6 +193,7 @@ return [
         // 'Example' => App\Facades\Example::class,
         'FFMpeg' => ProtoneMedia\LaravelFFMpeg\Support\FFMpeg::class,
         'Helper' => App\Helpers\Helper::class,
+        'Image' => Intervention\Image\Facades\Image::class,
     ])->toArray(),
 
 ];

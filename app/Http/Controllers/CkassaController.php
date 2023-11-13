@@ -73,6 +73,8 @@ class CkassaController extends Controller
         $curl = curl_init();
 
         $url = nova_get_setting('test_ckassa') ? 'https://demo.ckassa.ru/api-shop/rs/open' : 'https://api2.ckassa.ru/api-shop/rs/open';
+        info(nova_get_setting('test_ckassa'));
+        info($url);
 
         curl_setopt_array($curl, array(
             CURLOPT_URL => $url. '/invoice/create2',

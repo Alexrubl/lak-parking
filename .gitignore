@@ -4,6 +4,7 @@
 /public/hot
 /bootstrap/cache
 /public/storage
+/storage/app
 /public/stream
 /docker/logs
 /storage/*.key

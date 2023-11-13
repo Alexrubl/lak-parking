@@ -27,18 +27,18 @@ class HistoryPolicy
     // /**
     //  * Determine whether the user can create models.
     //  */
-    // public function create(User $user): bool
-    // {
-    //     return true;
-    // }
+    public function create(User $user): bool
+    {
+         return true;
+    }
 
     // /**
     //  * Determine whether the user can update the model.
     //  */
-    // public function update(User $user, History $history): bool
-    // {
-    //     return true;
-    // }
+    public function update(User $user, History $history): bool
+    {
+         return $user->isRoot();
+    }
 
     // /**
     //  * Determine whether the user can delete the model.

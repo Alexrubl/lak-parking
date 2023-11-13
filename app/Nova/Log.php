@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\DateTime;
+use Laravel\Nova\Fields\Image;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use CArbon\Carbon;
 
@@ -56,6 +57,7 @@ class Log extends Resource
             Text::make('Контроллер', 'controller_id')->readonly(true)->nullable()->hideFromIndex(),
             Text::make('Направление', 'entry')->readonly(true)->nullable()->hideFromIndex(),
             Text::make('Событие', 'text')->readonly(true)->nullable(),
+            Image::make('Фото', 'image')->readonly(true)->nullable(),
             DateTime::make('Создано', 'created_at')->default(Carbon::now())->rules('required')->readonly(true),
         ];
     }
