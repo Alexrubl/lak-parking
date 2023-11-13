@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "956a5d5630e88a8a2a854bc7c74ece91",
+    "content-hash": "e99339b8246c315198ae0eb3bd6710f9",
     "packages": [
         {
             "name": "acme/analytics",
@@ -7996,42 +7996,6 @@
             "time": "2023-10-13T09:16:49+00:00"
         },
         {
-            "name": "test/test",
-            "version": "dev-main",
-            "dist": {
-                "type": "path",
-                "url": "./nova-components/Test",
-                "reference": "d80e9921be922de4cefed274f20ed38545245068"
-            },
-            "require": {
-                "php": "^7.3|^8.0"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Test\\Test\\CardServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Test\\Test\\": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "A Laravel Nova card.",
-            "keywords": [
-                "laravel",
-                "nova"
-            ],
-            "transport-options": {
-                "relative": true
-            }
-        },
-        {
             "name": "tijsverkoyen/css-to-inline-styles",
             "version": "2.2.6",
             "source": {
@@ -10856,8 +10820,7 @@
         "acme/analytics": 20,
         "alexrubl/date-range": 20,
         "alexrubl/time-range": 20,
-        "alexrubl/video": 20,
-        "test/test": 20
+        "alexrubl/video": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,

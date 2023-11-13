@@ -234,13 +234,6 @@
       0 => 'Spatie\\Permission\\PermissionServiceProvider',
     ),
   ),
-  'test/test' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Test\\Test\\CardServiceProvider',
-    ),
-  ),
   'vyuldashev/nova-permission' => 
   array (
     'providers' => 

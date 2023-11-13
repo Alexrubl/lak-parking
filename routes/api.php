@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiController;
+use App\Http\Controllers\CkassaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,8 +22,6 @@ Route::post('closeGate', [ApiController::class, 'closeGate']);
 Route::post('ckassa/callback', [CkassaController::class, 'callback']);
 Route::get('test_ctreate_transport', [ApiController::class, 'test_createTransport']);
 Route::get('getLogs', [ApiController::class, 'getLogs']);
-Route::get('ffmpeg', [ApiController::class, 'ffmpeg']);
-Route::get('test_234', [ApiController::class, 'test_234']);
 
 // Route::group(['middleware' => 'auth:sanctum'], function () {
 //     Route::post('event', [ApiController::class, 'event']); 

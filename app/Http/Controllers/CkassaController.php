@@ -94,8 +94,8 @@ class CkassaController extends Controller
                 "bestBefore": "'. Carbon::now()->addminutes(10)->format('d-m-Y H:i:s O') . '",
                 "invType": "READ_ONLY",
                 "properties": [
-                        "Технопарк",
-                        "22222"
+                        "'.$models[0]->name.'",
+                        "'.$models[0]->id.'"
                 ]
             }',
             CURLOPT_HTTPHEADER => array(
