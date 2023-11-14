@@ -20,6 +20,7 @@ Route::post('event', [ApiController::class, 'event']);
 Route::post('openGate', [ApiController::class, 'openGate']); 
 Route::post('closeGate', [ApiController::class, 'closeGate']); 
 Route::post('ckassa/callback', [CkassaController::class, 'callback']);
+Route::get('ckassa/status', [CkassaController::class, 'status']);
 Route::get('test_ctreate_transport', [ApiController::class, 'test_createTransport']);
 Route::get('getLogs', [ApiController::class, 'getLogs']);
 

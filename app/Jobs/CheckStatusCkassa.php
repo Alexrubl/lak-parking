@@ -25,14 +25,14 @@ class CheckStatusCkassa implements ShouldQueue
      *
      * @var int
      */
-    public $backoff = 50;
+    public $backoff = 120;
     
     /**
      * Количество попыток выполнения задания.
      *
      * @var int
      */
-    public $tries = 20;
+    public $tries = 5;
 
     protected $user;
 

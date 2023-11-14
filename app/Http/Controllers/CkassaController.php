@@ -90,7 +90,7 @@ class CkassaController extends Controller
                 "servCode": "'.(nova_get_setting('test_ckassa') ? nova_get_setting('test_servCode') : nova_get_setting('servCode')).'",
                 "amount": "'.($fields->sum * 100).'",
                 "tgInvPayer": "'.$models[0]->id.'", 
-                "startPaySelect": "true",
+                "startPaySelect": true,
                 "bestBefore": "'. Carbon::now()->addminutes(10)->format('d-m-Y H:i:s O') . '",
                 "invType": "READ_ONLY",
                 "properties": [
@@ -117,7 +117,7 @@ class CkassaController extends Controller
         $curl = curl_init();
 
         $url = nova_get_setting('test_ckassa') ? 'https://demo.ckassa.ru/api-shop/rs/open' : 'https://api2.ckassa.ru/api-shop/rs/open';
-
+        info($url);
         curl_setopt_array($curl, array(
             CURLOPT_URL => $url.'/payments/new',
             CURLOPT_RETURNTRANSFER => true,
@@ -144,7 +144,7 @@ class CkassaController extends Controller
     }
 
     public function callback(Request $request) {
-        info('calback');
+        info('==========callback==========');
         info($request);
         return response()->json(['message' => 'success'], 200);        
     }

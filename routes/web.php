@@ -22,3 +22,4 @@ use App\Http\Controllers\CkassaController;
 // Route::get('/ckassa', [CkassaController::class, 'show']);
 
 // Route::get('/getOrder', [CkassaController::class, 'getOrder']);
+Route::post('pay/ckassa', [CkassaController::class, 'callback']);

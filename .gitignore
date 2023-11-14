@@ -3,10 +3,10 @@
 /public/build
 /public/hot
 /bootstrap/cache
-/public/storage
-/storage/app
-/public/stream
-/docker/logs
+/public/storage/
+/storage/app/
+/public/stream/
+/docker/logs/
 /storage/*.key
 /vendor
 .env
@@ -16,8 +16,8 @@
 docker-compose.yml
 docker-compose-dev.yml
 docker-compose-prod.yml
-/storage/log
-/storage/framework
+/storage/log/
+/storage/framework/
 Homestead.json
 Homestead.yaml
 auth.json
