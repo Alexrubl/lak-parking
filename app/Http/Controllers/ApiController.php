@@ -90,6 +90,9 @@ class ApiController extends Controller
                     $transp->save();
                 }
             }
+            if (nova_get_setting('openForceEntry')) {
+                $this->openGate($request);
+            }
             logist(($request->entry && $request->entry == "in" ? 'Запрос на въезд. ':'Запрос на выезд. ').'Номер транспорта: '.$request->plate.', доступ '.($request->access = 1 ? 'РАЗРЕШЁН':'ЗАПРЕЩЁН').($sum > 0 ? ', Списано '.$sum.' руб.' :''), $image_name, Controller::where('apikey', $request->apikey)->first()->id, $request->entry);
             return response()->json([
                     'apikey' => $request->apikey,
@@ -173,6 +176,10 @@ class ApiController extends Controller
     function openGate(Request $request) {
         if( $request->has('controller_id')) {
             $controller = Controller::find($request->controller_id);
+            info(collect($controller));
+        }
+        if ($request->has('apikey')) {
+            $controller = Controller::where('apikey', $request->apikey)->first();
             info(collect($controller));
         }
         if (!isset($controller)) {

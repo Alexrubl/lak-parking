@@ -40,6 +40,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
 
         \Outl1ne\NovaSettings\NovaSettings::addSettingsFields([
             Text::make('api key', 'apikey'),
+            Boolean::make('Открыть проезд в обход контроллера', 'openForceEntry'),
             //Number::make('A number', 'a_number'),
             //Boolean::make('A number', 'a_number'),
         ]);
