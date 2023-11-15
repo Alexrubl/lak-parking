@@ -92,6 +92,7 @@ class ApiController extends Controller
             }
             if (nova_get_setting('openForceEntry')) {
                 $this->openGate($request);
+                dispatch(new \App\Jobs\CloseEntry($controller));
             }
             logist(($request->entry && $request->entry == "in" ? 'Запрос на въезд. ':'Запрос на выезд. ').'Номер транспорта: '.$request->plate.', доступ '.($request->access = 1 ? 'РАЗРЕШЁН':'ЗАПРЕЩЁН').($sum > 0 ? ', Списано '.$sum.' руб.' :''), $image_name, Controller::where('apikey', $request->apikey)->first()->id, $request->entry);
             return response()->json([
@@ -213,32 +214,100 @@ class ApiController extends Controller
                 ];
         }
 
-        curl_setopt_array($curl, [
-            //CURLOPT_PORT => "8082",
-            CURLOPT_URL => $url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 5,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_HTTPHEADER => $header
-        ]);
+        // curl_setopt_array($curl, [
+        //     //CURLOPT_PORT => "8082",
+        //     CURLOPT_URL => $url,
+        //     CURLOPT_RETURNTRANSFER => true,
+        //     CURLOPT_ENCODING => "",
+        //     CURLOPT_MAXREDIRS => 10,
+        //     CURLOPT_TIMEOUT => 5,
+        //     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        //     CURLOPT_HTTPHEADER => $header
+        // ]);
 
-        $response = curl_exec($curl);
-        $err = curl_error($curl);
-        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        // $response = curl_exec($curl);
+        // $err = curl_error($curl);
+        // $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
-        curl_close($curl);
+        // curl_close($curl);
 
-        if ($err) {
-            info("cURL Error #: " . $err.'. Code http status: '.$httpcode);
-            return response()->json(['message' => 'cURL Error #: '.$err, 'status' => $httpcode], 503); 
-        } else {
-            info('openGate (Code http status: '.$httpcode.'):');
-            info($response);
-        }
+        // if ($err) {
+        //     info("cURL Error #: " . $err.'. Code http status: '.$httpcode);
+        //     return response()->json(['message' => 'cURL Error #: '.$err, 'status' => $httpcode], 503); 
+        // } else {
+        //     info('openGate (Code http status: '.$httpcode.'):');
+        //     info($response);
+        // }
         logist('Открытие проезда с кнопки охраны.');
-        return response()->json($response, 200);        
+       // return response()->json($response, 200);        
+    }
+
+    function closeGate(Request $request = null, $controller = null) {
+        if( isset($request) && $request->has('controller_id')) {
+            $controller = Controller::find($request->controller_id);
+            info(collect($controller));
+        }
+        if (isset($request) && $request->has('apikey')) {
+            $controller = Controller::where('apikey', $request->apikey)->first();
+            info(collect($controller));
+        }
+        if (!isset($controller)) {
+            return response()->json(['status' => false,'message' => 'Не найден контроллер'], 200);
+        }
+
+        $curl = curl_init();
+
+        if ($controller->method == 'url') {
+            $url = $controller->url_close;
+            $CURLOPT_CUSTOMREQUEST = 'GET';
+            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'GET');
+            $header = [
+                    "Content-Type: application/x-www-form-urlencoded"
+                ];
+        } else {
+            if(isset($controller->id_open_stream)) {
+                return response()->json(['status' => false,'message' => 'Не заполнен ID Stream'], 200);
+            } 
+            $url = $controller->ip.'/api/plate/serv';
+            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'POST');
+            $data = [
+                'apikey' => Controller::first()->apikey,
+                'request_id' => Carbon::now()->format('Ymdhms'),
+                'stream_uuid' => $controller->id_open_stream,
+                'p_open' => 1
+            ];
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+            $header = [
+                    "Content-Type: application/json"
+                ];
+        }
+
+        // curl_setopt_array($curl, [
+        //     //CURLOPT_PORT => "8082",
+        //     CURLOPT_URL => $url,
+        //     CURLOPT_RETURNTRANSFER => true,
+        //     CURLOPT_ENCODING => "",
+        //     CURLOPT_MAXREDIRS => 10,
+        //     CURLOPT_TIMEOUT => 5,
+        //     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        //     CURLOPT_HTTPHEADER => $header
+        // ]);
+
+        // $response = curl_exec($curl);
+        // $err = curl_error($curl);
+        // $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+        // curl_close($curl);
+
+        // if ($err) {
+        //     info("cURL Error #: " . $err.'. Code http status: '.$httpcode);
+        //     return response()->json(['message' => 'cURL Error #: '.$err, 'status' => $httpcode], 503); 
+        // } else {
+        //     info('closeGate (Code http status: '.$httpcode.'):');
+        //     info($response);
+        // }
+        logist('Закрытие проезда с кнопки охраны.');
+        /////return response()->json($response, 200);        
     }
 
     public function getLogs(Request $request) {
