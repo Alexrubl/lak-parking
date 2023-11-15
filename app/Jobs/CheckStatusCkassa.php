@@ -77,7 +77,7 @@ class CheckStatusCkassa implements ShouldQueue
         info($url);
         info(nova_get_setting('test_ckassa'));
         info('payments status: ');
-        info($response->payments);
+        info($response);
         if (isset($response->payments) && !empty($response->payments)) {
             $payedCount = 0;
             foreach ($response->payments as $key => $value) {
