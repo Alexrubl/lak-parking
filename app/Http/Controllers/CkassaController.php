@@ -240,7 +240,7 @@ class CkassaController extends Controller
         //     'transactionId' => 'MN22_jFZf9l2DYONU1ZZA41LWs1TfzDDJ1DtCjCXgsiEvC9IhFzJYGpOgh4ZpiLkKMW-i7Gg30IsNm9FBdhEnw==',
         // )
 
-        if ($request->state == 'PAYED') {
+        if ($request->state == 'payed') {
 
             $tenant = Tenant::find(intval($request->map['ИДЕНТИФИКАТОР']));
             $tenant->balance = $tenant->balance + (intval($request->amount) / 100);                    
@@ -257,10 +257,21 @@ class CkassaController extends Controller
             $history->comment = 'Пополнение';
             $history->save();
 
-            $this->user->notify(NovaNotification::make()
-                ->message('Оплачен счёт '. $request->regPayNum .' на сумму '. (intval($request->amount) / 100) .' р.')
-                ->type('info')
-            );
+            foreach ($tenant->contacts as $key => $user) {
+                Notification::send(
+                    $user,
+                    NovaNotification::make()
+                        ->message('Оплачен счёт '. $request->regPayNum .' на сумму '. (intval($request->amount) / 100) .' р.')
+                        ->type('info')
+                    
+                );
+                if ($user->email) {
+                    $data['text'] = 'Оплачен счёт '. $request->regPayNum .' на сумму '. (intval($request->amount) / 100) .' р.';
+                    $data['email'] = $user->email;
+                    dispatch(new \App\Jobs\sendMail($data));
+                }
+            }                  
+                
 
             info('Оплачен счёт: '. $request->regPayNum); 
         }
