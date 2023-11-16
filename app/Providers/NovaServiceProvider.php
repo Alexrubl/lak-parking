@@ -61,8 +61,8 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                 // Text::make('ApiLoginAuthorization', 'test_ApiLoginAuthorization'),
                 // Text::make('ApiAuthorization', 'test_ApiAuthorization'),
                 Text::make('servCode', 'test_servCode'),
-                Text::make('Название организации', 'test_organization')->help('Строка, мин. 1 символ - макс. 200 символов'),
-                Text::make('Идентификатор организации', 'test_identificator')->help('Целое число, мин. 1 символ - макс. 5 '),
+                // Text::make('Название организации', 'test_organization')->help('Строка, мин. 1 символ - макс. 200 символов'),
+                // Text::make('Идентификатор организации', 'test_identificator')->help('Целое число, мин. 1 символ - макс. 5 '),
             ]),
             Panel::make('Боевые настройки', [
                 Text::make('ShopToken', 'ShopToken'),
@@ -70,8 +70,8 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                 // Text::make('ApiLoginAuthorization', 'ApiLoginAuthorization'),
                 // Text::make('ApiAuthorization', 'ApiAuthorization'),
                 Text::make('servCode', 'servCode'),
-                Text::make('Название организации', 'organization')->help('Строка, мин. 1 символ - макс. 200 символов'),
-                Text::make('Идентификатор организации', 'identificator')->help('Целое число, мин. 1 символ - макс. 5 '),
+                // Text::make('Название организации', 'organization')->help('Строка, мин. 1 символ - макс. 200 символов'),
+                // Text::make('Идентификатор организации', 'identificator')->help('Целое число, мин. 1 символ - макс. 5 '),
             ]),
         ], [], 'Эквайринг Ckassa');
 

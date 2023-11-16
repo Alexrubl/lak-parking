@@ -155,39 +155,6 @@ class CkassaController extends Controller
                 'Authorization: Basic '.base64_encode(nova_get_setting('test_ckassa') ? nova_get_setting('test_ShopToken').':'.nova_get_setting('test_secKey') : nova_get_setting('ShopToken').':'.nova_get_setting('secKey')).'', 
             ),
         ));
-        info(
-            array(
-            CURLOPT_URL => $url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS =>'{
-                "serviceCode": "'.(nova_get_setting('test_ckassa') ? nova_get_setting('test_servCode') : nova_get_setting('servCode')).'",
-                "amount": '.($fields->sum * 100).',
-                "comission": 0,
-                "pfPayLink": true,
-                "properties": [
-                    {
-                        "name": "НАЗВАНИЕ_ОРГ",
-                        "value": "'.nova_get_setting('test_organization').'"
-                    },
-                    {
-                        "name": "ИДЕНТИФИКАТОР",
-                        "value": "'.nova_get_setting('test_identificator').'"
-                    }
-            ]
-            }',
-            CURLOPT_HTTPHEADER => array(
-                'Content-Type: application/json',
-                'Authorization: Basic '.base64_encode(nova_get_setting('test_ckassa') ? nova_get_setting('test_ShopToken').':'.nova_get_setting('test_secKey') : nova_get_setting('ShopToken').':'.nova_get_setting('secKey')).'', 
-            ),
-        )
-            
-        );
 
         $response = curl_exec($curl);
 
@@ -230,7 +197,7 @@ class CkassaController extends Controller
 
     public function callback(Request $request) {
         info('==========callback==========');
-        info($request->map['НАЗВАНИЕ_ОРГ']);
+        info($request->map['НАЗВАНИЕ_ОРГ']. ' / '.intval($request->amount) / 100);
         // (
         //     'regPayNum' => '131016599825',
         //     'amount' => 10000,
