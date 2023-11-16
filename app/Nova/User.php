@@ -87,8 +87,8 @@ class User extends Resource
 
             Password::make('Пароль', 'Password')
                 ->onlyOnForms()
-                ->creationRules('required', Rules\Password::defaults())
-                ->updateRules('nullable', Rules\Password::defaults()),
+                ->creationRules('required', Rules\Password::defaults()->min(6))
+                ->updateRules('nullable', Rules\Password::defaults()->min(6)),
             
             BelongsToMany::make('Арендатор', 'tenant', 'App\Nova\Tenant')->canSee(fn () => $request->user()->isAdmin()),
 
