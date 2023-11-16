@@ -10,6 +10,8 @@ use App\Models\User;
 use App\Models\Tenant;
 use App\Models\Transport;
 use App\Models\History;
+use Laravel\Nova\Notifications\NovaNotification;
+use Illuminate\Support\Facades\Notification;
 
 class CkassaController extends Controller
 {
