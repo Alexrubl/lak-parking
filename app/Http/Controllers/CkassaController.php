@@ -9,6 +9,7 @@ use App\Jobs\CheckStatusCkassa;
 use App\Models\User;
 use App\Models\Tenant;
 use App\Models\Transport;
+use App\Models\History;
 
 class CkassaController extends Controller
 {
@@ -227,7 +228,7 @@ class CkassaController extends Controller
 
     public function callback(Request $request) {
         info('==========callback==========');
-        info($request);
+        info($request->map['НАЗВАНИЕ_ОРГ']);
         // (
         //     'regPayNum' => '131016599825',
         //     'amount' => 10000,
@@ -258,6 +259,7 @@ class CkassaController extends Controller
             $history->price = intval($request->amount) / 100;
             $history->comment = 'Пополнение';
             $history->save();
+            logist('Пополнен баланс '.$tenant->name. ' на сумму '.(intval($request->amount) / 100). ' руб.');
 
             foreach ($tenant->contacts as $key => $user) {
                 Notification::send(
@@ -272,12 +274,8 @@ class CkassaController extends Controller
                     $data['email'] = $user->email;
                     dispatch(new \App\Jobs\sendMail($data));
                 }
-            }                  
-                
-
-            info('Оплачен счёт: '. $request->regPayNum); 
+            }  
         }
         return response()->json(['message' => 'success'], 200);        
     }
-
 }
