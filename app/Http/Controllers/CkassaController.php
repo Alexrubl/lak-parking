@@ -262,6 +262,7 @@ class CkassaController extends Controller
             logist('Пополнен баланс '.$tenant->name. ' на сумму '.(intval($request->amount) / 100). ' руб.');
 
             foreach ($tenant->contacts as $key => $user) {
+                info(collect($tenant->contacts));
                 Notification::send(
                     $user,
                     NovaNotification::make()
