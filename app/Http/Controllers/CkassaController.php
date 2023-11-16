@@ -248,7 +248,7 @@ class CkassaController extends Controller
             $tenant->balance = $tenant->balance + (intval($request->amount) / 100);                    
             $tenant->save();
 
-            foreach (Transport::where('tenant_id', $tenant->id) as $key => $transport) {
+            foreach (Transport::where('tenant_id', $tenant->id)->get() as $key => $transport) {
                 $transport->access = 1;
                 $transport->save();
             }
