@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use App\Jobs\CheckStatusCkassa;
 use App\Models\User;
 use App\Models\Tenant;
+use App\Models\Transport;
 
 class CkassaController extends Controller
 {
