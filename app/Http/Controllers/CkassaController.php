@@ -7,6 +7,7 @@ use Illuminate\View\View;
 use Carbon\Carbon;
 use App\Jobs\CheckStatusCkassa;
 use App\Models\User;
+use App\Models\Tenant;
 
 class CkassaController extends Controller
 {
