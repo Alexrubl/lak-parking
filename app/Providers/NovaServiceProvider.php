@@ -56,15 +56,19 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
         \Outl1ne\NovaSettings\NovaSettings::addSettingsFields([
             Panel::make('Тестовые настройки', [
                 Boolean::make('Тестовые настройки', 'test_ckassa'),
-                Text::make('ApiLoginAuthorization', 'test_ApiLoginAuthorization'),
-                Text::make('ApiAuthorization', 'test_ApiAuthorization'),
+                Text::make('ShopToken', 'test_ShopToken'),
+                Text::make('secKey', 'test_secKey'),
+                // Text::make('ApiLoginAuthorization', 'test_ApiLoginAuthorization'),
+                // Text::make('ApiAuthorization', 'test_ApiAuthorization'),
                 Text::make('servCode', 'test_servCode'),
                 Text::make('Название организации', 'test_organization')->help('Строка, мин. 1 символ - макс. 200 символов'),
                 Text::make('Идентификатор организации', 'test_identificator')->help('Целое число, мин. 1 символ - макс. 5 '),
             ]),
             Panel::make('Боевые настройки', [
-                Text::make('ApiLoginAuthorization', 'ApiLoginAuthorization'),
-                Text::make('ApiAuthorization', 'ApiAuthorization'),
+                Text::make('ShopToken', 'ShopToken'),
+                Text::make('secKey', 'secKey'),
+                // Text::make('ApiLoginAuthorization', 'ApiLoginAuthorization'),
+                // Text::make('ApiAuthorization', 'ApiAuthorization'),
                 Text::make('servCode', 'servCode'),
                 Text::make('Название организации', 'organization')->help('Строка, мин. 1 символ - макс. 200 символов'),
                 Text::make('Идентификатор организации', 'identificator')->help('Целое число, мин. 1 символ - макс. 5 '),

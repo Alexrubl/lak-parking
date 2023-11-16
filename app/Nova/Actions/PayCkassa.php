@@ -30,12 +30,13 @@ class PayCkassa extends Action
     public function handle(ActionFields $fields, Collection $models)
     {
         //info($fields);
-        $resp = Ckassa::invoice($models, $fields, Auth::user());
-        info('Ответ: ');
-        info($resp);
+        $resp = json_decode(Ckassa::invoice($models, $fields, Auth::user()));
+        //info('Ответ: ');
+        // info($resp->payUrl);
+        // info($resp);
         // return Action::openInNewTab('https://example.com');
-        //return Action::redirect('https://example.com');
-        return Action::openInNewTab($resp);
+        //return Action::redirect('https://example.com');        
+        return Action::openInNewTab($resp->payUrl);
     }
 
     /**
