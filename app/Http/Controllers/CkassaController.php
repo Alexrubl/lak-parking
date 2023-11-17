@@ -198,6 +198,7 @@ class CkassaController extends Controller
     public function callback(Request $request) {
         info('==========callback==========');
         info($request->map['НАЗВАНИЕ_ОРГ']. ' / '.intval($request->amount) / 100);
+        info(collect($request));
         // (
         //     'regPayNum' => '131016599825',
         //     'amount' => 10000,
@@ -212,7 +213,7 @@ class CkassaController extends Controller
         //     'transactionId' => 'MN22_jFZf9l2DYONU1ZZA41LWs1TfzDDJ1DtCjCXgsiEvC9IhFzJYGpOgh4ZpiLkKMW-i7Gg30IsNm9FBdhEnw==',
         // )
 
-        if ($request->state == 'payed') {
+        if ($request->state == 'payed' || $request->state == 'PAYED') {
 
             $tenant = Tenant::find(intval($request->map['ИДЕНТИФИКАТОР']));
             $tenant->balance = $tenant->balance + (intval($request->amount) / 100);                    
