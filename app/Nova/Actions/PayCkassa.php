@@ -36,7 +36,7 @@ class PayCkassa extends Action
         // info($resp);
         // return Action::openInNewTab('https://example.com');
         //return Action::redirect('https://example.com');    
-        if ($resp->has('payUrl')) {    
+        if (isset($resp->payUrl)) {    
             return Action::openInNewTab($resp->payUrl);
         }
     }
