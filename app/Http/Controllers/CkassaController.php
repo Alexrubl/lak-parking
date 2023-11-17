@@ -213,7 +213,7 @@ class CkassaController extends Controller
         //     'transactionId' => 'MN22_jFZf9l2DYONU1ZZA41LWs1TfzDDJ1DtCjCXgsiEvC9IhFzJYGpOgh4ZpiLkKMW-i7Gg30IsNm9FBdhEnw==',
         // )
 
-        if ($request->state == 'payed' || $request->state == 'PAYED') {
+        if ($request->state == 'payed' || $request->state == 'processed') {
 
             $tenant = Tenant::find(intval($request->map['ИДЕНТИФИКАТОР']));
             $tenant->balance = $tenant->balance + (intval($request->amount) / 100);                    
