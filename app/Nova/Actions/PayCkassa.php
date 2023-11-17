@@ -10,6 +10,7 @@ use Laravel\Nova\Fields\ActionFields;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use App\Http\Controllers\CkassaController as Ckassa;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Nova\Fields\Currency;
 
 class PayCkassa extends Action
 {
@@ -29,13 +30,8 @@ class PayCkassa extends Action
      */
     public function handle(ActionFields $fields, Collection $models)
     {
-        //info($fields);
-        $resp = json_decode(Ckassa::invoice($models, $fields, Auth::user()));
-        //info('Ответ: ');
-        // info($resp->payUrl);
-        // info($resp);
-        // return Action::openInNewTab('https://example.com');
-        //return Action::redirect('https://example.com');    
+        $resp = json_decode(Ckassa::invoice($models, $fields, Auth::user())); 
+
         if (isset($resp->payUrl)) {    
             return Action::openInNewTab($resp->payUrl);
         }
@@ -50,7 +46,7 @@ class PayCkassa extends Action
     public function fields(NovaRequest $request)
     {
         return [            
-            Text::make('Сумма', 'sum')->rules('required')->help('Минимальный платёж 50 р.')
+            Currency::make('Сумма', 'sum')->rules('required')->min(50)->help('Минимальный платёж 50 р.')
         ];
     }
 }
