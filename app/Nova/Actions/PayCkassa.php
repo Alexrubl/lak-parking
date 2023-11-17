@@ -35,8 +35,10 @@ class PayCkassa extends Action
         // info($resp->payUrl);
         // info($resp);
         // return Action::openInNewTab('https://example.com');
-        //return Action::redirect('https://example.com');        
-        return Action::openInNewTab($resp->payUrl);
+        //return Action::redirect('https://example.com');    
+        if ($resp->has('payUrl')) {    
+            return Action::openInNewTab($resp->payUrl);
+        }
     }
 
     /**
@@ -48,7 +50,7 @@ class PayCkassa extends Action
     public function fields(NovaRequest $request)
     {
         return [            
-            Text::make('Сумма', 'sum')->rules('required')
+            Text::make('Сумма', 'sum')->rules('required')->help('Минимальный платёж 50 р.')
         ];
     }
 }
