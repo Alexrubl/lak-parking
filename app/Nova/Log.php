@@ -57,7 +57,27 @@ class Log extends Resource
             Text::make('Контроллер', 'controller_id')->readonly(true)->nullable()->hideFromIndex(),
             Text::make('Направление', 'entry')->readonly(true)->nullable()->hideFromIndex(),
             Text::make('Событие', 'text')->readonly(true)->nullable(),
-            Image::make('Фото', 'image')->readonly(true)->nullable(),
+            Image::make('Фото', 'image')->showOnDetail(function (NovaRequest $request, $resource) {
+                return $this->image;
+            })->readonly(true)->nullable(),
+            DateTime::make('Создано', 'created_at')->default(Carbon::now())->rules('required')->readonly(true),
+        ];
+    }
+
+    /**
+     * Get the fields displayed by the resource on detail page.
+     *
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @return array
+     */
+    public function fieldsForDetail(NovaRequest $request)
+    {
+        return [
+            ID::make()->sortable()->hideFromIndex(),
+            Text::make('Контроллер', 'controller_id')->readonly(true)->nullable()->hideFromIndex(),
+            Text::make('Направление', 'entry')->readonly(true)->nullable()->hideFromIndex(),
+            Text::make('Событие', 'text')->readonly(true)->nullable(),
+            Image::make('Фото', 'image')->maxWidth(300)->readonly(true)->nullable(),
             DateTime::make('Создано', 'created_at')->default(Carbon::now())->rules('required')->readonly(true),
         ];
     }
