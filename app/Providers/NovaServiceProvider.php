@@ -82,7 +82,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                 Text::make('Шифрование', 'smtp_encryption'),
                 Text::make('Эл.почта', 'smtp_email'),   
                 Text::make('Логин', 'smtp_username'),
-                Text::make('Пароль', 'smtp_password')->withMeta(['type' => 'password'])
+                Text::make('Пароль', 'smtp_password')->withMeta(['type' => 'password']),
             ])
         ], [], 'Уведомления');
     }

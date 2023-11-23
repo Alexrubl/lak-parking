@@ -23,6 +23,7 @@ Route::post('ckassa/callback', [CkassaController::class, 'callback']);
 Route::get('ckassa/status', [CkassaController::class, 'status']);
 Route::get('test_ctreate_transport', [ApiController::class, 'test_createTransport']);
 Route::get('getLogs', [ApiController::class, 'getLogs']);
+Route::get('test/email', [ApiController::class, 'testSendEmail']);
 
 // Route::group(['middleware' => 'auth:sanctum'], function () {
 //     Route::post('event', [ApiController::class, 'event']); 

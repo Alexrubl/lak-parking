@@ -386,37 +386,6 @@ class ApiController extends Controller
         return response()->json($data, 200);
     }
 
-    public function ffmpeg() {
-        info('ffmpeg');
-        // FFMpeg::openUrl('rtsp://test:123456789qQ@5.165.25.145:55554')
-        // ->export()
-        // ->inFormat(new X264)
-        // ->concatWithTranscoding($hasVideo = true, $hasAudio = true)
-        // ->save('concat.mp4');
-        // FFMpeg::openUrl('rtsp://test:123456789qQ@5.165.25.145:55554')
-        //     ->export()
-        //     ->onProgress(function ($percentage) {
-        //         echo "{$percentage}% transcoded";
-        //     });
-
-        $lowBitrate = (new \FFMpeg\Format\Video\X264)->setKiloBitrate(250);
-        $midBitrate = (new \FFMpeg\Format\Video\X264)->setKiloBitrate(500);
-        $highBitrate = (new \FFMpeg\Format\Video\X264)->setKiloBitrate(1000);
-
-        FFMpeg::$transport->fromDate
-        ->openUrl('rtsp://test:123456789qQ@5.165.25.145:55554')
-        ->exportForHLS()
-        ->toDisk('public')
-        ->setSegmentLength(10) // optional
-        ->setKeyFrameInterval(48) // optional
-        ->addFormat($lowBitrate)
-        ->addFormat($midBitrate)
-        ->addFormat($highBitrate)
-        ->save('adaptive_steve.m3u8');
-
-        return 'ok';
-        
-    }
 
     public function test_234(Request $request) {
         //return response()->json([], 200);
@@ -461,5 +430,12 @@ class ApiController extends Controller
         } else {
             //info($response);
         }
+    }
+
+    public function testSendEmail() {
+        $data['text'] = 'Какой то текст';
+        $data['email'] = 'alexrubl@mail.ru';
+        dispatch(new \App\Jobs\sendMail($data));
+        return response()->json($data, 200);
     }
 }
