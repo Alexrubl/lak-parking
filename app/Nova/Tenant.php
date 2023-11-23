@@ -89,7 +89,7 @@ class Tenant extends Resource
                 ->sortable()
                 ->rules('required', 'max:11'),
 
-            Currency::make('Баланс', 'balance')->default(0)->readonly(!$request->user()->isAdmin()),
+            Currency::make('Баланс', 'balance')->default(0)->readonly(!$request->user()->isRoot()),
 
             Boolean::make('Заблокирован', 'is_blocked')->hideFromIndex(),
 
