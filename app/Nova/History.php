@@ -77,7 +77,7 @@ class History extends Resource
             BelongsTo::make('Транспорт', 'transport', 'App\Nova\Transport')->rules('required'),
             Currency::make('Движение', 'price')->rules('required','numeric'),
             Text::make('Описание', 'comment')->rules('required'),
-            Image::make('Фото', 'image'),
+            Image::make('Фото', 'image')->maxWidth(300),
                 //->thumbnail(function ($value) {
                 //    return "image";
                // }),   
