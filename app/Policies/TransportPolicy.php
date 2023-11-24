@@ -53,14 +53,21 @@ class TransportPolicy
     public function update(User $user, Transport $transport): bool
     {
         $access = false;
+
+        #После того, как был зафиксирован факт проезда гостевого ТС, необходимо убрать возможность редактирования данной заявки
+        if (($transport->guest && $transport->access == 0)) {
+            return $user->isRoot() || false;
+        }
+
+        # Баланс меньше нуля запрещаем редактировать
         foreach ($user->tenant as $key => $tenant) {
             $access = true;
-            if ($tenant->balance < 1) {
+            if ($tenant->balance < 1 && $tenant->id == $transport->tenant_id) {
                 $access = false;
                 break;   
             }
         }
-        return $user->isAdmin() || ($user->isTenant() && $access);
+        return $user->isAdmin() || $user->isRoot() || ($user->isTenant() && $access);
     }
 
     /**

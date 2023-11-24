@@ -114,12 +114,14 @@ class Transport extends Resource
                         });
                     }
                 }),   
+
+            Boolean::make('На территории', 'inside')->onlyOnIndex(),
             
             Boolean::make('Доступ', 'access'),
             
             Boolean::make('Гостевой', 'guest'),
 
-            Boolean::make('Ограничения', 'restrictions'),
+            Boolean::make('Ограничения', 'restrictions')->hideFromIndex(),
             
             DependablePanel::make('Расписание', $this->scheduleFields())
                 ->dependsOn(

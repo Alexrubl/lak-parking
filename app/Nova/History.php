@@ -105,7 +105,13 @@ class History extends Resource
      */
     public function filters(NovaRequest $request)
     {
-        return [];
+        if ($request->user()->isAdmin()) {
+            return [
+                new \App\Nova\Filters\TenantFilter,
+            ];
+        } else {
+            return [];
+        }
     }
 
     /**
@@ -116,7 +122,9 @@ class History extends Resource
      */
     public function lenses(NovaRequest $request)
     {
-        return [];
+        return [
+            
+        ];
     }
 
     /**

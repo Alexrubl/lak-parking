@@ -46,15 +46,18 @@ class ApiController extends Controller
         if ($request->access == 'enable' || $request->access == 1) {
             $sum = 0;
             if ($request->entry == 'in' || $request->entry == 1) {
-                $transport->inside = 1;
-                $sum = $rate->getPrice($transport);
+                if ($transport->inside <> 1) { 
+                    $transport->inside = 1;
+                    $sum = $rate->getPrice($transport);
+                    $transport->save();
+                }
             } else {
                 $transport->inside = 0;
                 if ($transport->guest == true) {
-                    $transport->access= 0;
-                } 
-            }            
-            // $transport->save(); # Отключил пока логику внутри снаружи
+                    $transport->access= 0;                    
+                }  
+                $transport->save();             
+            } 
             $tenant->balance -= $sum;            
             $tenant->save();
             $history = new History;
@@ -86,8 +89,10 @@ class ApiController extends Controller
                     }                    
                 }
                 foreach ($tenant->transport as $key => $transp) {
-                    $transp->access = 0;
-                    $transp->save();
+                    if ($transp->inside == 0) {
+                        $transp->access = 0;
+                        $transp->save();
+                    }
                 }
             }
             if (nova_get_setting('openForceEntry')) {
