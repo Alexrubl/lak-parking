@@ -77,7 +77,28 @@ class History extends Resource
             BelongsTo::make('Транспорт', 'transport', 'App\Nova\Transport')->rules('required'),
             Currency::make('Движение', 'price')->rules('required','numeric'),
             Text::make('Описание', 'comment')->rules('required'),
-            Image::make('Фото', 'image')->maxWidth(300),
+            Image::make('Фото', 'image')->showOnDetail(function (NovaRequest $request, $resource) {
+                return $this->image;
+            })->readonly(true)->nullable(),  
+            DateTime::make('Создано', 'created_at')->default(now())->rules('required')->readonly(true),
+        ];
+    }
+
+    /**
+     * Get the fields displayed by the resource on detail page.
+     *
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @return array
+     */
+    public function fieldsForDetail(NovaRequest $request)
+    {
+        return [
+            ID::make()->sortable(),
+            BelongsTo::make('Арендатор', 'tenant', 'App\Nova\Tenant')->rules('required'),
+            BelongsTo::make('Транспорт', 'transport', 'App\Nova\Transport')->rules('required'),
+            Currency::make('Движение', 'price')->rules('required','numeric'),
+            Text::make('Описание', 'comment')->rules('required'),
+            Image::make('Фото', 'image')->maxWidth(300)->readonly(true)->nullable(),
                 //->thumbnail(function ($value) {
                 //    return "image";
                // }),   

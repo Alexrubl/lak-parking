@@ -7,7 +7,6 @@
 /storage/app/**
 /public/stream/**
 /docker/logs/**
-/docker/logs/*
 /docker/logs/nginx/**
 /storage/*.key
 /vendor
