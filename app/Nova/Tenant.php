@@ -89,7 +89,12 @@ class Tenant extends Resource
                 ->sortable()
                 ->rules('required', 'max:11'),
 
-            Currency::make('Баланс', 'balance')->default(0)->readonly(!$request->user()->isRoot()),
+            Currency::make('Баланс', 'balance')->default(0)->readonly(!$request->user()->isAdmin())->rules('required', function($attribute, $value, $fail) use ($request) {
+                $tenant = Tenant::find($this->id);
+                if ($value < $tenant->balance) {
+                    return $fail('Вы не можете уменьшать '.$attribute);
+                }
+            }),
 
             Boolean::make('Заблокирован', 'is_blocked')->hideFromIndex(),
 
