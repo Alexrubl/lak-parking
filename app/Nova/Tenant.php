@@ -156,15 +156,17 @@ class Tenant extends Resource
 
     public static function beforeUpdate(Request $request, $model)
     {
+        info($model->is_blocked);
+        info($request->is_blocked);
         if ($model->is_blocked != $request->is_blocked) {
             foreach ($model->transport as $transport) {
-                $transport->access = $request->balanc > 0 ? !$request->is_blocked : 0;
+                $transport->access = $request->balance > 0 ? !$request->is_blocked : 0;
                 $transport->save();
             }
         }
         if ($model->balance != $request->balance) {
             foreach ($model->transport as $transport) {
-                $transport->access = ($request->balanc > 0 && $request->is_blocked == 0)? 1 : 0;
+                $transport->access = ($request->balance > 0 && $request->is_blocked == 0)? 1 : 0;
                 $transport->save();
             }
         }
