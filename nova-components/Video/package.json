@@ -22,6 +22,7 @@
     "rtsp2web": "^3.1.7",
     "video.js": "^8.6.0",
     "videojs-flash": "^2.2.1",
+    "vue-search-select": "^3.2.0",
     "vue3-easy-data-table": "^1.5.47"
   }
 }

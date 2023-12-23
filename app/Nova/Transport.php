@@ -12,6 +12,7 @@ use Laravel\Nova\Fields\Number;
 use SimpleSquid\Nova\Fields\AdvancedNumber\AdvancedNumber;
 use Laravel\Nova\Fields\Date;
 use Laravel\Nova\Fields\DateTime;
+use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\FormData;
 use Laravel\Nova\Fields\HasOne;
@@ -104,7 +105,7 @@ class Transport extends Resource
             
             BelongsTo::make('Тип ТС', 'type', 'App\Nova\TypeTransport')->showCreateRelationButton()->rules('required'),            
 
-            BelongsTo::make('Арендатор', 'tenant', 'App\Nova\Tenant')->rules('required'),
+            BelongsTo::make('Арендатор', 'tenant', 'App\Nova\Tenant')->searchable()->rules('required'),
 
             BelongsTo::make('Тариф', 'rate', 'App\Nova\Rate')->rules('required')
                 ->dependsOn('guest', function (BelongsTo $field, NovaRequest $request, FormData $formData) {

@@ -40,7 +40,7 @@ class ApiController extends Controller
             logist(($request->entry && $request->entry == "in" ? 'Запрос на въезд. ':'Запрос на выезд. ').'Номер транспорта: '.$request->plate.', доступ ЗАПРЕЩЁН (не найден транспорт с таким номером)', $image_name, Controller::where('apikey', $request->apikey)->first()->id, $request->entry);
             return response()->json($fail->put('message', 'Не найден транспорт с таким номером или некорректно заполнены данные.'), 200);
         }
-        
+
         $tenant = $transport->tenant;
         $rate = $transport->rate;        
         if ($request->access == 'enable' || $request->access == 1) {
@@ -61,10 +61,11 @@ class ApiController extends Controller
             $tenant->balance -= $sum;            
             $tenant->save();
             $history = new History;
-            $history->controller_id = $request->apikey;
+            $history->controller_id = Controller::apikey($request->apikey)->id;
             $history->tenant_id = $tenant->id;
             $history->transport_id = $transport->id;
             $history->comment = ', '. $request->entry ? 'Списание, Въезд' : 'Выезд';
+            $history->direction = $request->entry;
             $history->price = $sum;
             $history->image = $image_name;
             $history->save();
@@ -109,10 +110,70 @@ class ApiController extends Controller
                     'message' => 'Успешно.'
                 ], 200);
         } 
+
         logist(($request->entry && $request->entry == "in" ? 'Запрос на въезд. ':'Запрос на выезд. ').'Номер транспорта: '.$request->plate.', доступ ЗАПРЕЩЁН', $image_name, Controller::where('apikey', $request->apikey)->first()->id, $request->entry);
         return response()->json($fail->put('message', 'неизвестная ошибка.'), 200);
     }
- 
+
+    # Фиксация проезда, списывыние баланса
+    # transport - Указываем транспорт
+    #
+    function fixEntry(Controller $controller, Transport $transport, Tenant $tenant = null) {
+        $tenant = $transport->tenant;
+        $rate = $transport->rate;
+        $sum = 0;
+        if ($transport->inside <> 1) { # Если транспорт не внутри
+            $transport->inside = 1;
+            $sum = $rate->getPrice($transport);
+            $transport->save();
+        } else {
+            $transport->inside = 0;
+            if ($transport->guest == true) {
+                $transport->access= 0;                    
+            }  
+            $transport->save();             
+        } 
+        $tenant->balance -= $sum;            
+        $tenant->save();
+        $history = new History;
+        $history->controller_id = $controller->id;
+        $history->tenant_id = $tenant->id;
+        $history->transport_id = $transport->id;
+        $history->comment = 'Списание, Въезд c кнопки охраны';
+        $history->direction = 'in';
+        $history->price = $sum;
+        $history->image = null;
+        $history->save();
+
+        if ($tenant->balance < 1) {
+            foreach (User::all() as $key => $user) {
+                foreach ($user->tenant as $t) {
+                    if ($t->id == $tenant->id) {
+                        Notification::send(
+                            $user,
+                            NovaNotification::make()
+                                ->message('У арендатора '. $tenant->name .' отрицательный баланс!')
+                                ->type('info')
+                            
+                        );
+                        if ($user->email) {
+                            $data['text'] = 'Уведомляем Вас, что у арендатора '. $tenant->name .' отрицательный баланс!';
+                            $data['email'] = $user->email;
+                            dispatch(new \App\Jobs\sendMail($data));
+                        }
+                    }
+                }                    
+            }
+            foreach ($tenant->transport as $key => $transp) {
+                if ($transp->inside == 0) {
+                    $transp->access = 0;
+                    $transp->save();
+                }
+            }
+        }
+        logist('Запрос на въезд. Номер транспорта: '.$transport->number.', доступ c кнопки охраны. '. ($sum > 0 ? ', Списано '.$sum.' руб.' :''), null, $controller->id, 'in');
+        return 1;
+    } 
     
     public static function sendNewTransportToControllers($transport) {  
         $controllers = Controller::all();
@@ -193,6 +254,15 @@ class ApiController extends Controller
         if (!isset($controller)) {
             return response()->json(['status' => false,'message' => 'Не найден контроллер'], 200);
         }
+
+        if ($request->has('transport_id')) {
+            $transport = Transport::find($request->transport_id)->first();
+            $tenant = $transport->tenant;
+        }
+
+        $this->fixEntry($controller, $transport);
+
+        return response()->json(['status' => false,'message' => 'Не найден контроллер'], 200);
 
         $curl = curl_init();
 
@@ -441,6 +511,97 @@ class ApiController extends Controller
         $data['text'] = 'Какой то текст';
         $data['email'] = 'alexrubl@mail.ru';
         dispatch(new \App\Jobs\sendMail($data));
+        return response()->json($data, 200);
+    }
+
+    public function testSigurEvent(Request $request) {
+        info($request);
+        $data = [
+            "type" => "0ab0a061-12ec-4092-831d-33afe4f8a5f7"
+        ];
+        return response()->json($data, 200);
+    }
+
+    public function searchTransport(Request $request, $searchText) {
+        $transports = Transport::where('number', 'like', '%'.$searchText.'%' )->get();
+        foreach ($transports as $key => $value) {
+            $data['transports'][] = [
+                'value' => $value->id,
+                'text' => $value->number. ' - ' .$value->name,
+                'number' => $value->number,
+                'tenant_id' => $value->tenant_id
+            ];
+            $data['tenants'][] = [
+                'id' => $value->tenant->id,
+                'name' => $value->tenant->name  
+            ];
+        }
+        return response()->json($data, 200);
+    }
+
+    public function searchTenant(Request $request, $searchText) {
+        $data = [
+            'tenants' => [],
+            'transports' => []
+        ];
+        $tenants = Tenant::where('name', 'like', '%'.$searchText.'%' )->get();
+        foreach ($tenants as $key => $value) {
+            $data['tenants'][] = [
+                'id' => $value->id,
+                'name' => $value->number .' '.$value->name
+            ];
+            $transports = Transport::where('tenant_id', $value->id)->get();
+            foreach ($transports as $key => $value) {
+                 $data['transports'][] = [
+                    'value' => $value->id,
+                    'text' => $value->number.' - '.$value->name,
+                    'number' => $value->number,
+                    'tenant_id' => $value->tenant_id
+                ];
+            }
+        }
+        return response()->json($data, 200);
+    }
+
+    public function sigurEventNumber(Request $request) {
+        $history = History::where('skud_send', false)->orWhereNull('skud_send')->first();
+        //foreach ($history as $value) {
+        if (isset($history)){
+            $transport = Transport::find($history->transport_id);
+            $controller = Controller::find($history->controller_id);
+            if (isset($controller) && isset($transport) && isset($history->direction)) {                
+                $data = [
+                    "type" => "9183e0da-8ab7-4d86-a6d7-5745cb514032",
+                    "channelId" => (string) $controller->id,
+                    "number" => $transport->number,
+                    "direction" => $history->direction == 'in' ? 'up' : 'down'
+                ];
+            }
+            $history->skud_send = true;
+            $history->save();
+        }
+        //}
+        // dd($data);
+        // {
+        //     "type": "9183e0da-8ab7-4d86-a6d7-5745cb514032",
+        //     "channelId": "0ecc767e-e36b-4486-ad9d-13cad1f256e6",
+        //     "number": "A123AA12",
+        //     "direction": "down"
+        // }
+        if (!isset($data)) {
+            $data = [
+                "type" => "0ab0a061-12ec-4092-831d-33afe4f8a5f7"
+            ];
+        }
+        return response()->json($data, 200);
+    }
+
+    public function sigurGetChannels(Request $request) {
+        info('GetChannels');
+        $controllers = Controller::all();
+        foreach ($controllers as $key => $value) {
+            $data['channels'][] = ['id' => (string) $value->id, 'name' => $value->name];
+        }
         return response()->json($data, 200);
     }
 }

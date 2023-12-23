@@ -1,1 +1,7 @@
 2023/11/05 00:21:40 [emerg] 13#13: cannot load certificate "/etc/nginx/ssl/fullchain.pem": BIO_new_file() failed (SSL: error:80000002:system library::No such file or directory:calling fopen(/etc/nginx/ssl/fullchain.pem, r) error:10000080:BIO routines::no such file)
+2023/12/12 00:00:00 [notice] 63#63: signal process started
+2023/12/12 00:00:00 [notice] 64#64: signal process started
+2023/12/12 00:00:00 [notice] 62#62: signal process started
+2023/12/12 00:00:00 [notice] 65#65: signal process started
+2023/12/12 00:00:00 [notice] 66#66: signal process started
+2023/12/12 00:00:00 [notice] 67#67: signal process started

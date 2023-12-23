@@ -24,10 +24,14 @@ Route::get('ckassa/status', [CkassaController::class, 'status']);
 Route::get('test_ctreate_transport', [ApiController::class, 'test_createTransport']);
 Route::get('getLogs', [ApiController::class, 'getLogs']);
 Route::get('test/email', [ApiController::class, 'testSendEmail']);
-
+Route::get('sigur/event2', [ApiController::class, 'testSigurEvent']);
+Route::get('sigur/event', [ApiController::class, 'sigurEventNumber']);
+Route::get('sigur/getchannels', [ApiController::class, 'sigurGetChannels']);
 // Route::group(['middleware' => 'auth:sanctum'], function () {
 //     Route::post('event', [ApiController::class, 'event']); 
 // });
+Route::get('search/transport/{searchText}', [ApiController::class, 'searchTransport']);
+Route::get('search/tenant/{searchText}', [ApiController::class, 'searchTenant']);
 
 
 

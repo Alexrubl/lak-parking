@@ -4,9 +4,11 @@
       <video-player :options="videoOptions" class="" />      
     </div>    
     <div class="flex px-3 pb-3">
-      <DefaultButton @click="clickOpen">
-        <span class="inline-block">Открыть проезд</span>
-      </DefaultButton>
+      <ModalOpenEntry :show="showModalOpen" :controller_id="card.controller.id"></ModalOpenEntry>
+      <div class="flex-grow"></div>
+      <LinkButton @click="clickOpen">
+        <span class="inline-block">Откр. проезд</span>
+      </LinkButton>
     </div>
     
     <div class="flex logs px-3 pb-3">
@@ -27,7 +29,7 @@
       </div>      
     </div>  
     <Modal :show="showModal" modal_style="window" size="4xl">
-      <ModalHeader v-text="'Headline of Modal'" class="bg-gray-100 dark:bg-gray-700" />
+      <ModalHeader v-text="'Последние события'" class="bg-gray-100 dark:bg-gray-700" />
       <ModalContent class="bg-gray-100 dark:bg-gray-700">
         <EasyDataTable
           :headers="table.headers"
@@ -51,11 +53,16 @@
           </DefaultButton>
         </div>
       </ModalFooter>
-    </Modal>    
+    </Modal>  
+    
+    
+
   </Card>
 </template>
 
 <script>
+import ModalOpenEntry from './ModalOpenEntry'
+import test from './test'
 import VideoPlayer from './VideoPlayer.vue';
 import axios from 'axios'
 import moment from 'moment'
@@ -73,6 +80,7 @@ export default {
   components: {
     VideoPlayer,
     EasyDataTable,
+    ModalOpenEntry
   },
   data() {
     return {
@@ -82,6 +90,7 @@ export default {
       },
       alert: false,
       showModal: false,
+      showModalOpen: false,
       logs: [],
       heightCard: 250,
       videoOptions: {
