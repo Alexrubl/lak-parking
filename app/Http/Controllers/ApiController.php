@@ -119,6 +119,9 @@ class ApiController extends Controller
     # transport - Указываем транспорт
     #
     function fixEntry(Controller $controller, Transport $transport, Tenant $tenant = null) {
+        if (!isset($transport)) {
+            return 1;
+        }
         $tenant = $transport->tenant;
         $rate = $transport->rate;
         $sum = 0;
@@ -172,7 +175,7 @@ class ApiController extends Controller
             }
         }
         logist('Запрос на въезд. Номер транспорта: '.$transport->number.', доступ c кнопки охраны. '. ($sum > 0 ? ', Списано '.$sum.' руб.' :''), null, $controller->id, 'in');
-        return 1;
+        return 0;
     } 
     
     public static function sendNewTransportToControllers($transport) {  
@@ -258,11 +261,10 @@ class ApiController extends Controller
         if ($request->has('transport_id')) {
             $transport = Transport::find($request->transport_id)->first();
             $tenant = $transport->tenant;
-        }
+            $this->fixEntry($controller, $transport);
+        }       
 
-        $this->fixEntry($controller, $transport);
-
-        return response()->json(['status' => false,'message' => 'Не найден контроллер'], 200);
+        //return response()->json(['status' => false,'message' => 'Не найден контроллер'], 200); 
 
         $curl = curl_init();
 
