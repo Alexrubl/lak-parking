@@ -30,7 +30,8 @@
         "php-junior/nova-logs": "^1.1",
         "simplesquid/nova-advanced-number-field": "^3.1",
         "symfony/process": "^6.3",
-        "vyuldashev/nova-permission": "^3.2"
+        "vyuldashev/nova-permission": "^3.2",
+        "alexrubl/toolbar": "@dev"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
@@ -103,22 +104,6 @@
         },
         {
             "type": "path",
-            "url": "./nova-components/Test"
-        },
-        {
-            "type": "path",
-            "url": "./nova-components/Test"
-        },
-        {
-            "type": "path",
-            "url": "./nova-components/Test"
-        },
-        {
-            "type": "path",
-            "url": "./nova-components/Test"
-        },
-        {
-            "type": "path",
             "url": "./nova-components/Video"
         },
         {
@@ -128,8 +113,12 @@
         {
             "type": "path",
             "url": "./nova-components/TimeRange"
+        },
+        {
+            "type": "path",
+            "url": "./nova-components/Toolbar"
         }
     ],
     "minimum-stability": "stable",
-    "prefer-stable": true    
+    "prefer-stable": true
 }

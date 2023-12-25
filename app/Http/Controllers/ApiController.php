@@ -264,7 +264,7 @@ class ApiController extends Controller
             $this->fixEntry($controller, $transport);
         }       
 
-        //return response()->json(['status' => false,'message' => 'Не найден контроллер'], 200); 
+        return response()->json(['status' => false,'message' => 'Не найден контроллер'], 200); 
 
         $curl = curl_init();
 

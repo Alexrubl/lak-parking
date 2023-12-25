@@ -19,7 +19,7 @@ class Main extends Dashboard
      */
     public function name()
     {
-        return 'Панель';
+        return 'Камеры';
     }
 
     /**
@@ -29,7 +29,9 @@ class Main extends Dashboard
      */
     public function cards()
     {
-        $val = [];
+        $val = [
+
+        ];
         foreach (Controller::all() as $controller) {
             foreach ($controller->cameras as $key => $camera) {
                 $val[] = (new Video($controller, $camera))->canSee(function ($request) {
