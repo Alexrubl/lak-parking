@@ -17,3 +17,7 @@ use Illuminate\Support\Facades\Route;
 // Route::get('/endpoint', function (Request $request) {
 //     //
 // });
+
+// Route::get('/api/getTypeTransport', function (Request $request) {
+//     info('kjhjhjhj');
+// });

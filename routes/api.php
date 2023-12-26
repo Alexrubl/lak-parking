@@ -32,7 +32,8 @@ Route::get('sigur/getchannels', [ApiController::class, 'sigurGetChannels']);
 // });
 Route::get('search/transport/{searchText}', [ApiController::class, 'searchTransport']);
 Route::get('search/tenant/{searchText}', [ApiController::class, 'searchTenant']);
-
+Route::get('getTypeTransport', [ApiController::class, 'getTypeTransport']);
+Route::post('createPass', [ApiController::class, 'createPass']);
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Transport;
+use App\Models\TypeTransport;
 use App\Models\History;
 use App\Models\Tenant;
 use App\Models\Rate;
@@ -15,6 +16,7 @@ use ProtoneMedia\LaravelFFMpeg\Support\FFMpeg;
 use Laravel\Nova\Notifications\NovaNotification;
 use Illuminate\Support\Facades\Notification;
 use Storage;
+use Response;
 
 class ApiController extends Controller
 {
@@ -563,6 +565,26 @@ class ApiController extends Controller
             }
         }
         return response()->json($data, 200);
+    }
+
+    public function getTypeTransport() {
+        return response()->json(TypeTransport::all('id', 'name'), 200);
+    }
+
+    function createPass(Request $request) {
+        info($request);
+        $validated = $request->validate([
+            'name' => 'required|max:255',
+            'number' => 'required|unique:transports',
+            'tenant_id' => 'required',
+            'type_id' => 'required',
+        ]);
+        $transport = new Transport;
+        $transport->fill($request->all());
+        $transport->rate_id = Rate::where('default_guest', 1)->first()->id;
+        $transport->save();
+
+        return response()->noContent();
     }
 
     public function sigurEventNumber(Request $request) {

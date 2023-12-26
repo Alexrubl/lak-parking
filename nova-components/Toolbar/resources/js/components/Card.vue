@@ -118,15 +118,14 @@
             <div class="flex items-center space-x-2">
               <div class="flex relative w-full">
                 <select
-                  v-model="transport.typeTransport_id"
+                  v-model="transport.type_id"
                   data-testid="type-transports"
                   dusk="type-transports-select"
                   class="w-full block form-control form-select form-select-bordered"
                 >
                   <option disabled="" value="">—</option>
-                  <option value="3">Более 3,5 тонн</option>
-                  <option value="2">До 3,5 тонн</option>
-                  <option value="1">Легковой</option></select
+                  <option v-for="type in typeTransport" :value="type.id">{{ type.name }}</option>
+                </select
                 ><svg
                   class="flex-shrink-0 pointer-events-none form-select-arrow"
                   xmlns="http://www.w3.org/2000/svg"
@@ -138,10 +137,14 @@
                     class="fill-current"
                     d="M8.292893.292893c.390525-.390524 1.023689-.390524 1.414214 0 .390524.390525.390524 1.023689 0 1.414214l-4 4c-.390525.390524-1.023689.390524-1.414214 0l-4-4c-.390524-.390525-.390524-1.023689 0-1.414214.390525-.390524 1.023689-.390524 1.414214 0L5 3.585786 8.292893.292893z"
                   ></path>
-                </svg>
+                </svg>                
               </div>
             </div>
           </div>
+        </div>
+
+        <div v-for="item in typeTransport">
+          {{ item.text }}
         </div>
 
         <div class="space-y-2 md:flex @md/modal:flex md:flex-row @md/modal:flex-row md:space-y-0 @md/modal:space-y-0 py-5" index="4">
@@ -210,11 +213,12 @@ export default {
   data() {
     return {
       showModalOpen: false,
+      typeTransport: [],
       transport: {
         name: '',
         driver: '',
-        number: '',
-        typeTransport_id: null,
+        number: [],
+        type_id: null,
         tenant_id: null,
       },
       tenants: [],
@@ -223,23 +227,32 @@ export default {
   },
   computed: {
     validate() {
+      if (this.transport.name && this.transport.number && this.transport.tenant_id && this.transport.type_id) {
+        return false;
+      }
       return true;
-    },
+    }
   },
   methods: {
-    clickCreate() {},
-    clickGuestPass() {
+    clickCreate() {
+      axios.post('/api/createPass', this.transport).then(response => {
+        if (response.status == 204) {
+          Nova.success('Успешно.')
+        }
+      }).catch(error => {
+        console.log(error.response);
+        Nova.error(error.response.data.message);
+      });
+    },
+    async clickGuestPass() {
       this.showModalOpen = true;
+      let { data } = await axios.get('/api/getTypeTransport');
+      this.typeTransport = data;
       console.log("clickGuestPass");
     },
     onSelectTenant(item) {
-            console.log(item.name);
-            axios.get('/api/search/tenant/' + item.name.trim()).then(response => {
-                console.log(response.data);
-            }).catch(error => {
-                console.log(error.response);
-            });
-        },
+      this.transport.tenant_id = item.id
+    },
     searchTenant(searchText) {
         console.log(searchText);
         if(searchText.trim().length > 2) {
@@ -252,7 +265,10 @@ export default {
         }
     },
   },
-  mounted() {},
+  async mounted() {
+    // var { data } = await axios.get('/api/getTypeTransport');
+    //console.log(this.typeTransport);
+  },
 };
 </script>
 
