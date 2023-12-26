@@ -62,7 +62,6 @@
 
 <script>
 import ModalOpenEntry from './ModalOpenEntry'
-import test from './test'
 import VideoPlayer from './VideoPlayer.vue';
 import axios from 'axios'
 import moment from 'moment'

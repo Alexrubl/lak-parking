@@ -11,7 +11,8 @@ class Toolbar extends Card
      *
      * @var string
      */
-    public $width = '1/3';
+    public $width = 'full';
+    public $height = 'dynamic';
 
     /**
      * Get the component name for the element.

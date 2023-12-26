@@ -3,7 +3,7 @@
 namespace App\Nova\Dashboards;
 
 use Laravel\Nova\Cards\Help;
-use Test\Test\Test;
+use Alexrubl\Toolbar\Toolbar;
 use Alexrubl\Video\Video;
 use App\Models\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -30,7 +30,7 @@ class Main extends Dashboard
     public function cards()
     {
         $val = [
-
+            new Toolbar
         ];
         foreach (Controller::all() as $controller) {
             foreach ($controller->cameras as $key => $camera) {

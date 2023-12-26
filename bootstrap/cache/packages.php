@@ -20,6 +20,13 @@
       0 => 'Alexrubl\\TimeRange\\FieldServiceProvider',
     ),
   ),
+  'alexrubl/toolbar' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Alexrubl\\Toolbar\\CardServiceProvider',
+    ),
+  ),
   'alexrubl/video' => 
   array (
     'providers' => 

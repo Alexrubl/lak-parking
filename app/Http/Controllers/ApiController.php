@@ -61,7 +61,7 @@ class ApiController extends Controller
             $tenant->balance -= $sum;            
             $tenant->save();
             $history = new History;
-            $history->controller_id = Controller::apikey($request->apikey)->id;
+            $history->controller_id = $controller->id;
             $history->tenant_id = $tenant->id;
             $history->transport_id = $transport->id;
             $history->comment = ', '. $request->entry ? 'Списание, Въезд' : 'Выезд';

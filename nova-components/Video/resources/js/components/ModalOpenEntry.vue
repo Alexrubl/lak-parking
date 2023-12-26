@@ -18,6 +18,7 @@
                         <div class="flex relative w-full">
                             <!-- <test></test> -->
                             <model-select 
+                                class="form-control form-select form-select-bordered"
                                 ref="transport"
                                 :options="transports"
                                 v-model="transportItem"
@@ -44,6 +45,7 @@
                     <div class="flex items-center space-x-2">
                         <div class="flex relative w-full">
                             <model-list-select :list="tenants"
+                                class="form-control form-select form-select-bordered"
                                 v-model="tenantItem"
                                 option-value="id"
                                 option-text="name"
@@ -103,7 +105,6 @@
 import "vue-search-select/dist/VueSearchSelect.css"
 import { ModelListSelect } from "vue-search-select"
 import { ModelSelect } from "vue-search-select"
-import test from './test'
 import axios from 'axios';
 
 export default {
@@ -118,8 +119,7 @@ export default {
     },
     components: {
         ModelListSelect,
-        ModelSelect,
-        test
+        ModelSelect
     },
     data() {
         return {
@@ -237,4 +237,43 @@ export default {
 select option {
     background: transparent;
 } */
+
+.dark .ui.selection.dropdown {
+  background-color: rgba(var(--colors-gray-900)) !important;
+  color: rgba(var(--colors-gray-400)) !important;
+}
+.ui.selection.dropdown {
+  /* border-color: rgba(var(--colors-gray-300)) !important; */
+  border-width: 1px !important;
+}
+
+/* .ui.selection.dropdown:hover {
+  border-color: unset !important;
+} */
+
+.ui.selection.dropdown:focus, .ui.selection.dropdown:hover {
+  /* border-color: rgba(var(--colors-primary-300)) !important; */
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color) !important;
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color) !important;
+  box-shadow: var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow,0 0 #0000) !important;
+  outline: 2px solid transparent !important;
+  outline-offset: 2px !important;
+}
+
+.ui.selection.dropdown:focus, .ui.selection.active.dropdown:focus, .ui.selection.dropdown:hover, .ui.selection.active.dropdown:hover, .menu {
+  border-color: rgba(var(--colors-primary-300)) !important;
+}
+
+.dark .ui.dropdown.selected, .dark .ui.dropdown .menu .selected.item {
+    background-color: rgba(var(--colors-gray-900)) !important;
+    color: rgba(var(--colors-gray-400)) !important;
+}
+
+.dark .ui.selection.dropdown .menu>.item {
+    border-color: rgba(var(--colors-gray-500)) !important;
+}
+
+.dark .ui.selection.dropdown:focus, .dark .ui.selection.active.dropdown:focus, .dark .ui.selection.dropdown:hover, .dark .ui.selection.active.dropdown:hover, .dark .menu {
+      border-color: rgba(var(--colors-gray-500)) !important;
+}
 </style>
