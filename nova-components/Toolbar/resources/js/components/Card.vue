@@ -143,10 +143,6 @@
           </div>
         </div>
 
-        <div v-for="item in typeTransport">
-          {{ item.text }}
-        </div>
-
         <div class="space-y-2 md:flex @md/modal:flex md:flex-row @md/modal:flex-row md:space-y-0 @md/modal:space-y-0 py-5" index="4">
             <div class="w-full px-6 md:mt-2 @md/modal:mt-2 md:px-8 @md/modal:px-8 md:w-1/5 @md/modal:w-1/5">
                 <label for="tenant-obnovlenie-transport-toyota-prius-phv-belongs-to-field" class="inline-block leading-tight space-x-1">
@@ -172,7 +168,7 @@
             </div>            
         </div>
 
-        <p>{{ transport }}</p>
+        <!-- <p>{{ transport }}</p> -->
       </ModalContent>
       <ModalFooter>
         <div class="flex items-center ml-auto">
