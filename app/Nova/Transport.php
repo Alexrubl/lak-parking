@@ -105,7 +105,20 @@ class Transport extends Resource
             
             BelongsTo::make('Тип ТС', 'type', 'App\Nova\TypeTransport')->showCreateRelationButton()->rules('required'),            
 
-            BelongsTo::make('Арендатор', 'tenant', 'App\Nova\Tenant')->searchable()->rules('required'),
+            BelongsTo::make('Арендатор', 'tenant', 'App\Nova\Tenant')->rules('required')
+            ->fillUsing(function ($request, $model, $attribute, $requestAttribute) {
+                info($request);
+                if ($request->user()->tenant->count() == 1 && $request->user()->isTenant()) {
+                    $model->{$attribute} = $request->user()->tenant[0]->id;
+                } else {
+                    $model->{$attribute} = $request->tenant;
+                }
+            })->withoutTrashed()->searchable(!$request->user()->isTenant())->canSee(function ($request) {
+                if ($request->user()->tenant->count() == 1) {
+                    return !$request->user()->isTenant();
+                }
+                return true;
+            }),
 
             BelongsTo::make('Тариф', 'rate', 'App\Nova\Rate')->rules('required')
                 ->dependsOn('guest', function (BelongsTo $field, NovaRequest $request, FormData $formData) {

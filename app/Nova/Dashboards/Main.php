@@ -30,7 +30,7 @@ class Main extends Dashboard
     public function cards()
     {
         $val = [
-            new Toolbar
+            (new Toolbar)->canSee(function ($request) {return Auth::user()->isAdmin() || Auth::user()->isSecurity();})
         ];
         foreach (Controller::all() as $controller) {
             foreach ($controller->cameras as $key => $camera) {

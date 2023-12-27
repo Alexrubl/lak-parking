@@ -34,7 +34,7 @@ class Camera extends Repeatable
                 ->fullWidth(),
             Text::make('RTSP Stream', 'url_rtsp')
                 ->sortable()
-                ->rules('required', 'max:255')
+                //->rules('required', 'max:255')
                 ->help('ссылка на поток с камеры. Например rtsp:/10.10.10.10/live/stream1')
                 ->fullWidth(),
             Text::make('URL Stream', 'url')
