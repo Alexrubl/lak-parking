@@ -588,7 +588,7 @@ class ApiController extends Controller
     }
 
     public function sigurEventNumber(Request $request) {
-        //info('Сигур событие...');
+        info('Сигур событие, ответ: ');
         $history = History::where('skud_send', false)->orWhereNull('skud_send')->first();
         //foreach ($history as $value) {
         if (isset($history)){
@@ -618,7 +618,7 @@ class ApiController extends Controller
                 "type" => "0ab0a061-12ec-4092-831d-33afe4f8a5f7"
             ];
         }
-        info('Ответ:');
+        //info('Ответ:');
         info($data);
         return response()->json($data, 200);
     }
