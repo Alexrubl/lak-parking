@@ -618,6 +618,8 @@ class ApiController extends Controller
                 "type" => "0ab0a061-12ec-4092-831d-33afe4f8a5f7"
             ];
         }
+        info('Ответ:');
+        info($data);
         return response()->json($data, 200);
     }
 
