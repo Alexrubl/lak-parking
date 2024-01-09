@@ -619,7 +619,7 @@ class ApiController extends Controller
             ];
         }
         //info('Ответ:');
-        info($data);
+        info(json_encode($data));
         return response()->json($data, 200);
     }
 
