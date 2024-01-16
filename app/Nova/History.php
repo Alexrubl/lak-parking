@@ -132,9 +132,10 @@ class History extends Resource
         if ($request->user()->isAdmin()) {
             return [
                 new \App\Nova\Filters\TenantFilter,
+                new \App\Nova\Filters\EntryOnly
             ];
         } else {
-            return [];
+            return [new \App\Nova\Filters\EntryOnly];
         }
     }
 
