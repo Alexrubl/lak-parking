@@ -11,6 +11,7 @@ use Laravel\Nova\Fields\Image;
 use Laravel\Nova\Fields\Avatar;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\DateTime;
+use Laravel\Nova\Actions\ExportAsCsv;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Ganyicz\NovaCallbacks\HasCallbacks;
 use Storage;
@@ -41,6 +42,8 @@ class History extends Resource
     }
 
     public $withoutActionEvents = true;
+
+    public static $perPageOptions = [50, 100, 150, 1000];
 
     /**
      * The columns that should be searched.
@@ -156,7 +159,9 @@ class History extends Resource
      */
     public function actions(NovaRequest $request)
     {
-        return [];
+        return [
+            ExportAsCsv::make(),
+        ];
     }
 
  

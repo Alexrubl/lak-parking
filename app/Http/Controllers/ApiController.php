@@ -34,13 +34,20 @@ class ApiController extends Controller
         if (!isset($controller)) {
             return response()->json($fail->put('message', 'Неизвестный apikey.'), 401);
         }
-        if (isset($request->UrlPhoto)) {
-            $image_name = $this->setImage($controller->ip. '/assets/img/'. $request->UrlPhoto, $controller->id.'/'.Carbon::now()->format('Ymd'));
-        }
+        
         $transport = Transport::where('number', $request->plate)->first();
         if (!isset($transport) || !isset($transport->tenant)) {
             logist(($request->entry && $request->entry == "in" ? 'Запрос на въезд. ':'Запрос на выезд. ').'Номер транспорта: '.$request->plate.', доступ ЗАПРЕЩЁН (не найден транспорт с таким номером)', $image_name, Controller::where('apikey', $request->apikey)->first()->id, $request->entry);
             return response()->json($fail->put('message', 'Не найден транспорт с таким номером или некорректно заполнены данные.'), 200);
+        }
+
+        if (isset($request->UrlPhoto)) {
+            try {
+                $image_name = $this->setImage($controller->ip. '/assets/img/'. $request->UrlPhoto, $controller->id.'/'.Carbon::now()->format('Ymd'));
+            } catch (\Throwable $th) {
+                info($th->getMessage());
+            }
+            
         }
 
         $tenant = $transport->tenant;
@@ -412,6 +419,9 @@ class ApiController extends Controller
         $attribute_name = "image";
         $disk = "public";
         $destination_path = $path;
+
+        if(strpos($value, "http://")) $value = $value;
+        else $value = "http://$value";
 
         info($value);
 
