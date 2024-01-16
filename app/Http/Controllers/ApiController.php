@@ -42,7 +42,7 @@ class ApiController extends Controller
                 info($th->getMessage());
             }            
         }
-        
+
         $transport = Transport::where('number', $request->plate)->first();
         if (!isset($transport) || !isset($transport->tenant)) {
             logist(($request->entry && $request->entry == "in" ? 'Запрос на въезд. ':'Запрос на выезд. ').'Номер транспорта: '.$request->plate.', доступ ЗАПРЕЩЁН (не найден транспорт с таким номером)', $image_name, Controller::where('apikey', $request->apikey)->first()->id, $request->entry);
@@ -416,13 +416,20 @@ class ApiController extends Controller
         }
     }
 
+    private function http_check($url) {
+        $return = $url;
+        if ((!(substr($url, 0, 7) == 'http://')) && (!(substr($url, 0, 8) == 'https://'))) {
+            $return = 'http://' . $url;
+        }
+        return $return;
+    } 
+
     public function setImage($value, $path = 'images') {
         $attribute_name = "image";
         $disk = "public";
         $destination_path = $path;
 
-        if(strpos($value, "http://")) $value = $value;
-        else $value = "http://$value";
+        http_check($value);
 
         info($value);
 
