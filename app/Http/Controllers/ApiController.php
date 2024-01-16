@@ -9,6 +9,7 @@ use App\Models\History;
 use App\Models\Tenant;
 use App\Models\Rate;
 use App\Models\User;
+use App\Models\Sigur;
 use App\Models\Controller;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Config;
@@ -21,8 +22,8 @@ use Response;
 class ApiController extends Controller
 {
     public function event(Request $request) {
-        info('event from controller:');
-        info($request);
+        //info('event from controller:');
+        //info($request);
         $image_name = null;
         //$data = $request;
         $fail = collect([
@@ -34,7 +35,7 @@ class ApiController extends Controller
         if (!isset($controller)) {
             return response()->json($fail->put('message', 'Неизвестный apikey.'), 401);
         }
-
+    
         if (isset($request->UrlPhoto)) {
             try {
                 $image_name = $this->setImage($controller->ip. '/assets/img/'. $request->UrlPhoto, $controller->id.'/'.Carbon::now()->format('Ymd'));
@@ -42,14 +43,20 @@ class ApiController extends Controller
                 info($th->getMessage());
             }            
         }
+        
+        // Для сигура
+        $sigur = new Sigur;
+        $sigur->controller_id = $controller->id;
+        $sigur->number = $request->plate;
+        $sigur->direction = $request->entry == 'in' ? 'up' : 'down';
+        $sigur->save();
+        // Конец блока для сигура  
 
         $transport = Transport::where('number', $request->plate)->first();
         if (!isset($transport) || !isset($transport->tenant)) {
             logist(($request->entry && $request->entry == "in" ? 'Запрос на въезд. ':'Запрос на выезд. ').'Номер транспорта: '.$request->plate.', доступ ЗАПРЕЩЁН (не найден транспорт с таким номером)', $image_name, Controller::where('apikey', $request->apikey)->first()->id, $request->entry);
             return response()->json($fail->put('message', 'Не найден транспорт с таким номером или некорректно заполнены данные.'), 200);
-        }
-
-        
+        }            
 
         $tenant = $transport->tenant;
         $rate = $transport->rate;        
@@ -78,6 +85,7 @@ class ApiController extends Controller
             $history->direction = $request->entry;
             $history->price = $sum;
             $history->image = $image_name;
+            $history->created_at = $request->ev_date;
             $history->save();
 
             if ($tenant->balance < 1) {
@@ -155,7 +163,7 @@ class ApiController extends Controller
         $history->comment = 'Списание, Въезд c кнопки охраны';
         $history->direction = 'in';
         $history->price = $sum;
-        $history->image = null;
+        $history->image = null;        
         $history->save();
 
         if ($tenant->balance < 1) {
@@ -607,22 +615,22 @@ class ApiController extends Controller
 
     public function sigurEventNumber(Request $request) {
         info('Сигур событие, ответ: ');
-        $history = History::where('skud_send', false)->orWhereNull('skud_send')->first();
-        //foreach ($history as $value) {
-        if (isset($history)){
-            $transport = Transport::find($history->transport_id);
-            $controller = Controller::find($history->controller_id);
-            if (isset($controller) && isset($transport) && isset($history->direction)) {                
-                $data = [
-                    "type" => "9183e0da-8ab7-4d86-a6d7-5745cb514032",
-                    "channelId" => (string) $controller->id,
-                    "number" => $transport->number,
-                    "direction" => $history->direction == 'in' ? 'up' : 'down'
-                ];
-            }
-            $history->skud_send = true;
-            $history->save();
-        }
+        // $history = History::where('skud_send', false)->orWhereNull('skud_send')->first();
+        // //foreach ($history as $value) {
+        // if (isset($history)){
+        //     $transport = Transport::find($history->transport_id);
+        //     $controller = Controller::find($history->controller_id);
+        //     if (isset($controller) && isset($transport) && isset($history->direction)) {                
+        //         $data = [
+        //             "type" => "9183e0da-8ab7-4d86-a6d7-5745cb514032",
+        //             "channelId" => (string) $controller->id,
+        //             "number" => $transport->number,
+        //             "direction" => $history->direction == 'in' ? 'up' : 'down'
+        //         ];
+        //     }
+        //     $history->skud_send = true;
+        //     $history->save();
+        // }
         //}
         // dd($data);
         // {
@@ -631,6 +639,16 @@ class ApiController extends Controller
         //     "number": "A123AA12",
         //     "direction": "down"
         // }
+        $sigur = Sigur::first();
+        if (isset($sigur)){              
+            $data = [
+                "type" => "9183e0da-8ab7-4d86-a6d7-5745cb514032",
+                "channelId" => (string) $sigur->controller_id,
+                "number" => $sigur->number,
+                "direction" => $sigur->direction
+            ];
+            $sigur->delete();
+        }
         if (!isset($data)) {
             $data = [
                 "type" => "0ab0a061-12ec-4092-831d-33afe4f8a5f7"
