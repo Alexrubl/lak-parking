@@ -34,6 +34,14 @@ class ApiController extends Controller
         if (!isset($controller)) {
             return response()->json($fail->put('message', 'Неизвестный apikey.'), 401);
         }
+
+        if (isset($request->UrlPhoto)) {
+            try {
+                $image_name = $this->setImage($controller->ip. '/assets/img/'. $request->UrlPhoto, $controller->id.'/'.Carbon::now()->format('Ymd'));
+            } catch (\Throwable $th) {
+                info($th->getMessage());
+            }            
+        }
         
         $transport = Transport::where('number', $request->plate)->first();
         if (!isset($transport) || !isset($transport->tenant)) {
@@ -41,14 +49,7 @@ class ApiController extends Controller
             return response()->json($fail->put('message', 'Не найден транспорт с таким номером или некорректно заполнены данные.'), 200);
         }
 
-        if (isset($request->UrlPhoto)) {
-            try {
-                $image_name = $this->setImage($controller->ip. '/assets/img/'. $request->UrlPhoto, $controller->id.'/'.Carbon::now()->format('Ymd'));
-            } catch (\Throwable $th) {
-                info($th->getMessage());
-            }
-            
-        }
+        
 
         $tenant = $transport->tenant;
         $rate = $transport->rate;        
