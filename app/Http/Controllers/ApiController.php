@@ -85,7 +85,7 @@ class ApiController extends Controller
             $history->direction = $request->entry;
             $history->price = $sum;
             $history->image = $image_name;
-            $history->created_at = $request->ev_date;
+            $history->created_at = Carbon::parse($request->ev_date);
             $history->save();
 
             if ($tenant->balance < 1) {
