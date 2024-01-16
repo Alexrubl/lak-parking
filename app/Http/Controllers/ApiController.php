@@ -429,7 +429,7 @@ class ApiController extends Controller
         $disk = "public";
         $destination_path = $path;
 
-        http_check($value);
+        $this->http_check($value);
 
         info($value);
 
