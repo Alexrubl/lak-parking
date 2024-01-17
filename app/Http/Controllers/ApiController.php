@@ -81,7 +81,7 @@ class ApiController extends Controller
             $history->controller_id = $controller->id;
             $history->tenant_id = $tenant->id;
             $history->transport_id = $transport->id;
-            $history->comment = ', '. $request->entry ? 'Списание, Въезд' : 'Выезд';
+            $history->comment = ', '.($sum > 0 ? 'Списание': '').($request->entry == 'in' ? ', Въезд' : 'Выезд');
             $history->direction = $request->entry;
             $history->price = $sum;
             $history->image = $image_name;
