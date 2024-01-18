@@ -282,7 +282,7 @@ class ApiController extends Controller
             $this->fixEntry($controller, $transport);
         }       
 
-        return response()->json(['status' => false,'message' => 'Не найден контроллер'], 200); 
+        //return response()->json(['status' => false,'message' => 'Не найден контроллер'], 200); 
 
         $curl = curl_init();
 
@@ -554,6 +554,7 @@ class ApiController extends Controller
 
     public function searchTransport(Request $request, $searchText) {
         $transports = Transport::where('number', 'like', '%'.$searchText.'%' )->get();
+        $data = [];
         foreach ($transports as $key => $value) {
             $data['transports'][] = [
                 'value' => $value->id,

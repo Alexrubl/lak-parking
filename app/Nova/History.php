@@ -77,7 +77,7 @@ class History extends Resource
         return [
             ID::make()->sortable(),
             BelongsTo::make('Арендатор', 'tenant', 'App\Nova\Tenant')->rules('required'),
-            BelongsTo::make('Транспорт', 'transport', 'App\Nova\Transport')->displayUsing(fn () => $this->transport->name .' ('.$this->transport->number.')')->rules('required'),
+            BelongsTo::make('Транспорт', 'transport', 'App\Nova\Transport')->displayUsing(fn () => $this->transport->name .' ('.$this->transport->number.')')->searchable()->rules('required'),
             Currency::make('Движение', 'price')->rules('required','numeric'),
             Text::make('Описание', 'comment')->rules('required'),
             Image::make('Фото', 'image')->showOnDetail(function (NovaRequest $request, $resource) {
