@@ -61,14 +61,14 @@ class ApiController extends Controller
 
         $tenant = $transport->tenant;
         $last_history_entry = History::where('transport_id', $transport->id)->orderby('id', 'desc')->first();
-        info(collect($last_history_entry));
+        //info(collect($last_history_entry));
         try {
             $ev_date = Carbon::createFromFormat('Y.m.d H:i:s', $request->ev_date);
         } catch (\Throwable $th) {
             $ev_date = Carbon::now();
         }
         # inside - если больше 11 часов то не считается , что транспорт внутри  
-        info($ev_date);
+        //info($ev_date);
         $rate = $transport->rate;        
         if ($request->access == 'enable' || $request->access == 1) {
            // info('if $request->access == enabled');info($transport->inside <> 1);info(Carbon::parse($last_history_entry->created_at)->addHours(11) > $ev_date);
@@ -122,7 +122,7 @@ class ApiController extends Controller
                     }                    
                 }
                 if ($tenant->count_credit > $count_credit) {  # Не блокирум и пропускаем пять раз в  кредит
-                    info('count_credit');
+                    //info('count_credit');
                     foreach ($tenant->transport as $key => $transp) {
                         if ($transp->id == $transport->id) {
                             $current_last_history_entry = $last_history_entry;
@@ -139,8 +139,8 @@ class ApiController extends Controller
                 }
             }
             if (nova_get_setting('openForceEntry')) {
-                info('openForceEntry');
-                //$this->openGate($request);
+                //info('openForceEntry');
+                $this->openGate($request);
                 if ($controller->auto_close) {
                     dispatch(new \App\Jobs\CloseEntry($controller));
                 }
