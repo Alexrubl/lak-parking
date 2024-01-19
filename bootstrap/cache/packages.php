@@ -13,6 +13,13 @@
       0 => 'Alexrubl\\DateRange\\FieldServiceProvider',
     ),
   ),
+  'alexrubl/daterangefilter' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Alexrubl\\Daterangefilter\\FilterServiceProvider',
+    ),
+  ),
   'alexrubl/time-range' => 
   array (
     'providers' => 

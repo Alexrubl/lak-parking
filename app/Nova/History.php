@@ -14,10 +14,14 @@ use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Actions\ExportAsCsv;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Ganyicz\NovaCallbacks\HasCallbacks;
+use Titasgailius\SearchRelations\SearchesRelations;
+use Alexrubl\Daterangefilter\Enums\Config;
 use Storage;
 
 class History extends Resource
 {
+    use SearchesRelations;
+    
     public static $group = ' Отчеты';
     /**
      * The model the resource corresponds to.
@@ -54,7 +58,16 @@ class History extends Resource
         'id', 'tenant_id', 'transport_id','comment', 'created_at'
     ];
 
-        public static function indexQuery(NovaRequest $request, $query)
+    /**
+     * The relationship columns that should be searched.
+     *
+     * @var array
+     */
+    public static $searchRelations = [
+        'transport' => ['name', 'number'],
+    ];
+
+    public static function indexQuery(NovaRequest $request, $query)
     {
         if (!$request->user()->isAdmin() && !$request->user()->isSecurity()) {
             $tenant_id = array();
@@ -77,7 +90,7 @@ class History extends Resource
         return [
             ID::make()->sortable(),
             BelongsTo::make('Арендатор', 'tenant', 'App\Nova\Tenant')->rules('required'),
-            BelongsTo::make('Транспорт', 'transport', 'App\Nova\Transport')->displayUsing(fn () => $this->transport->name .' ('.$this->transport->number.')')->searchable()->rules('required'),
+            BelongsTo::make('Транспорт', 'transport', 'App\Nova\Transport')->displayUsing(fn () => $this->transport->name .' ('.$this->transport->number.')')->rules('required'),
             Currency::make('Движение', 'price')->rules('required','numeric'),
             Text::make('Описание', 'comment')->rules('required'),
             Image::make('Фото', 'image')->showOnDetail(function (NovaRequest $request, $resource) {
@@ -132,10 +145,40 @@ class History extends Resource
         if ($request->user()->isAdmin()) {
             return [
                 new \App\Nova\Filters\TenantFilter,
-                new \App\Nova\Filters\EntryOnly
+                new \App\Nova\Filters\EntryOnly,
+                new \App\Nova\Filters\Period('Created at', 'created_at', [
+                                Config::ALLOW_INPUT => false,
+                                Config::DATE_FORMAT => 'd-m-Y',
+                                Config::DISABLED => false,
+                                Config::ENABLE_TIME => false,
+                                Config::ENABLE_SECONDS => false,
+                                Config::FIRST_DAY_OF_WEEK => 0,
+                                Config::LOCALE => 'ru',
+                                Config::PLACEHOLDER => __('Выберите период'),
+                                Config::SHORTHAND_CURRENT_MONTH => false,
+                                Config::SHOW_MONTHS => 1,
+                                Config::TIME24HR => true,
+                                Config::WEEK_NUMBERS => false,
+                            ]),
             ];
         } else {
-            return [new \App\Nova\Filters\EntryOnly];
+            return [
+                new \App\Nova\Filters\EntryOnly,
+                new \App\Nova\Filters\Period('Created at', 'created_at', [
+                                Config::ALLOW_INPUT => false,
+                                Config::DATE_FORMAT => 'd-m-Y',
+                                Config::DISABLED => false,
+                                Config::ENABLE_TIME => false,
+                                Config::ENABLE_SECONDS => false,
+                                Config::FIRST_DAY_OF_WEEK => 0,
+                                Config::LOCALE => 'ru',
+                                Config::PLACEHOLDER => __('Выберите период'),
+                                Config::SHORTHAND_CURRENT_MONTH => false,
+                                Config::SHOW_MONTHS => 1,
+                                Config::TIME24HR => true,
+                                Config::WEEK_NUMBERS => false,
+                            ]),
+            ];
         }
     }
 

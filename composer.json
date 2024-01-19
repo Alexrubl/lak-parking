@@ -12,6 +12,7 @@
         "acme/analytics": "@dev",
         "alexrubl/date-range": "@dev",
         "alexrubl/time-range": "@dev",
+        "alexrubl/toolbar": "@dev",
         "alexrubl/video": "@dev",
         "coderello/laravel-nova-lang": "^2.0",
         "formfeed-uk/nova-dependable-panel": "^1.2",
@@ -30,8 +31,9 @@
         "php-junior/nova-logs": "^1.1",
         "simplesquid/nova-advanced-number-field": "^3.1",
         "symfony/process": "^6.3",
+        "titasgailius/search-relations": "^2.0",
         "vyuldashev/nova-permission": "^3.2",
-        "alexrubl/toolbar": "@dev"
+        "alexrubl/daterangefilter": "@dev"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
@@ -117,6 +119,14 @@
         {
             "type": "path",
             "url": "./nova-components/Toolbar"
+        },
+        {
+            "type": "path",
+            "url": "./nova-components/Daterangefilter"
+        },
+        {
+            "type": "path",
+            "url": "./nova-components/Daterangefilter"
         }
     ],
     "minimum-stability": "stable",

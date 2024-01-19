@@ -15,7 +15,9 @@
         "build-time-range": "cd nova-components/TimeRange && npm run dev",
         "build-time-range-prod": "cd nova-components/TimeRange && npm run prod",
         "build-toolbar": "cd nova-components/Toolbar && npm run dev",
-        "build-toolbar-prod": "cd nova-components/Toolbar && npm run prod"
+        "build-toolbar-prod": "cd nova-components/Toolbar && npm run prod",
+        "build-daterangefilter": "cd nova-components/Daterangefilter && npm run dev",
+        "build-daterangefilter-prod": "cd nova-components/Daterangefilter && npm run prod"
     },
     "devDependencies": {
         "@vitejs/plugin-vue": "^4.3.4",
