@@ -146,6 +146,7 @@ class History extends Resource
             return [
                 new \App\Nova\Filters\TenantFilter,
                 new \App\Nova\Filters\EntryOnly,
+                new \App\Nova\Filters\HistoryBoolean,
                 new \App\Nova\Filters\Period('Created at', 'created_at', [
                                 Config::ALLOW_INPUT => false,
                                 Config::DATE_FORMAT => 'd-m-Y',
@@ -164,6 +165,7 @@ class History extends Resource
         } else {
             return [
                 new \App\Nova\Filters\EntryOnly,
+                new \App\Nova\Filters\HistoryBoolean,
                 new \App\Nova\Filters\Period('Created at', 'created_at', [
                                 Config::ALLOW_INPUT => false,
                                 Config::DATE_FORMAT => 'd-m-Y',

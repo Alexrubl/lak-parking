@@ -25,6 +25,7 @@ class ApiController extends Controller
         //info('event from controller:');
         //info($request);
         $image_name = null;
+        $count_credit = nova_get_setting('count_credit', $default = 5);
         //$data = $request;
         $fail = collect([
             'apikey' => $request->apikey,
@@ -59,11 +60,21 @@ class ApiController extends Controller
         }            
 
         $tenant = $transport->tenant;
+        $last_history_entry = History::where('transport_id', $transport->id)->orderby('id', 'desc')->first();
+        info(collect($last_history_entry));
+        try {
+            $ev_date = Carbon::createFromFormat('Y.m.d H:i:s', $request->ev_date);
+        } catch (\Throwable $th) {
+            $ev_date = Carbon::now();
+        }
+        # inside - если больше 11 часов то не считается , что транспорт внутри  
+        info($ev_date);
         $rate = $transport->rate;        
         if ($request->access == 'enable' || $request->access == 1) {
+           // info('if $request->access == enabled');info($transport->inside <> 1);info(Carbon::parse($last_history_entry->created_at)->addHours(11) > $ev_date);
             $sum = 0;
             if ($request->entry == 'in' || $request->entry == 1) {
-                if ($transport->inside <> 1) { 
+                if ($transport->inside <> 1 || (isset($last_history_entry) && Carbon::parse($last_history_entry->created_at)->addHours(12) < $ev_date)) { 
                     $transport->inside = 1;
                     $sum = $rate->getPrice($transport);
                     $transport->save();
@@ -75,7 +86,8 @@ class ApiController extends Controller
                 }  
                 $transport->save();             
             } 
-            $tenant->balance -= $sum;            
+            $tenant->balance -= $sum; 
+            $tenant->count_credit = $tenant->balance < 1 ? $tenant->count_credit + 1 : 0;             
             $tenant->save();
             $history = new History;
             $history->controller_id = $controller->id;
@@ -85,10 +97,12 @@ class ApiController extends Controller
             $history->direction = $request->entry;
             $history->price = $sum;
             $history->image = $image_name;
-            $history->created_at = Carbon::createFromFormat('Y.m.d H:i:s', $request->ev_date);
+            $history->is_credit = $tenant->balance < 1;
+            $history->created_at = $ev_date;       
             $history->save();
 
             if ($tenant->balance < 1) {
+                //info(2);
                 foreach (User::all() as $key => $user) {
                     foreach ($user->tenant as $t) {
                         if ($t->id == $tenant->id) {
@@ -107,15 +121,26 @@ class ApiController extends Controller
                         }
                     }                    
                 }
-                foreach ($tenant->transport as $key => $transp) {
-                    if ($transp->inside == 0) {
-                        $transp->access = 0;
-                        $transp->save();
+                if ($tenant->count_credit > $count_credit) {  # Не блокирум и пропускаем пять раз в  кредит
+                    info('count_credit');
+                    foreach ($tenant->transport as $key => $transp) {
+                        if ($transp->id == $transport->id) {
+                            $current_last_history_entry = $last_history_entry;
+                        } else {
+                            $current_last_history_entry = History::where('transport_id', $transp->id)->orderby('id', 'desc')->first();
+                        }
+                                                    # Проверка на то что транспорт больше 12 чсов на территории и его у же там возможно нет;
+                        if ($transp->inside == 0 || (isset($current_last_history_entry) && Carbon::parse($current_last_history_entry->created_at)->addHours(12) < $ev_date)) {
+                            $transp->inside == 0;
+                            $transp->access = 0;
+                            $transp->save();
+                        }
                     }
                 }
             }
             if (nova_get_setting('openForceEntry')) {
-                $this->openGate($request);
+                info('openForceEntry');
+                //$this->openGate($request);
                 if ($controller->auto_close) {
                     dispatch(new \App\Jobs\CloseEntry($controller));
                 }
@@ -125,7 +150,8 @@ class ApiController extends Controller
                     'apikey' => $request->apikey,
                     'request_id' => $request->request_id,
                     'status' => 'ok',
-                    'message' => 'Успешно.'
+                    'message' => 'Успешно.',
+                    'sum' => $sum
                 ], 200);
         } 
 

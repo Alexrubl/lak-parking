@@ -36,6 +36,7 @@ class Rate extends Model
     |--------------------------------------------------------------------------
     */
     function getPrice($transport) {
+        info($this);
         if ($this->type == 'Разовый') {
             foreach ($this->items as $key => $value) {          
                 if ($value['fields']['тип_тс'] == $transport->type->id) {

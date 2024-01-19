@@ -9,6 +9,7 @@ use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Image;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use CArbon\Carbon;
+use Alexrubl\Daterangefilter\Enums\Config;
 
 class Log extends Resource
 {
@@ -101,7 +102,22 @@ class Log extends Resource
      */
     public function filters(NovaRequest $request)
     {
-        return [];
+        return [
+            new \App\Nova\Filters\Period('Created at', 'created_at', [
+                                Config::ALLOW_INPUT => false,
+                                Config::DATE_FORMAT => 'd-m-Y',
+                                Config::DISABLED => false,
+                                Config::ENABLE_TIME => false,
+                                Config::ENABLE_SECONDS => false,
+                                Config::FIRST_DAY_OF_WEEK => 0,
+                                Config::LOCALE => 'ru',
+                                Config::PLACEHOLDER => __('Выберите период'),
+                                Config::SHORTHAND_CURRENT_MONTH => false,
+                                Config::SHOW_MONTHS => 1,
+                                Config::TIME24HR => true,
+                                Config::WEEK_NUMBERS => false,
+                            ]),
+        ];
     }
 
     /**

@@ -169,6 +169,7 @@ class Transport extends Resource
     public function filters(NovaRequest $request)
     {
         return [
+            (new \App\Nova\Filters\TenantFilter)->canSee(fn ($request) => $request->user()->isAdmin()),
         ];
     }
 
