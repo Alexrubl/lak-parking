@@ -10,6 +10,7 @@ use Laravel\Nova\Actions\Action;
 use App\Models\Transport;
 use Laravel\Nova\Fields\ActionFields;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use App\Http\Controllers\ApiController as Api;
 
 class SaveAllTransport extends Action
 {
@@ -26,11 +27,14 @@ class SaveAllTransport extends Action
      */
     public function handle(ActionFields $fields, Collection $models)
     {
-        $transports = Transport::all();
-        foreach ($transports as $key => $value) {
-            info($value->number)
-            $value->save();
-            //usleep(300000);
+        foreach (Transport::all() as $key => $transport) {
+            try {
+                $api = new Api;
+                $api->sendNewTransportToControllers($transport);            
+            } catch (\Throwable $th) {
+                info($th->getMessage());
+                continue;
+            } 
         }
         return Action::message('Обновление транспорта на контроллерах закончено!');
     }
