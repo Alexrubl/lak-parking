@@ -229,7 +229,7 @@ class ApiController extends Controller
     public static function sendNewTransportToControllers($transport) {  
         $controllers = Controller::all();
         foreach ($controllers as $key => $controller) {
-            if ($controller->active == false)  continue;
+            if (!$controller->active)  continue;
             $week = '';
             if ($transport->week) {
                 foreach ($transport->week as $key => $value) {
