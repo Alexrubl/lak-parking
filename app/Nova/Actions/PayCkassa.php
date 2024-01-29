@@ -31,7 +31,6 @@ class PayCkassa extends Action
     public function handle(ActionFields $fields, Collection $models)
     {
         $resp = json_decode(Ckassa::invoice($models, $fields, Auth::user())); 
-
         if (isset($resp->payUrl)) {    
             return Action::openInNewTab($resp->payUrl);
         }

@@ -148,7 +148,9 @@ class Controller extends Resource
      */
     public function actions(NovaRequest $request)
     {
-        return [];
+        return [
+            (new \App\Nova\Actions\SaveAllTransport)->standalone()
+        ];
     }
 
     protected function methodCloseFields() {
