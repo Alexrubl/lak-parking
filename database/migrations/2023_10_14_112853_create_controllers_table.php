@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('ip');
             $table->string('apikey');
+            $table->boolean('active')->default(0);
             $table->string('id_stream')->nullabled();
             $table->string('url_open')->nullabled();
             $table->string('Url_close')->nullabled();

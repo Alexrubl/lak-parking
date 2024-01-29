@@ -9,6 +9,7 @@ use Laravel\Nova\Fields\Heading;
 use NormanHuth\NovaRadioField\Radio;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Trin4ik\NovaSwitcher\NovaSwitcher;
 
 class Camera extends Repeatable
 {
@@ -31,7 +32,7 @@ class Camera extends Repeatable
     public function fields(NovaRequest $request)
     {
         return [
-            Boolean::make('Активировать', 'active')->default(true),
+            Boolean::make('Вкл.', 'active')->default(true),
             Text::make('Наименование', 'name')
                 ->fullWidth(),
             Text::make('RTSP Stream', 'url_rtsp')

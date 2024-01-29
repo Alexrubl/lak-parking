@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c409d2ac0c6a7788b28a819e0f559548",
+    "content-hash": "f69ae02f0d0cb4a2edbb50b68333af26",
     "packages": [
         {
             "name": "acme/analytics",
@@ -8244,6 +8244,52 @@
             "time": "2021-07-16T15:55:13+00:00"
         },
         {
+            "name": "trin4ik/nova-switcher",
+            "version": "v0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/trin4ik/nova-switcher.git",
+                "reference": "06b7dc8cbe842bf0943c161f9335546dbe6dd30c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/trin4ik/nova-switcher/zipball/06b7dc8cbe842bf0943c161f9335546dbe6dd30c",
+                "reference": "06b7dc8cbe842bf0943c161f9335546dbe6dd30c",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/nova": "^4.0",
+                "php": "^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Trin4ik\\NovaSwitcher\\FieldServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Trin4ik\\NovaSwitcher\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A Laravel Nova switcher field.",
+            "keywords": [
+                "laravel",
+                "nova"
+            ],
+            "support": {
+                "issues": "https://github.com/trin4ik/nova-switcher/issues",
+                "source": "https://github.com/trin4ik/nova-switcher/tree/v0.4"
+            },
+            "time": "2023-11-01T05:33:29+00:00"
+        },
+        {
             "name": "vlucas/phpdotenv",
             "version": "v5.6.0",
             "source": {
@@ -11006,10 +11052,10 @@
     "stability-flags": {
         "acme/analytics": 20,
         "alexrubl/date-range": 20,
+        "alexrubl/daterangefilter": 20,
         "alexrubl/time-range": 20,
         "alexrubl/toolbar": 20,
-        "alexrubl/video": 20,
-        "alexrubl/daterangefilter": 20
+        "alexrubl/video": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,

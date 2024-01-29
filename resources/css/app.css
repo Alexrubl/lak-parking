@@ -1,0 +1,3 @@
+.input:checked + .switch {
+  background-color:cornflowerblue;
+}

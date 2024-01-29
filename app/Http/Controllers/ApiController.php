@@ -36,6 +36,10 @@ class ApiController extends Controller
         if (!isset($controller)) {
             return response()->json($fail->put('message', 'Неизвестный apikey.'), 401);
         }
+
+        if (!$controller->active) {
+            return response()->json($fail->put('message', 'Контроллер выключен.'), 401);
+        }
     
         if (isset($request->UrlPhoto)) {
             try {
@@ -225,6 +229,7 @@ class ApiController extends Controller
     public static function sendNewTransportToControllers($transport) {  
         $controllers = Controller::all();
         foreach ($controllers as $key => $controller) {
+            if ($controller->active == false)  continue;
             $week = '';
             if ($transport->week) {
                 foreach ($transport->week as $key => $value) {
