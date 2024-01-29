@@ -35,9 +35,11 @@ class Main extends Dashboard
         foreach (Controller::all() as $controller) {
             if (isset($controller->cameras)) {
                 foreach ($controller->cameras as $key => $camera) {
-                    $val[] = (new Video($controller, $camera))->canSee(function ($request) {
-                                return Auth::user()->isAdmin() || Auth::user()->isSecurity();
-                            });
+                    if ($camera["fields"]["active"] == true) {
+                        $val[] = (new Video($controller, $camera))->canSee(function ($request) {
+                                    return Auth::user()->isAdmin() || Auth::user()->isSecurity();
+                                });
+                    }
                     // break;
                 }            
             }
