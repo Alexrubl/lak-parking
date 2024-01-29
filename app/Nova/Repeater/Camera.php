@@ -9,7 +9,6 @@ use Laravel\Nova\Fields\Heading;
 use NormanHuth\NovaRadioField\Radio;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Trin4ik\NovaSwitcher\NovaSwitcher;
 
 class Camera extends Repeatable
 {

@@ -13,7 +13,6 @@ use Laravel\Nova\Fields\Heading;
 use NormanHuth\NovaRadioField\Radio;
 use Formfeed\DependablePanel\DependablePanel;
 use Laravel\Nova\Fields\FormData;
-use Trin4ik\NovaSwitcher\NovaSwitcher;
 
 class Controller extends Resource
 {
@@ -59,7 +58,7 @@ class Controller extends Resource
     public function fields(NovaRequest $request)
     {
         return [
-            NovaSwitcher::make('Вкл.', 'active')->default(false)->confirm(toTrue: 'Включить контроллер?', toFalse: 'Выключить контроллер?')->onlyOnForms(),
+            Boolean::make('Вкл.', 'active')->default(false),
             
             ID::make()->sortable(),
             

@@ -33,6 +33,7 @@ class Main extends Dashboard
             (new Toolbar)->canSee(function ($request) {return Auth::user()->isAdmin() || Auth::user()->isSecurity();})
         ];
         foreach (Controller::all() as $controller) {
+            if (!$controller->active) continue;
             if (isset($controller->cameras)) {
                 foreach ($controller->cameras as $key => $camera) {
                     if ($camera["fields"]["active"] == true) {

@@ -248,13 +248,6 @@
       0 => 'Spatie\\Permission\\PermissionServiceProvider',
     ),
   ),
-  'trin4ik/nova-switcher' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Trin4ik\\NovaSwitcher\\FieldServiceProvider',
-    ),
-  ),
   'vyuldashev/nova-permission' => 
   array (
     'providers' => 
