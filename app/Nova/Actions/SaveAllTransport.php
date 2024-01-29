@@ -28,8 +28,9 @@ class SaveAllTransport extends Action
     {
         $transports = Transport::all();
         foreach ($transports as $key => $value) {
+            info($value->number)
             $value->save();
-            usleep(300000);
+            //usleep(300000);
         }
         return Action::message('Обновление транспорта на контроллерах закончено!');
     }
