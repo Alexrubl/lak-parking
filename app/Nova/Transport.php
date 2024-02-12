@@ -106,19 +106,29 @@ class Transport extends Resource
             BelongsTo::make('Тип ТС', 'type', 'App\Nova\TypeTransport')->showCreateRelationButton()->rules('required'),            
 
             BelongsTo::make('Арендатор', 'tenant', 'App\Nova\Tenant')->rules('required')
-            ->fillUsing(function ($request, $model, $attribute, $requestAttribute) {
-                info($request);
-                if ($request->user()->tenant->count() == 1 && $request->user()->isTenant()) {
-                    $model->{$attribute} = $request->user()->tenant[0]->id;
-                } else {
-                    $model->{$attribute} = $request->tenant;
-                }
-            })->withoutTrashed()->searchable(!$request->user()->isTenant())->canSee(function ($request) {
-                if ($request->user()->tenant->count() == 1) {
-                    return !$request->user()->isTenant();
-                }
-                return true;
-            }),
+                // ->withMeta([
+                //     'belongsToId' => ($request->user()->tenant->count() == 1 && $request->user()->isTenant()) ? $request->user()->tenant[0]->id : null
+                // ])]
+                ->default(($request->user()->tenant->count() == 1 && $request->user()->isTenant()) ? $request->user()->tenant[0]->id : null)
+                ->withoutTrashed()->searchable(!$request->user()->isTenant()),
+                // ->fillUsing(function ($request, $model, $attribute, $requestAttribute) {
+                //     info($request);
+                //     info($model);
+                //     info($attribute);
+                //     info($requestAttribute);
+                //     if ($request->user()->tenant->count() == 1 && $request->user()->isTenant()) {
+                //         $model->{$attribute} = $request->user()->tenant[0]->id;
+                //     } else {
+                //         $model->{$attribute} = $request->tenant;
+                //     }
+                // })
+                
+                // ->canSee(function ($request) {
+                //     if ($request->user()->tenant->count() == 1) {
+                //         return !$request->user()->isTenant();
+                //     }
+                //     return true;
+                // }),
 
             BelongsTo::make('Тариф', 'rate', 'App\Nova\Rate')->rules('required')
                 ->dependsOn('guest', function (BelongsTo $field, NovaRequest $request, FormData $formData) {

@@ -6,7 +6,7 @@ use App\Models\Tenant;
 
 class TenantObserver
 {
-        public function updated(Tenant $tenant): void
+    public function updated(Tenant $tenant): void
     {
         //info($this->is_blocked);
         // if ($is_blocked) {
