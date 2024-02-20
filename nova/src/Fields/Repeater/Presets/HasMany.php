@@ -30,11 +30,9 @@ class HasMany implements Preset
     ) {
         return function () use ($request, $requestAttribute, $model, $attribute, $repeatables, $uniqueField) {
             $repeaterItems = collect($request->input($requestAttribute));
-            /** @var EloquentHasMany $relation */
-            $relation = $model->{$attribute}();
 
             if (! $uniqueField) {
-                $relation->delete();
+                $model->{$attribute}()->delete();
             } else {
                 $this->deleteMissingRelations($attribute, $model, $repeaterItems, $uniqueField);
             }
@@ -55,13 +53,13 @@ class HasMany implements Preset
                     })->toBase();
 
                 return [$data, $callbacks, $item];
-            })->each(function ($tuple) use ($model, $relation, $uniqueField) {
+            })->each(function ($tuple) use ($model, $attribute, $uniqueField) {
                 [$data, $callbacks, $row] = $tuple;
 
                 if ($uniqueField) {
-                    $this->upsertRelation($model, $data, $row, $uniqueField, $relation);
+                    $this->upsertRelation($model, $data, $row, $uniqueField, $model->{$attribute}());
                 } else {
-                    $relation->forceCreate($data->getAttributes());
+                    $model->{$attribute}()->forceCreate($data->getAttributes());
                 }
 
                 $callbacks->each->__invoke();
@@ -94,6 +92,7 @@ class HasMany implements Preset
      */
     public function deleteMissingRelations(string $attribute, Model $model, Collection $repeaterItems, $uniqueField): void
     {
+        /** @var \Illuminate\Database\Eloquent\Relations\HasMany $relation */
         $relation = $model->{$attribute}();
 
         $availableItems = $repeaterItems->map(function ($item) use ($uniqueField) {
@@ -106,7 +105,7 @@ class HasMany implements Preset
             });
 
         if ($deletableIds->isNotEmpty()) {
-            $relation->delete($deletableIds);
+            $model->{$attribute}()->whereKey($deletableIds)->delete();
         }
     }
 

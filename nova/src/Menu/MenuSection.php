@@ -5,6 +5,7 @@ namespace Laravel\Nova\Menu;
 use Illuminate\Support\Traits\Macroable;
 use JsonSerializable;
 use Laravel\Nova\AuthorizedToSee;
+use Laravel\Nova\Exceptions\NovaException;
 use Laravel\Nova\Fields\Collapsable;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Makeable;
@@ -132,7 +133,10 @@ class MenuSection implements JsonSerializable
     public function path($path)
     {
         $this->path = $path;
-        $this->collapsable = false;
+
+        if ($this->collapsable) {
+            throw new NovaException('Link menu sections cannot also be collapsable.');
+        }
 
         return $this;
     }
@@ -145,7 +149,10 @@ class MenuSection implements JsonSerializable
     public function collapsable()
     {
         $this->collapsable = true;
-        $this->path = null;
+
+        if ($this->path) {
+            throw new NovaException('Link menu sections cannot also be collapsable.');
+        }
 
         return $this;
     }
@@ -176,7 +183,7 @@ class MenuSection implements JsonSerializable
         return [
             'key' => md5($this->name.'-'.$this->path),
             'name' => $this->name,
-            'component' => 'menu-section',
+            'component' => $this->component,
             'items' => $this->items->authorized($request)->withoutEmptyItems()->all(),
             'collapsable' => $this->collapsable,
             'collapsedByDefault' => $this->collapsedByDefault,

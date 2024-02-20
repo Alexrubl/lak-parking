@@ -29,6 +29,11 @@ class UserPolicy
         return true;
     }
 
+        public function replicate(User $user): bool
+    {
+        return false;
+    }
+
     /**
      * Determine whether the user can create models.
      */

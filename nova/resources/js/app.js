@@ -128,7 +128,7 @@ class Nova {
     const appName = this.config('appName')
 
     await createInertiaApp({
-      title: title => (!title ? appName : `${appName} - ${title}`),
+      title: title => (!title ? appName : `${title} - ${appName}`),
       resolve: name => {
         const page = !isNil(this.pages[name])
           ? this.pages[name]

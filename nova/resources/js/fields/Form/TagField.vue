@@ -10,7 +10,7 @@
         <div class="flex items-center space-x-2">
           <SearchSearchInput
             ref="searchable"
-            :data-testid="`${field.resourceName}-search-input`"
+            :dusk="`${field.resourceName}-search-input`"
             @input="performSearch"
             :error="hasError"
             :debounce="field.debounce"

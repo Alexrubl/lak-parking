@@ -1,32 +1,36 @@
 <template>
-  <component
-    :is="componentName"
+  <Dropdown
     v-if="hasUserMenu"
     @menu-closed="handleUserMenuClosed"
-    class="flex items-center"
     :placement="dropdownPlacement"
   >
-    <DropdownTrigger
-      class="hover:bg-gray-100 dark:hover:bg-gray-700 h-10 focus:outline-none focus:ring rounded-lg flex items-center text-sm font-semibold text-gray-600 dark:text-gray-400 px-3"
-      role="navigation"
+    <Button
+      class="block shrink-0"
+      variant="ghost"
+      padding="tight"
+      trailing-icon="chevron-down"
     >
-      <Icon
-        type="finger-print"
-        :solid="true"
-        v-if="currentUser.impersonating"
-        class="w-8 h-8 mr-3"
-      />
-      <img
-        v-else-if="currentUser.avatar"
-        :alt="__(':name\'s Avatar', { name: userName })"
-        :src="currentUser.avatar"
-        class="rounded-full w-8 h-8 mr-3"
-      />
+      <span class="inline-flex items-center shrink-0 gap-2">
+        <span class="hidden lg:inline-block">
+          <Icon
+            type="finger-print"
+            :solid="true"
+            v-if="currentUser.impersonating"
+            class="w-7 h-7"
+          />
+          <img
+            v-else-if="currentUser.avatar"
+            :alt="__(':name\'s Avatar', { name: userName })"
+            :src="currentUser.avatar"
+            class="rounded-full w-7 h-7"
+          />
+        </span>
 
-      <span class="whitespace-nowrap">
-        {{ userName }}
+        <span class="whitespace-nowrap">
+          {{ userName }}
+        </span>
       </span>
-    </DropdownTrigger>
+    </Button>
 
     <template #menu>
       <DropdownMenu width="200" class="px-1">
@@ -65,7 +69,7 @@
         </nav>
       </DropdownMenu>
     </template>
-  </component>
+  </Dropdown>
   <div v-else-if="currentUser" class="flex items-center">
     <img
       v-if="currentUser.avatar"
@@ -87,8 +91,13 @@ import isNull from 'lodash/isNull'
 import omitBy from 'lodash/omitBy'
 import pickBy from 'lodash/pickBy'
 import { mapActions, mapGetters, mapMutations } from 'vuex'
+import { Button } from 'laravel-nova-ui'
 
 export default {
+  components: {
+    Button,
+  },
+
   props: {
     mobile: { type: Boolean, default: false },
   },
@@ -198,7 +207,7 @@ export default {
     },
 
     componentName() {
-      return this.mobile === true ? 'MainMenuDropdown' : 'Dropdown'
+      return 'Dropdown'
     },
 
     dropdownPlacement() {

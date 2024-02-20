@@ -24,21 +24,23 @@
       :data="actionResponseData"
     />
 
-    <Dropdown class="h-9">
-      <slot name="sr-only">
-        <span class="sr-only">{{ __('Standalone Actions') }}</span>
-      </slot>
-      <slot name="trigger">
-        <DropdownTrigger
-          :dusk="triggerDuskAttribute"
-          :show-arrow="false"
-          class="rounded hover:bg-gray-200 dark:hover:bg-gray-800 focus:outline-none focus:ring"
-        >
-          <BasicButton component="span">
-            <Icon :solid="true" type="dots-horizontal" />
-          </BasicButton>
-        </DropdownTrigger>
-      </slot>
+    <Dropdown>
+      <template #default>
+        <slot name="trigger">
+          <Button
+            @click.stop
+            :dusk="triggerDuskAttribute"
+            variant="ghost"
+            icon="ellipsis-horizontal"
+            v-tooltip="{
+              placement: 'bottom',
+              distance: 10,
+              skidding: 0,
+              content: __('Actions'),
+            }"
+          />
+        </slot>
+      </template>
 
       <template #menu>
         <DropdownMenu width="auto" class="px-1">
@@ -46,7 +48,7 @@
             :height="250"
             class="divide-y divide-gray-100 dark:divide-gray-800 divide-solid"
           >
-            <slot />
+            <slot name="menu" />
 
             <div v-if="actions.length > 0" class="py-1">
               <DropdownMenuItem
@@ -73,6 +75,7 @@
 import { useActions } from '@/composables/useActions'
 import { useStore } from 'vuex'
 const store = useStore()
+import { Button } from 'laravel-nova-ui'
 
 const emitter = defineEmits(['actionExecuted'])
 

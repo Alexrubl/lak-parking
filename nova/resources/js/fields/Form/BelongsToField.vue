@@ -9,7 +9,7 @@
       <div class="flex items-center space-x-2">
         <SearchInput
           v-if="useSearchInput"
-          :data-testid="`${field.resourceName}-search-input`"
+          :dusk="`${field.resourceName}-search-input`"
           :disabled="currentlyIsReadonly"
           @input="performResourceSearch"
           @clear="clearResourceSelection"
@@ -52,7 +52,6 @@
           v-else
           class="w-full"
           :select-classes="{ 'form-input-border-error': hasError }"
-          :data-testid="field.resourceName"
           :dusk="`${field.resourceName}-select`"
           :disabled="currentlyIsReadonly"
           :options="availableResources"

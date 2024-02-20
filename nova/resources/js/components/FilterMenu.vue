@@ -1,40 +1,21 @@
 <template>
   <Dropdown
     v-if="filters.length > 0 || softDeletes || !viaResource"
-    :class="{
-      'bg-primary-500 hover:bg-primary-600 border-primary-500':
-        filtersAreApplied,
-      'dark:bg-primary-500 dark:hover:bg-primary-600 dark:border-primary-500':
-        filtersAreApplied,
-    }"
-    :handle-internal-clicks="false"
-    class="flex h-9 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
     dusk="filter-selector"
-    @menu-opened="handleMenuOpened"
+    :should-close-on-blur="false"
   >
-    <span class="sr-only">{{ __('Filter Dropdown') }}</span>
-    <DropdownTrigger
-      :class="{
-        'text-white hover:text-white dark:text-gray-800 dark:hover:text-gray-800':
-          filtersAreApplied,
-      }"
-      class="toolbar-button px-2"
-    >
-      <Icon type="filter" />
-
-      <span
-        v-if="filtersAreApplied"
-        :class="{
-          'text-white dark:text-gray-800': filtersAreApplied,
-        }"
-        class="ml-2 font-bold"
-      >
-        {{ activeFilterCount }}
-      </span>
-    </DropdownTrigger>
+    <Button
+      :variant="filtersAreApplied ? 'solid' : 'ghost'"
+      dusk="filter-selector-button"
+      icon="funnel"
+      trailing-icon="chevron-down"
+      padding="tight"
+      :label="activeFilterCount > 0 ? activeFilterCount : ''"
+      :aria-label="__('Filter Dropdown')"
+    />
 
     <template #menu>
-      <DropdownMenu width="260">
+      <DropdownMenu width="260" dusk="filter-menu">
         <ScrollWrap :height="350" class="bg-white dark:bg-gray-900">
           <div
             ref="theForm"
@@ -42,7 +23,7 @@
           >
             <div v-if="filtersAreApplied" class="bg-gray-100">
               <button
-                class="py-2 w-full block text-xs uppercase tracking-wide text-center text-gray-500 dark:bg-gray-800 dark:hover:bg-gray-700 font-bold focus:outline-none"
+                class="py-2 w-full block text-xs uppercase tracking-wide text-center text-gray-500 dark:bg-gray-800 dark:hover:bg-gray-700 font-bold focus:outline-none focus:text-primary-500"
                 @click="handleClearSelectedFiltersClick"
               >
                 {{ __('Reset Filters') }}
@@ -103,8 +84,13 @@
 
 <script>
 import map from 'lodash/map'
+import { Button } from 'laravel-nova-ui'
 
 export default {
+  components: {
+    Button,
+  },
+
   emits: [
     'filter-changed',
     'clear-selected-filters',
@@ -135,20 +121,6 @@ export default {
       setTimeout(() => {
         this.$emit('clear-selected-filters')
       }, 500)
-    },
-
-    handleMenuOpened() {
-      this.$nextTick(() => {
-        let formFields = this.$refs.theForm.querySelectorAll(
-          'input, textarea, select'
-        )
-
-        if (formFields.length > 0) {
-          formFields[0].focus({
-            preventScroll: true,
-          })
-        }
-      })
     },
   },
 

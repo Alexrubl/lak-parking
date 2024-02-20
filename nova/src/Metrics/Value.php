@@ -186,6 +186,13 @@ abstract class Value extends RangedMetric
             ];
         }
 
+        if ($range == 'THIS_WEEK') {
+            return [
+                CarbonImmutable::now($timezone)->subWeek()->startOfWeek(),
+                CarbonImmutable::now($timezone)->subWeek()->endOfWeek(),
+            ];
+        }
+
         if ($range == 'MTD') {
             return [
                 CarbonImmutable::now($timezone)->subMonthWithoutOverflow()->startOfMonth(),
@@ -244,6 +251,13 @@ abstract class Value extends RangedMetric
             return [
                 CarbonImmutable::now($timezone)->subDay()->startOfDay(),
                 CarbonImmutable::now($timezone)->subDay()->endOfDay(),
+            ];
+        }
+
+        if ($range == 'THIS_WEEK') {
+            return [
+                CarbonImmutable::now($timezone)->startOfWeek(),
+                CarbonImmutable::now($timezone)->endOfWeek(),
             ];
         }
 

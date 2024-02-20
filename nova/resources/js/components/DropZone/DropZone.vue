@@ -33,9 +33,9 @@
       >
         <div class="flex items-center space-x-4 pointer-events-none">
           <p class="text-center pointer-events-none">
-            <DefaultButton component="div">
+            <Button as="div">
               {{ multiple ? __('Choose Files') : __('Choose File') }}
-            </DefaultButton>
+            </Button>
           </p>
 
           <p
@@ -57,6 +57,7 @@
 import { ref } from 'vue'
 import { useLocalization } from '@/composables/useLocalization'
 import { useDragAndDrop } from '@/composables/useDragAndDrop'
+import { Button } from 'laravel-nova-ui'
 
 const emit = defineEmits(['fileChanged', 'fileRemoved'])
 const { __ } = useLocalization()

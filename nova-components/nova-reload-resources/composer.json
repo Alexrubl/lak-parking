@@ -1,0 +1,29 @@
+{
+    "name": "alexrubl/nova-reload-resources",
+    "description": "Creates a Reload Resources button",
+    "keywords": [
+        "laravel",
+        "nova"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Alexrubl\\ReloadResources\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Alexrubl\\ReloadResources\\CardServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

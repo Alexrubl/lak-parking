@@ -26,12 +26,13 @@
       <div>
         <div class="text-center">
           <Dropdown v-if="currentField.repeatables.length > 1">
-            <DropdownTrigger
-              class="link-default inline-flex items-center cursor-pointer px-3 space-x-1"
+            <Button
+              variant="link"
+              icon="plus-circle"
+              trailing-icon="chevron-down"
             >
-              <span><Icon type="plus-circle" /></span>
-              <span class="font-bold">{{ __('Add item') }}</span>
-            </DropdownTrigger>
+              {{ __('Add item') }}
+            </Button>
 
             <template #menu>
               <DropdownMenu class="py-1">
@@ -41,7 +42,7 @@
                   v-for="repeatable in currentField.repeatables"
                   class="space-x-2"
                 >
-                  <span><Icon :type="repeatable.icon" /></span>
+                  <span><Icon solid :type="repeatable.icon" /></span>
                   <span>{{ repeatable.singularLabel }}</span>
                 </DropdownMenuItem>
               </DropdownMenu>
@@ -70,9 +71,12 @@ import { FormField, HandlesValidationErrors } from '@/mixins'
 import cloneDeep from 'lodash/cloneDeep'
 import { uid } from 'uid/single'
 import { computed } from 'vue'
+import { Button } from 'laravel-nova-ui'
 
 export default {
   mixins: [FormField, HandlesValidationErrors],
+
+  components: { Button },
 
   provide() {
     return {

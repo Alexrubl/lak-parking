@@ -7,21 +7,27 @@
   >
     <template #field>
       <Checkbox
-        class="mt-2"
-        @input="toggle"
-        :id="currentField.uniqueKey"
-        :name="field.name"
-        :checked="checked"
         :disabled="currentlyIsReadonly"
+        :dusk="currentField.uniqueKey"
+        :id="currentField.uniqueKey"
+        :model-value="checked"
+        :name="field.name"
+        @change="toggle"
+        class="mt-2"
       />
     </template>
   </DefaultField>
 </template>
 
 <script>
+import { Checkbox } from 'laravel-nova-ui'
 import { DependentFormField, HandlesValidationErrors } from '@/mixins'
 
 export default {
+  components: {
+    Checkbox,
+  },
+
   mixins: [HandlesValidationErrors, DependentFormField],
 
   methods: {

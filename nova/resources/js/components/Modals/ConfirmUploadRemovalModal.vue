@@ -1,10 +1,5 @@
 <template>
-  <Modal
-    :show="show"
-    data-testid="confirm-upload-removal-modal"
-    role="alertdialog"
-    size="md"
-  >
+  <Modal :show="show" role="alertdialog" size="md">
     <div
       class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden"
       style="width: 460px"
@@ -26,16 +21,14 @@
             {{ __('Cancel') }}
           </LinkButton>
 
-          <LoadingButton
+          <Button
             @click.prevent="handleConfirm"
             ref="confirmButton"
             dusk="confirm-upload-delete-button"
-            :disabled="working"
-            :processing="working"
-            component="DangerButton"
-          >
-            {{ __('Delete') }}
-          </LoadingButton>
+            :loading="working"
+            state="danger"
+            :label="__('Delete')"
+          />
         </div>
       </ModalFooter>
     </div>
@@ -43,7 +36,13 @@
 </template>
 
 <script>
+import { Button } from 'laravel-nova-ui'
+
 export default {
+  components: {
+    Button,
+  },
+
   emits: ['confirm', 'close'],
 
   props: {

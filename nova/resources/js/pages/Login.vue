@@ -48,12 +48,12 @@
       </div>
 
       <div class="flex mb-6">
-        <CheckboxWithLabel
-          :checked="form.remember"
-          @input="() => (form.remember = !form.remember)"
-        >
-          <span>{{ __('Remember me') }}</span>
-        </CheckboxWithLabel>
+        <Checkbox
+          @change="() => (form.remember = !form.remember)"
+          :model-value="form.remember"
+          dusk="remember-button"
+          :label="__('Remember me')"
+        />
 
         <div
           v-if="supportsPasswordReset || forgotPasswordPath !== false"
@@ -74,27 +74,32 @@
         </div>
       </div>
 
-      <LoadingButton
+      <Button
         class="w-full flex justify-center"
         type="submit"
-        :disabled="form.processing"
         :loading="form.processing"
       >
         <span>
           {{ __('Log In') }}
         </span>
-      </LoadingButton>
+      </Button>
     </form>
   </div>
 </template>
 
 <script>
 import Auth from '@/layouts/Auth'
+import { Button, Checkbox } from 'laravel-nova-ui'
 
 export default {
   name: 'LoginPage',
 
   layout: Auth,
+
+  components: {
+    Checkbox,
+    Button,
+  },
 
   data: () => ({
     form: Nova.form({

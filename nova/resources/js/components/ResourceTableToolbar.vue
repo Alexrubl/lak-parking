@@ -3,7 +3,7 @@
     class="flex flex-col md:flex-row md:items-center"
     :class="{
       'py-3 border-b border-gray-200 dark:border-gray-700':
-        shouldShowCheckBoxes ||
+        shouldShowCheckboxes ||
         shouldShowDeleteMenu ||
         softDeletes ||
         !viaResource ||
@@ -14,7 +14,7 @@
     <div class="flex items-center flex-1">
       <div class="md:ml-3">
         <SelectAllDropdown
-          v-if="shouldShowCheckBoxes"
+          v-if="shouldShowCheckboxes"
           :all-matching-resource-count="allMatchingResourceCount"
           :current-page-count="currentPageCount"
           @toggle-select-all="toggleSelectAll"
@@ -43,16 +43,17 @@
         </div>
 
         <!-- Resource Polling -->
-        <ResourcePollingButton
+        <Button
+          @click="togglePolling"
           v-if="shouldShowPollingToggle"
-          :currently-polling="currentlyPolling"
-          @start-polling="$emit('start-polling')"
-          @stop-polling="$emit('stop-polling')"
+          icon="clock"
+          variant="link"
+          :state="currentlyPolling ? 'default' : 'mellow'"
         />
 
         <!-- Lenses -->
         <LensSelector
-          v-if="lenses"
+          v-if="lenses?.length > 0"
           :resource-name="resourceName"
           :lenses="lenses"
         />
@@ -130,7 +131,11 @@
 </template>
 
 <script>
+import { Button } from 'laravel-nova-ui'
+
 export default {
+  components: { Button },
+
   emits: ['start-polling', 'stop-polling', 'deselect'],
 
   props: [
@@ -173,12 +178,13 @@ export default {
     'selectedResources',
     'selectedResourcesForActionSelector',
     'shouldShowActionSelector',
-    'shouldShowCheckBoxes',
+    'shouldShowCheckboxes',
     'shouldShowDeleteMenu',
     'shouldShowPollingToggle',
     'softDeletes',
     'toggleSelectAll',
     'toggleSelectAllMatching',
+    'togglePolling',
     'trashed',
     'trashedChanged',
     'trashedParameter',

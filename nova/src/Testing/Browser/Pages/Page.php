@@ -83,7 +83,7 @@ class Page extends Dusk
      */
     public function assertWithoutBreadcrumb(Browser $browser)
     {
-        $browser->assertMissing('@nova-breadcrumb');
+        $browser->assertMissing('@breadcrumbs');
     }
 
     /**
@@ -106,9 +106,8 @@ class Page extends Dusk
     public static function siteElements(): array
     {
         return [
-            '@nova-content' => '#app [data-testid="content"]',
-            '@nova-form' => '#app [data-testid="content"] form:not([data-testid="form-button"])',
-            '@nova-breadcrumb' => '#app [data-testid="content"] nav[aria-label="breadcrumb"]',
+            '@nova-content' => '[dusk="content"]',
+            '@nova-form' => '[dusk="content"]',
         ];
     }
 

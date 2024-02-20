@@ -1,10 +1,13 @@
 <template>
   <div class="h-9" v-if="hasDropDownMenuItems">
-    <Dropdown class="hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
-      <span class="sr-only">{{ __('Trash Dropdown') }}</span>
-      <DropdownTrigger class="px-2">
-        <Icon class="text-gray-500 dark:text-gray-400" type="trash" />
-      </DropdownTrigger>
+    <Dropdown>
+      <Button
+        variant="ghost"
+        padding="tight"
+        icon="trash"
+        trailing-icon="chevron-down"
+        :aria-label="__('Trash Dropdown')"
+      />
 
       <template #menu>
         <DropdownMenu
@@ -82,9 +85,14 @@
 
 <script>
 import find from 'lodash/find'
+import { Button } from 'laravel-nova-ui'
 import { InteractsWithQueryString } from '@/mixins'
 
 export default {
+  components: {
+    Button,
+  },
+
   emits: [
     'close',
     'deleteAllMatching',

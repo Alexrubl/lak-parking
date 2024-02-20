@@ -88,7 +88,7 @@ class SearchInputComponent extends Component
      */
     public function selectSearchResult(Browser $browser, $resultIndex)
     {
-        $browser->click("{$this->selector()}-result-{$resultIndex}")->pause(150);
+        $browser->click("{$this->selector()}-result-{$resultIndex}")->pause(300);
     }
 
     /**

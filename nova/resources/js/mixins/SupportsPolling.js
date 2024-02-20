@@ -22,6 +22,17 @@ export default {
     },
 
     /**
+     * Toggle polling for new resources.
+     */
+    togglePolling() {
+      if (this.currentlyPolling) {
+        this.stopPolling()
+      } else {
+        this.startPolling()
+      }
+    },
+
+    /**
      * Pause polling for new resources.
      */
     stopPolling() {

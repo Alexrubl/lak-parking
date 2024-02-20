@@ -20,6 +20,13 @@
       0 => 'Alexrubl\\Daterangefilter\\FilterServiceProvider',
     ),
   ),
+  'alexrubl/nova-reload-resources' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Alexrubl\\ReloadResources\\CardServiceProvider',
+    ),
+  ),
   'alexrubl/time-range' => 
   array (
     'providers' => 
@@ -54,6 +61,13 @@
     'providers' => 
     array (
       0 => 'Coderello\\LaravelNovaLang\\Providers\\LaravelNovaLangServiceProvider',
+    ),
+  ),
+  'digital-creative/icon-action-toolbar' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'DigitalCreative\\IconActionToolbar\\IconActionToolbarServiceProvider',
     ),
   ),
   'formfeed-uk/nova-dependable-panel' => 

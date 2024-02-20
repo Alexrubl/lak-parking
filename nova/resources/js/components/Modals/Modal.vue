@@ -9,7 +9,6 @@
             modalStyle === 'window',
           'h-full': modalStyle === 'fullscreen',
         }"
-        :tabindex="tabIndex"
         :role="role"
         :data-modal-open="show"
         :aria-modal="show"
@@ -31,136 +30,126 @@
   </teleport>
 </template>
 
-<script>
-import { mapGetters, mapMutations } from 'vuex'
+<script setup>
+import { useStore } from 'vuex'
 import filter from 'lodash/filter'
 import omit from 'lodash/omit'
-import trapFocus from '@/util/trapFocus'
+import { useFocusTrap } from '@vueuse/integrations/useFocusTrap'
+import { useEventListener } from '@vueuse/core'
+import {
+  computed,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  useAttrs,
+  watch,
+} from 'vue'
 
-export default {
-  emits: ['showing', 'closing', 'close-via-escape'],
+const modalContent = ref(null)
 
-  inheritAttrs: false,
+const { activate, deactivate } = useFocusTrap(modalContent, {
+  initialFocus: true,
+  allowOutsideClick: false,
+  escapeDeactivates: false,
+})
 
-  props: {
-    show: {
-      type: Boolean,
-      default: false,
-    },
+const attrs = useAttrs()
 
-    size: {
-      type: String,
-      default: 'xl',
-      validator: v =>
-        [
-          'sm',
-          'md',
-          'lg',
-          'xl',
-          '2xl',
-          '3xl',
-          '4xl',
-          '5xl',
-          '6xl',
-          '7xl',
-        ].includes(v),
-    },
+const emit = defineEmits(['showing', 'closing', 'close-via-escape'])
 
-    modalStyle: {
-      type: String,
-      default: 'window',
-    },
+defineOptions({ inheritAttrs: false })
 
-    role: {
-      type: String,
-      default: 'dialog',
-    },
+const props = defineProps({
+  show: { type: Boolean, default: false },
+  size: {
+    type: String,
+    default: 'xl',
+    validator: v =>
+      [
+        'sm',
+        'md',
+        'lg',
+        'xl',
+        '2xl',
+        '3xl',
+        '4xl',
+        '5xl',
+        '6xl',
+        '7xl',
+      ].includes(v),
   },
+  modalStyle: { type: String, default: 'window' },
+  role: { type: String, default: 'dialog' },
+  useFocusTrap: { type: Boolean, default: false },
+})
 
-  watch: {
-    show(showing) {
-      this.handleVisibilityChange(showing)
-    },
-  },
+watch(
+  () => props.show,
+  v => handleVisibilityChange(v)
+)
 
-  created() {
-    document.addEventListener('keydown', this.closeOnEscape)
-  },
+useEventListener(document, 'keydown', e => {
+  if (e.key === 'Escape' && props.show === true) {
+    emit('close-via-escape', e)
+  }
+})
 
-  beforeUnmount() {
+onMounted(() => {
+  if (props.show === true) handleVisibilityChange(true)
+})
+
+onBeforeUnmount(() => {
+  document.body.classList.remove('overflow-hidden')
+  Nova.resumeShortcuts()
+  if (props.useFocusTrap === true) deactivate()
+})
+
+const store = useStore()
+
+async function handleVisibilityChange(showing) {
+  await nextTick()
+
+  if (showing === true) {
+    emit('showing')
+    document.body.classList.add('overflow-hidden')
+    Nova.pauseShortcuts()
+    if (props.useFocusTrap === true) activate()
+  } else {
+    emit('closing')
     document.body.classList.remove('overflow-hidden')
     Nova.resumeShortcuts()
-    document.removeEventListener('keydown', this.closeOnEscape)
-  },
+  }
 
-  mounted() {
-    if (this.show === true) {
-      this.handleVisibilityChange(true)
-    }
-  },
-
-  methods: {
-    ...mapMutations(['allowLeavingModal', 'preventLeavingModal']),
-
-    handleVisibilityChange(showing) {
-      this.$nextTick(() => {
-        if (showing === true) {
-          this.$emit('showing')
-          document.body.classList.add('overflow-hidden')
-          Nova.pauseShortcuts()
-          trapFocus(this.$refs.modalContent)
-        } else {
-          this.$emit('closing')
-          document.body.classList.remove('overflow-hidden')
-          Nova.resumeShortcuts()
-        }
-
-        this.allowLeavingModal()
-      })
-    },
-
-    closeOnEscape(event) {
-      if (event.key === 'Escape' && this.show === true) {
-        this.$emit('close-via-escape', event)
-      }
-    },
-  },
-
-  computed: {
-    ...mapGetters(['canLeaveModal']),
-
-    tabIndex() {
-      return this.show ? 0 : -1
-    },
-
-    defaultAttributes() {
-      return omit(this.$attrs, ['class'])
-    },
-
-    sizeClasses() {
-      return {
-        sm: 'max-w-sm',
-        md: 'max-w-md',
-        lg: 'max-w-lg',
-        xl: 'max-w-xl',
-        '2xl': 'max-w-2xl',
-        '3xl': 'max-w-3xl',
-        '4xl': 'max-w-4xl',
-        '5xl': 'max-w-5xl',
-        '6xl': 'max-w-6xl',
-        '7xl': 'max-w-7xl',
-      }
-    },
-
-    contentClasses() {
-      let windowedClasses = this.modalStyle === 'window' ? this.sizeClasses : {}
-
-      return filter([
-        windowedClasses[this.size] ?? null,
-        this.modalStyle === 'fullscreen' ? 'h-full' : '',
-        this.$attrs.class,
-      ])
-    },
-  },
+  store.commit('allowLeavingModal')
 }
+
+const defaultAttributes = computed(() => {
+  return omit(attrs, ['class'])
+})
+
+const sizeClasses = computed(() => {
+  return {
+    sm: 'max-w-sm',
+    md: 'max-w-md',
+    lg: 'max-w-lg',
+    xl: 'max-w-xl',
+    '2xl': 'max-w-2xl',
+    '3xl': 'max-w-3xl',
+    '4xl': 'max-w-4xl',
+    '5xl': 'max-w-5xl',
+    '6xl': 'max-w-6xl',
+    '7xl': 'max-w-7xl',
+  }
+})
+
+const contentClasses = computed(() => {
+  let windowClasses = props.modalStyle === 'window' ? sizeClasses.value : {}
+
+  return filter([
+    windowClasses[props.size] ?? null,
+    props.modalStyle === 'fullscreen' ? 'h-full' : '',
+    attrs.class,
+  ])
+})
 </script>

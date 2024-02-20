@@ -6,7 +6,7 @@
       <SearchInput
         v-if="isSearchable"
         ref="searchable"
-        :data-testid="`${field.uniqueKey}-search-filter`"
+        :dusk="`${field.uniqueKey}-search-filter`"
         @input="performSearch"
         @clear="handleClearSelection"
         @shown="handleShowingActiveSearchInput"

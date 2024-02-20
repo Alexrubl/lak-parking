@@ -1,5 +1,4 @@
 import isNil from 'lodash/isNil'
-import { mapProps } from './propTypes'
 
 export default {
   props: {
@@ -26,7 +25,7 @@ export default {
     },
 
     /**
-     * Get field attribue value event name.
+     * Get field attribute value event name.
      */
     getFieldAttributeValueEventName(attribute) {
       return this.hasFormUniqueId === true

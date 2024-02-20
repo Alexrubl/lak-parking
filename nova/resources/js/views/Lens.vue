@@ -14,6 +14,7 @@
       class="mb-3"
       :class="{ 'mt-6': shouldShowCards }"
       v-text="lensName"
+      dusk="lens-heading"
     />
 
     <div
@@ -94,7 +95,7 @@
           selectedResourcesForActionSelector
         "
         :should-show-action-selector="shouldShowActionSelector"
-        :should-show-check-boxes="shouldShowCheckBoxes"
+        :should-show-checkboxes="shouldShowCheckboxes"
         :should-show-delete-menu="shouldShowDeleteMenu"
         :should-show-polling-toggle="shouldShowPollingToggle"
         :soft-deletes="softDeletes"
@@ -102,6 +103,7 @@
         @stop-polling="stopPolling"
         :toggle-select-all-matching="toggleSelectAllMatching"
         :toggle-select-all="toggleSelectAll"
+        :toggle-polling="togglePolling"
         :trashed-changed="trashedChanged"
         :trashed-parameter="trashedParameter"
         :trashed="trashed"
@@ -143,7 +145,7 @@
             :selected-resource-ids="selectedResourceIds"
             :actions-are-available="allActions.length > 0"
             :actions-endpoint="lensActionEndpoint"
-            :should-show-checkboxes="shouldShowCheckBoxes"
+            :should-show-checkboxes="shouldShowCheckboxes"
             :via-resource="viaResource"
             :via-resource-id="viaResourceId"
             :via-relationship="viaRelationship"

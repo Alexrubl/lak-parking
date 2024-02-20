@@ -1,10 +1,5 @@
 <template>
-  <Modal
-    data-testid="delete-resource-modal"
-    :show="show"
-    role="alertdialog"
-    size="sm"
-  >
+  <Modal :show="show" role="alertdialog" size="sm">
     <form
       @submit.prevent="handleConfirm"
       class="mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden"
@@ -26,7 +21,6 @@
         <div class="ml-auto">
           <LinkButton
             type="button"
-            data-testid="cancel-button"
             dusk="cancel-delete-button"
             @click.prevent="handleClose"
             class="mr-3"
@@ -34,16 +28,14 @@
             {{ __('Cancel') }}
           </LinkButton>
 
-          <LoadingButton
+          <Button
+            type="submit"
             ref="confirmButton"
             dusk="confirm-delete-button"
-            :processing="working"
-            :disabled="working"
-            component="DangerButton"
-            type="submit"
-          >
-            {{ __(uppercaseMode) }}
-          </LoadingButton>
+            :loading="working"
+            state="danger"
+            :label="__(uppercaseMode)"
+          />
         </div>
       </ModalFooter>
     </form>
@@ -52,8 +44,13 @@
 
 <script>
 import startCase from 'lodash/startCase'
+import { Button } from 'laravel-nova-ui'
 
 export default {
+  components: {
+    Button,
+  },
+
   emits: ['confirm', 'close'],
 
   props: {

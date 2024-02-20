@@ -12,10 +12,12 @@
         "acme/analytics": "@dev",
         "alexrubl/date-range": "@dev",
         "alexrubl/daterangefilter": "@dev",
+        "alexrubl/nova-reload-resources": "dev-main",
         "alexrubl/time-range": "@dev",
         "alexrubl/toolbar": "@dev",
         "alexrubl/video": "@dev",
         "coderello/laravel-nova-lang": "^2.0",
+        "digital-creative/icon-action-toolbar": "^0.1.1",
         "formfeed-uk/nova-dependable-panel": "^1.2",
         "ganyicz/nova-callbacks": "^1.1",
         "guzzlehttp/guzzle": "^7.2",
@@ -127,8 +129,21 @@
         {
             "type": "path",
             "url": "./nova-components/Daterangefilter"
+        },
+        {
+            "type": "path",
+            "url": "./nova-components/IconToolbar"
+        },
+        {
+            "type": "path",
+            "url": "./nova-components/icon-action-toolbar",
+            "canonical": false
+        },
+        {
+            "type": "path",
+            "url": "./nova-components/nova-reload-resources"
         }
     ],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "prefer-stable": true
 }

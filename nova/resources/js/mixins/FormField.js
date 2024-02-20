@@ -1,10 +1,10 @@
 import get from 'lodash/get'
-import isNil from 'lodash/isNil'
 import { mapProps } from './propTypes'
 import FormEvents from './FormEvents'
 
 export default {
   extends: FormEvents,
+
   props: {
     ...mapProps([
       'nested',
@@ -19,6 +19,8 @@ export default {
       'mode',
     ]),
   },
+
+  emits: ['field-changed'],
 
   data() {
     return {
@@ -86,6 +88,7 @@ export default {
 
       if (this.field) {
         this.emitFieldValueChange(this.fieldAttribute, this.value)
+        this.$emit('field-changed')
       }
     },
 

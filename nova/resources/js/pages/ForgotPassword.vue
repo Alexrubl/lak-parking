@@ -30,23 +30,27 @@
         </HelpText>
       </div>
 
-      <LoadingButton
+      <Button
         class="w-full flex justify-center"
         type="submit"
-        :disabled="form.processing"
         :loading="form.processing"
       >
         {{ __('Send Password Reset Link') }}
-      </LoadingButton>
+      </Button>
     </form>
   </LoadingView>
 </template>
 
 <script>
 import Auth from '@/layouts/Auth'
+import { Button } from 'laravel-nova-ui'
 
 export default {
   layout: Auth,
+
+  components: {
+    Button,
+  },
 
   data: () => ({
     form: Nova.form({

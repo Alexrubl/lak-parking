@@ -482,7 +482,7 @@ class ApiController extends Controller
             }
             $filename = $attribute_name.Carbon::now()->format('YmdHis').'.jpg';
             // 2. Store the image on disk.
-            \Storage::disk($disk)->put($destination_path.'/'.$filename, $image->stream('jpg', 85));
+            \Storage::disk($disk)->put($destination_path.'/'.$filename, $image->stream('jpg', 75));
             // 3. Save the path to the database
             return $destination_path . '/' . $filename;
         }
@@ -682,6 +682,7 @@ class ApiController extends Controller
             $sigur->delete();
         }
         if (!isset($data)) {
+            sleep(5);
             $data = [
                 "type" => "0ab0a061-12ec-4092-831d-33afe4f8a5f7"
             ];

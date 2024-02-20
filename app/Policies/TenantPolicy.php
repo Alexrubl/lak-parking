@@ -32,6 +32,11 @@ class TenantPolicy
         return $user->isAdmin();
     }
 
+    public function replicate(User $user): bool
+    {
+        return false;
+    }
+
     /**
      * Determine whether the user can update the model.
      */
@@ -61,6 +66,6 @@ class TenantPolicy
      */
     public function forceDelete(User $user, Tenant $tenant): bool
     {
-        return $user->isAdmin();
+        return $user->isRoot();
     }
 }

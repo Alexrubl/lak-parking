@@ -13,7 +13,7 @@
     </span>
 
     <svg
-      class="ml-2 flex-shrink-0"
+      class="ml-2 shrink-0"
       xmlns="http://www.w3.org/2000/svg"
       width="8"
       height="14"

@@ -18,6 +18,7 @@
       :level="1"
       class="mb-3 flex items-center"
       :class="{ 'mt-6': shouldShowCards && cards.length > 0 }"
+      dusk="index-heading"
     >
       <span v-html="headingTitle" />
       <button
@@ -32,7 +33,7 @@
     </Heading>
 
     <template v-if="!shouldBeCollapsed">
-      <div class="flex mb-6">
+      <div class="flex gap-2 mb-6">
         <IndexSearchInput
           v-if="resourceInformation && resourceInformation.searchable"
           :searchable="resourceInformation && resourceInformation.searchable"
@@ -46,12 +47,12 @@
             authorizedToCreate ||
             authorizedToRelate
           "
-          class="inline-flex items-center space-x-2 ml-auto"
+          class="inline-flex items-center gap-2 ml-auto"
         >
           <!-- Action Dropdown -->
           <ActionDropdown
             v-if="availableStandaloneActions.length > 0"
-            @actionExecuted="() => fetchPolicies()"
+            @actionExecuted="handleActionExecuted"
             :resource-name="resourceName"
             :via-resource="viaResource"
             :via-resource-id="viaResourceId"
@@ -73,7 +74,7 @@
             :relationship-type="relationshipType"
             :authorized-to-create="authorizedToCreate"
             :authorized-to-relate="authorizedToRelate"
-            class="flex-shrink-0"
+            class="shrink-0"
           />
         </div>
       </div>
@@ -127,7 +128,7 @@
             selectedResourcesForActionSelector
           "
           :should-show-action-selector="shouldShowActionSelector"
-          :should-show-check-boxes="shouldShowCheckBoxes"
+          :should-show-checkboxes="shouldShowCheckboxes"
           :should-show-delete-menu="shouldShowDeleteMenu"
           :should-show-polling-toggle="shouldShowPollingToggle"
           :soft-deletes="softDeletes"
@@ -135,6 +136,7 @@
           @stop-polling="stopPolling"
           :toggle-select-all-matching="toggleSelectAllMatching"
           :toggle-select-all="toggleSelectAll"
+          :toggle-polling="togglePolling"
           :trashed-changed="trashedChanged"
           :trashed-parameter="trashedParameter"
           :trashed="trashed"
@@ -175,7 +177,7 @@
               :selected-resources="selectedResources"
               :selected-resource-ids="selectedResourceIds"
               :actions-are-available="allActions.length > 0"
-              :should-show-checkboxes="shouldShowCheckBoxes"
+              :should-show-checkboxes="shouldShowCheckboxes"
               :via-resource="viaResource"
               :via-resource-id="viaResourceId"
               :via-relationship="viaRelationship"
@@ -186,7 +188,7 @@
               @reset-order-by="resetOrderBy"
               @delete="deleteResources"
               @restore="restoreResources"
-              @actionExecuted="getResources"
+              @actionExecuted="handleActionExecuted"
               ref="resourceTable"
             />
 

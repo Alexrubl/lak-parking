@@ -17,7 +17,9 @@
         "build-toolbar": "cd nova-components/Toolbar && npm run dev",
         "build-toolbar-prod": "cd nova-components/Toolbar && npm run prod",
         "build-daterangefilter": "cd nova-components/Daterangefilter && npm run dev",
-        "build-daterangefilter-prod": "cd nova-components/Daterangefilter && npm run prod"
+        "build-daterangefilter-prod": "cd nova-components/Daterangefilter && npm run prod",
+        "build-icon-toolbar": "cd nova-components/IconToolbar && npm run dev",
+        "build-icon-toolbar-prod": "cd nova-components/IconToolbar && npm run prod"
     },
     "devDependencies": {
         "@vitejs/plugin-vue": "^4.3.4",

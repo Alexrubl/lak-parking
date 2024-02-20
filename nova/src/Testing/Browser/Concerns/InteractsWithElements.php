@@ -3,6 +3,7 @@
 namespace Laravel\Nova\Testing\Browser\Concerns;
 
 use Carbon\CarbonInterface;
+use Facebook\WebDriver\Exception\WebDriverException;
 use Illuminate\Support\Env;
 use Laravel\Dusk\Browser;
 
@@ -23,15 +24,21 @@ trait InteractsWithElements
      *
      * @return void
      */
-    public function closeCurrentDropdown(Browser $browser)
+    public function closeCurrentDropdown(Browser $browser, bool $throwIfMissing = false)
     {
-        $browser->elsewhere('', function ($browser) {
-            $overlay = $browser->element('[dusk="dropdown-overlay"]');
+        try {
+            $browser->elseWhereWhenAvailable('@dropdown-teleported', function (Browser $browser) {
+                $element = $browser->element('@dropdown-overlay');
 
-            if (! is_null($overlay) && $overlay->isDisplayed()) {
-                $browser->click('@dropdown-overlay')->pause(250);
+                if (! is_null($element) && $element->isDisplayed()) {
+                    $browser->click('@dropdown-overlay')->waitUntilMissing('@dropdown-overlay');
+                }
+            });
+        } catch (WebDriverException $e) {
+            if ($throwIfMissing === true) {
+                throw $e;
             }
-        });
+        }
     }
 
     /**

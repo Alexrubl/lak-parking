@@ -1,0 +1,38 @@
+{
+    "name": "alexrubl/icon-action-toolbar",
+    "description": "Allows you to update a single column of a resource all at once.",
+    "keywords": [
+        "laravel",
+        "nova",
+        "batch-edit",
+        "toolbar"
+    ],
+    "authors": [
+        {
+            "name": "Rafael Milewski"
+        }
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.1",
+        "laravel/nova": "^4.28.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Alexrubl\\IconActionToolbar\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Alexrubl\\IconActionToolbar\\IconActionToolbarServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
+

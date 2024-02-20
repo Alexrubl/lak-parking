@@ -1,48 +1,52 @@
 <template>
   <Dropdown v-if="themeSwitcherEnabled" placement="bottom-end">
-    <DropdownTrigger
-      :show-arrow="false"
-      class="h-10 w-10 hover:text-primary-500"
-    >
-      <Icon :type="themeIcon" :class="themeColor" />
-    </DropdownTrigger>
+    <Button variant="action" :icon="themeIcon" :class="themeColor" />
+
     <template #menu>
-      <DropdownMenu>
-        <div class="flex flex-col py-1">
-          <DropdownMenuItem
-            as="button"
-            @click.prevent="toggleLightTheme"
-            class="flex themeColor-center hover:bg-gray-100 py-1"
-          >
-            <Icon :solid="true" type="sun" />
-            <span class="ml-2">{{ __('Light') }}</span>
-          </DropdownMenuItem>
+      <div>
+        <DropdownMenu>
+          <div class="flex flex-col py-1">
+            <DropdownMenuItem
+              as="button"
+              @click.prevent="toggleLightTheme"
+              class="flex themeColor-center hover:bg-gray-100 py-1"
+            >
+              <Icon :solid="true" type="sun" />
+              <span class="ml-2">{{ __('Light') }}</span>
+            </DropdownMenuItem>
 
-          <DropdownMenuItem
-            as="button"
-            @click.prevent="toggleDarkTheme"
-            class="flex items-center hover:bg-gray-100"
-          >
-            <Icon :solid="true" type="moon" />
-            <span class="ml-2">{{ __('Dark') }}</span>
-          </DropdownMenuItem>
+            <DropdownMenuItem
+              as="button"
+              @click.prevent="toggleDarkTheme"
+              class="flex items-center hover:bg-gray-100"
+            >
+              <Icon :solid="true" type="moon" />
+              <span class="ml-2">{{ __('Dark') }}</span>
+            </DropdownMenuItem>
 
-          <DropdownMenuItem
-            as="button"
-            @click.prevent="toggleSystemTheme"
-            class="flex items-center hover:bg-gray-100"
-          >
-            <Icon :solid="true" type="desktop-computer" />
-            <span class="ml-2">{{ __('System') }}</span>
-          </DropdownMenuItem>
-        </div>
-      </DropdownMenu>
+            <DropdownMenuItem
+              as="button"
+              @click.prevent="toggleSystemTheme"
+              class="flex items-center hover:bg-gray-100"
+            >
+              <Icon :solid="true" type="desktop-computer" />
+              <span class="ml-2">{{ __('System') }}</span>
+            </DropdownMenuItem>
+          </div>
+        </DropdownMenu>
+      </div>
     </template>
   </Dropdown>
 </template>
 
 <script>
+import { Button } from 'laravel-nova-ui'
+
 export default {
+  components: {
+    Button,
+  },
+
   data() {
     return {
       theme: 'system',
@@ -127,7 +131,7 @@ export default {
       return {
         light: 'sun',
         dark: 'moon',
-        system: 'desktop-computer',
+        system: 'computer-desktop',
       }[this.theme]
     },
 

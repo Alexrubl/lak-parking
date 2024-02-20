@@ -96,10 +96,10 @@
     ],
     "dusk:test": [
       "@php vendor/bin/testbench-dusk package:dusk-purge --ansi",
-      "@php vendor/bin/phpunit -c phpunit.dusk.xml"
+      "@php vendor/bin/phpunit -c phpunit.dusk.xml --stop-on-failure --stop-on-error"
     ],
     "dusk:filter": [
-      "@php vendor/bin/testbench-dusk package:dusk-purge --ansi && ./vendor/bin/phpunit -c phpunit.dusk.xml --filter"
+      "./vendor/bin/testbench-dusk package:dusk-purge --ansi && ./vendor/bin/phpunit -c phpunit.dusk.xml --filter"
     ],
     "test:local": [
       "@php vendor/bin/phpunit -c phpunit.xml --group date-field,datetime-field,external-network --testdox",
@@ -123,5 +123,5 @@
   ],
   "minimum-stability": "dev",
   "prefer-stable": true,
-  "version": "4.27.13"
+  "version": "4.31.3"
 }

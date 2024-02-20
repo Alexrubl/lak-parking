@@ -9,7 +9,8 @@
     :via-resource-id="viaResourceId"
     :via-relationship="viaRelationship"
     @update-form-status="onUpdateFormStatus"
-    :should-override-meta="mode == 'form' ? true : false"
+    @finished-loading="$emit('finished-loading')"
+    :should-override-meta="mode === 'form'"
     :form-unique-id="formUniqueId"
   />
 </template>
@@ -23,7 +24,7 @@ import {
 import { uid } from 'uid/single'
 
 export default {
-  emits: ['refresh', 'create-cancelled'],
+  emits: ['refresh', 'create-cancelled', 'finished-loading'],
 
   mixins: [PreventsFormAbandonment, PreventsModalAbandonment],
 
@@ -55,7 +56,7 @@ export default {
         resourceId: id,
       })
 
-      if (this.mode == 'form') {
+      if (this.mode === 'form') {
         return Nova.visit(redirect)
       }
 
@@ -67,7 +68,7 @@ export default {
     },
 
     handleCreateCancelled() {
-      if (this.mode == 'form') {
+      if (this.mode === 'form') {
         this.handleProceedingToPreviousPage()
         this.allowLeavingForm()
 
@@ -88,7 +89,7 @@ export default {
      * Prevent accidental abandonment only if form was changed.
      */
     onUpdateFormStatus() {
-      this.mode == 'form' ? this.updateFormStatus() : this.updateModalStatus()
+      this.mode === 'form' ? this.updateFormStatus() : this.updateModalStatus()
     },
   },
 

@@ -6,7 +6,6 @@
     size="xs"
     @change="handleSelectionChange"
     :options="actionsForSelect"
-    data-testid="action-select"
     dusk="action-select"
     selected=""
     :class="{ 'max-w-[6rem]': width === 'auto', 'w-full': width === 'full' }"

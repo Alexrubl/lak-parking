@@ -170,9 +170,11 @@ trait ResolvesActions
      */
     protected function getPivotActions(NovaRequest $request)
     {
-        $field = $this->availableFields($request)->first(function ($field) use ($request) {
+        $resource = Nova::resourceInstanceForKey($request->viaResource);
+
+        $field = $resource->availableFields($request)->first(function ($field) use ($request) {
             return isset($field->resourceName) &&
-                   $field->resourceName == $request->viaResource &&
+                   $field->resourceName == $request->resource &&
                    ($field instanceof BelongsToMany || $field instanceof MorphToMany);
         });
 

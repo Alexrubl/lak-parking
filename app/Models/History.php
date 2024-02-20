@@ -21,6 +21,6 @@ class History extends Model
 
     public function transport(): belongsTo
     {
-        return $this->belongsTo(Transport::class);
+        return $this->belongsTo(Transport::class)->withTrashed();
     }
 }

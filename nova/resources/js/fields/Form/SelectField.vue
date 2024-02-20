@@ -9,7 +9,7 @@
       <!-- Search Input -->
       <SearchInput
         v-if="!currentlyIsReadonly && isSearchable"
-        :data-testid="`${field.attribute}-search-input`"
+        :dusk="`${field.attribute}-search-input`"
         @input="performSearch"
         @clear="clearSelection"
         @selected="selectOption"

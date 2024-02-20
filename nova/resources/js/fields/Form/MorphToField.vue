@@ -14,7 +14,6 @@
               (viaRelatedResource && !shouldIgnoresViaRelatedResource) ||
               currentlyIsReadonly
             "
-            :data-testid="`${field.attribute}-type`"
             :dusk="`${field.attribute}-type`"
             :value="resourceType"
             @change="refreshResourcesForTypeChange"
@@ -55,7 +54,7 @@
           <SearchInput
             v-if="useSearchInput"
             class="w-full"
-            :data-testid="`${field.attribute}-search-input`"
+            :dusk="`${field.attribute}-search-input`"
             :disabled="currentlyIsReadonly"
             @input="performResourceSearch"
             @clear="clearResourceSelection"
@@ -117,7 +116,6 @@
             v-else
             class="w-full"
             :class="{ 'form-input-border-error': hasError }"
-            :data-testid="field.attribute"
             :dusk="`${field.attribute}-select`"
             @change="selectResourceFromSelectControl"
             :disabled="!resourceType || currentlyIsReadonly"
@@ -128,7 +126,7 @@
             <option
               value=""
               :disabled="!currentField.nullable"
-              :selected="selectedResourceId == ''"
+              :selected="selectedResourceId === ''"
             >
               {{ __('Choose') }} {{ fieldTypeName }}
             </option>

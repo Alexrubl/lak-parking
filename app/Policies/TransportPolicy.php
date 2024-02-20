@@ -107,6 +107,11 @@ class TransportPolicy
      */
     public function forceDelete(User $user, Transport $transport): bool
     {
-        return $user->isAdmin();
+        return $user->isRoot();
+    }
+
+    public function replicate(User $user, Transport $transport): bool
+    {
+        return false;
     }
 }

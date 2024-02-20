@@ -177,7 +177,9 @@ export default {
      * Toggle the selection of all resources
      */
     toggleSelectAll(e) {
-      e.preventDefault()
+      if (e) {
+        e.preventDefault()
+      }
 
       if (this.selectAllChecked) {
         this.clearResourceSelections()
@@ -192,7 +194,9 @@ export default {
      * Toggle the selection of all matching resources in the database
      */
     toggleSelectAllMatching(e) {
-      e.preventDefault()
+      if (e) {
+        e.preventDefault()
+      }
 
       if (!this.selectAllMatchingResources) {
         this.selectAllResources()
@@ -325,6 +329,11 @@ export default {
         [this.pageParameter]: 1,
         [this.searchParameter]: this.search,
       })
+    },
+
+    handleActionExecuted() {
+      this.fetchPolicies()
+      this.getResources()
     },
   },
 
@@ -470,7 +479,7 @@ export default {
     /**
      * Determine whether to show the selection checkboxes for resources
      */
-    shouldShowCheckBoxes() {
+    shouldShowCheckboxes() {
       return (
         Boolean(this.hasResources) &&
         Boolean(

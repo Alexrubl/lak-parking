@@ -1,60 +1,55 @@
 <template>
-  <div
-    v-bind="$attrs"
-    :data-testid="dataTestid"
-    :dusk="dataTestid"
-    ref="searchInputContainer"
-  >
-    <div class="relative">
-      <div
-        ref="input"
-        @click.stop="open"
-        @focus="open"
-        @keydown.down.prevent="open"
-        @keydown.up.prevent="open"
-        :class="{
-          'ring dark:border-gray-500 dark:ring-gray-700': show,
-          'form-input-border-error': error,
-          'bg-gray-50 dark:bg-gray-700': disabled || readOnly,
-        }"
-        class="relative flex items-center form-control form-input-bordered form-select pr-6"
-        :tabindex="show ? -1 : 0"
-        :aria-expanded="show === true ? 'true' : 'false'"
-        :dusk="`${dataTestid}-selected`"
-      >
-        <IconArrow
-          v-if="shouldShowDropdownArrow && !disabled"
-          class="pointer-events-none form-select-arrow"
-        />
+  <div v-bind="$attrs" :dusk="dusk" ref="searchInputContainer">
+    <div
+      ref="input"
+      @click.stop="open"
+      @focus="open"
+      @keydown.down.prevent="open"
+      @keydown.up.prevent="open"
+      :class="{
+        'ring dark:border-gray-500 dark:ring-gray-700': show,
+        'form-input-border-error': error,
+        'bg-gray-50 dark:bg-gray-700': disabled || readOnly,
+      }"
+      class="relative flex items-center form-control form-input-bordered form-select pr-6"
+      :tabindex="show ? -1 : 0"
+      :aria-expanded="show === true ? 'true' : 'false'"
+      :dusk="`${dusk}-selected`"
+    >
+      <IconArrow
+        v-if="shouldShowDropdownArrow && !disabled"
+        class="pointer-events-none form-select-arrow"
+      />
 
-        <slot name="default">
-          <div class="text-gray-400 dark:text-gray-400">
-            {{ __('Click to choose') }}
-          </div>
-        </slot>
-      </div>
-
-      <button
-        type="button"
-        @click.stop="clear"
-        v-if="!shouldShowDropdownArrow && !disabled"
-        tabindex="-1"
-        class="absolute p-2 inline-block right-[4px]"
-        style="top: 6px"
-        :dusk="`${dataTestid}-clear-button`"
-      >
-        <svg
-          class="block fill-current icon h-2 w-2"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="278.046 126.846 235.908 235.908"
-        >
-          <path
-            d="M506.784 134.017c-9.56-9.56-25.06-9.56-34.62 0L396 210.18l-76.164-76.164c-9.56-9.56-25.06-9.56-34.62 0-9.56 9.56-9.56 25.06 0 34.62L361.38 244.8l-76.164 76.165c-9.56 9.56-9.56 25.06 0 34.62 9.56 9.56 25.06 9.56 34.62 0L396 279.42l76.164 76.165c9.56 9.56 25.06 9.56 34.62 0 9.56-9.56 9.56-25.06 0-34.62L430.62 244.8l76.164-76.163c9.56-9.56 9.56-25.06 0-34.62z"
-          />
-        </svg>
-      </button>
+      <slot name="default">
+        <div class="text-gray-400 dark:text-gray-400">
+          {{ __('Click to choose') }}
+        </div>
+      </slot>
     </div>
 
+    <button
+      type="button"
+      @click.stop="clear"
+      v-if="!shouldShowDropdownArrow && !disabled"
+      tabindex="-1"
+      class="absolute p-2 inline-block right-[4px]"
+      style="top: 6px"
+      :dusk="`${dusk}-clear-button`"
+    >
+      <svg
+        class="block fill-current icon h-2 w-2"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="278.046 126.846 235.908 235.908"
+      >
+        <path
+          d="M506.784 134.017c-9.56-9.56-25.06-9.56-34.62 0L396 210.18l-76.164-76.164c-9.56-9.56-25.06-9.56-34.62 0-9.56 9.56-9.56 25.06 0 34.62L361.38 244.8l-76.164 76.165c-9.56 9.56-9.56 25.06 0 34.62 9.56 9.56 25.06 9.56 34.62 0L396 279.42l76.164 76.165c9.56 9.56 25.06 9.56 34.62 0 9.56-9.56 9.56-25.06 0-34.62L430.62 244.8l76.164-76.163c9.56-9.56 9.56-25.06 0-34.62z"
+        />
+      </svg>
+    </button>
+  </div>
+
+  <teleport to="body">
     <div
       v-if="show"
       ref="dropdown"
@@ -82,17 +77,17 @@
         class="relative overflow-y-scroll text-sm"
         tabindex="-1"
         style="max-height: 155px"
-        :dusk="`${dataTestid}-results`"
+        :dusk="`${dusk}-results`"
       >
         <div
           v-for="(option, index) in data"
-          :dusk="`${dataTestid}-result-${index}`"
+          :dusk="`${dusk}-result-${index}`"
           :key="getTrackedByKey(option)"
           :ref="index === selected ? 'selected' : null"
           @click.stop="choose(option)"
-          class="px-3 py-1.5 cursor-pointer"
+          class="px-3 py-1.5 cursor-pointer z-[50]"
           :class="{
-            'border-t border-gray-100 dark:border-gray-700': index != 0,
+            'border-t border-gray-100 dark:border-gray-700': index !== 0,
             [`search-input-item-${index}`]: true,
             'hover:bg-gray-100 dark:hover:bg-gray-800': index !== selected,
             'bg-primary-500 text-white dark:text-gray-900': index === selected,
@@ -103,10 +98,8 @@
       </div>
     </div>
 
-    <teleport to="body">
-      <Backdrop @click="close" :show="show" class="z-[35]" />
-    </teleport>
-  </div>
+    <Backdrop @click="close" :show="show" class="z-[30]" />
+  </teleport>
 </template>
 
 <script>
@@ -122,7 +115,7 @@ export default {
   inheritAttrs: false,
 
   props: {
-    dataTestid: {},
+    dusk: {},
     disabled: {
       type: Boolean,
       default: false,
@@ -312,7 +305,7 @@ export default {
       if (
         !(
           this.$refs.searchInputContainer &&
-          (this.$refs.searchInputContainer == e.target ||
+          (this.$refs.searchInputContainer === e.target ||
             this.$refs.searchInputContainer.contains(e.target))
         )
       ) {
@@ -323,7 +316,7 @@ export default {
 
   computed: {
     shouldShowDropdownArrow() {
-      return this.value == '' || this.value == null || !this.clearable
+      return this.value === '' || this.value == null || !this.clearable
     },
   },
 }

@@ -71,14 +71,13 @@
         </HelpText>
       </div>
 
-      <LoadingButton
+      <Button
         class="w-full flex justify-center"
         type="submit"
-        :disabled="form.processing"
         :loading="form.processing"
       >
         {{ __('Reset Password') }}
-      </LoadingButton>
+      </Button>
     </form>
   </div>
 </template>
@@ -86,9 +85,14 @@
 <script>
 import Cookies from 'js-cookie'
 import Auth from '@/layouts/Auth'
+import { Button } from 'laravel-nova-ui'
 
 export default {
   layout: Auth,
+
+  components: {
+    Button,
+  },
 
   props: ['email', 'token'],
 
