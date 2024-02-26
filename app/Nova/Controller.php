@@ -169,4 +169,14 @@ class Controller extends Resource
             Number::make('Пауза', 'pausa')->default(60)->help('пауза перед отправкой запроса на закрытие после открытия, в сек.'),
         ];        
     }
+
+    public static function redirectAfterCreate(NovaRequest $request, $resource)
+    {
+        return '/resources/'.static::uriKey();
+    }
+
+    public static function redirectAfterUpdate(NovaRequest $request, $resource)
+    {
+        return '/resources/'.static::uriKey();
+    }
 }

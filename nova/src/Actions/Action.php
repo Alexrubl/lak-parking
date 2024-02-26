@@ -203,6 +203,13 @@ class Action implements JsonSerializable
     public $modalStyle = 'window';
 
     /**
+     * Indicates if the action is authorized to run.
+     *
+     * @var bool|null
+     */
+    public $authorizedToRunAction = null;
+
+    /**
      * The closure used to handle the action.
      *
      * @var (\Closure(\Laravel\Nova\Fields\ActionFields, \Illuminate\Support\Collection):(mixed))|null
@@ -481,7 +488,7 @@ class Action implements JsonSerializable
      */
     public function authorizedToRun(Request $request, $model)
     {
-        return $this->runCallback ? call_user_func($this->runCallback, $request, $model) : true;
+        return $this->authorizedToRunAction = value($this->runCallback ?? true, $request, $model);
     }
 
     /**
@@ -966,6 +973,7 @@ class Action implements JsonSerializable
             'confirmButtonText' => Nova::__($this->confirmButtonText),
             'confirmText' => Nova::__($this->confirmText),
             'destructive' => $this instanceof DestructiveAction,
+            'authorizedToRun' => $this->authorizedToRunAction,
             'name' => $this->name(),
             'uriKey' => $this->uriKey(),
             'fields' => FieldCollection::make($this->fields($request))

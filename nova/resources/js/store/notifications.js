@@ -28,6 +28,11 @@ export default {
       state.unreadNotifications = unread
     },
 
+    async markNotificationAsUnread({ state, dispatch }, id) {
+      await Nova.request().post(`/nova-api/nova-notifications/${id}/unread`)
+      dispatch('fetchNotifications')
+    },
+
     async markNotificationAsRead({ state, dispatch }, id) {
       await Nova.request().post(`/nova-api/nova-notifications/${id}/read`)
       dispatch('fetchNotifications')

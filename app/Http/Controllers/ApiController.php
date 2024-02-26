@@ -51,7 +51,7 @@ class ApiController extends Controller
         
         // Для сигура
         $sigur = new Sigur;
-        $sigur->controller_id = $controller->id;
+        $sigur->controller_id = $this->getChannelId($controller->id, $request->entry) ;
         $sigur->number = $request->plate;
         $sigur->direction = $request->entry == 'in' ? 'up' : 'down';
         $sigur->save();
@@ -693,11 +693,32 @@ class ApiController extends Controller
     }
 
     public function sigurGetChannels(Request $request) {
-        info('GetChannels');
-        $controllers = Controller::all();
-        foreach ($controllers as $key => $value) {
-            $data['channels'][] = ['id' => (string) $value->id, 'name' => $value->name];
+        //info('GetChannels');
+        $controllers = Controller::active()->get();
+        $data = [];
+        foreach ($controllers as $conkey => $cont) {
+            foreach ($cont->cameras as $camkey => $camera) {
+                if ($camera['fields']['active']) {
+                    $data['channels'][] = ['id' => $this->translit(mb_strtolower(str_replace(" ", "-", $cont->name) .'-'.(string) $cont->id.'-'.str_replace(" ", "-", $camera['fields']['name']).'-'.($camkey +1))), 'name' => $cont->name.'. '.$camera['fields']['name']];
+                }
+            }
+            
         }
         return response()->json($data, 200);
+    }
+
+    public function getChannelId($id, $entry) {
+        $cont = Controller::find($id);
+        foreach ($cont->cameras as $key => $cam) {
+            if ($cam['fields']['entry'] == $entry) {
+                return $this->translit(mb_strtolower(str_replace(" ", "-", $cont->name) .'-'.(string) $cont->id.'-'.str_replace(" ", "-", $cam['fields']['name']).'-'.($key +1)));
+            } 
+        }
+    }
+
+    function translit($str) {
+        $rus = array('А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ё', 'Ж', 'З', 'И', 'Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С', 'Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ъ', 'Ы', 'Ь', 'Э', 'Ю', 'Я', 'а', 'б', 'в', 'г', 'д', 'е', 'ё', 'ж', 'з', 'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ', 'ы', 'ь', 'э', 'ю', 'я');
+        $lat = array('A', 'B', 'V', 'G', 'D', 'E', 'E', 'Gh', 'Z', 'I', 'Y', 'K', 'L', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U', 'F', 'H', 'C', 'Ch', 'Sh', 'Sch', 'I', 'Y', 'Y', 'E', 'Yu', 'Ya', 'a', 'b', 'v', 'g', 'd', 'e', 'e', 'gh', 'z', 'i', 'y', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'f', 'h', 'c', 'ch', 'sh', 'sch', 'i', 'y', 'y', 'e', 'yu', 'ya');
+        return str_replace($rus, $lat, $str);
     }
 }

@@ -19,9 +19,14 @@ class Controller extends Model
         'cameras' => 'array'
     ];
 
-    public function scopeApikey(Builder $query, string $apikey): void
+    public function scopeApikey(Builder $query, string $apikey)
     {
-        $query->where('apikey', $apikey);
+       return $query->where('apikey', $apikey);
+    }
+
+    public function scopeActive($query)
+    {
+       return $query->where('active', 1);
     }
     
 }

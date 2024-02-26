@@ -105,7 +105,7 @@ class HasMany implements Preset
             });
 
         if ($deletableIds->isNotEmpty()) {
-            $model->{$attribute}()->whereKey($deletableIds)->delete();
+            $model->{$attribute}()->whereIn($uniqueField, $deletableIds)->delete();
         }
     }
 

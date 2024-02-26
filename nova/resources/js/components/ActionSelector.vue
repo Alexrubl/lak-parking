@@ -96,11 +96,16 @@ const handleSelectionChange = event => {
 }
 
 const actionsForSelect = computed(() => [
-  ...availableActions.value.map(a => ({ value: a.uriKey, label: a.name })),
+  ...availableActions.value.map(a => ({
+    value: a.uriKey,
+    label: a.name,
+    disabled: a.authorizedToRun === false,
+  })),
   ...availablePivotActions.value.map(a => ({
     group: props.pivotName,
     value: a.uriKey,
     label: a.name,
+    disabled: a.authorizedToRun === false,
   })),
 ])
 </script>

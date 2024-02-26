@@ -15,7 +15,7 @@
         'py-2': !shouldShowTight,
         'cursor-pointer': resource.authorizedToView,
       }"
-      class="td-fit pl-5 pr-5 dark:bg-gray-800 group-hover:bg-gray-50 dark:group-hover:bg-gray-900"
+      class="w-[1%] white-space-nowrap pl-5 pr-5 dark:bg-gray-800 group-hover:bg-gray-50 dark:group-hover:bg-gray-900"
       @click.stop
     >
       <Checkbox
@@ -56,7 +56,7 @@
         'py-2': !shouldShowTight,
         'cursor-pointer': resource.authorizedToView,
       }"
-      class="px-2 td-fit text-right align-middle dark:bg-gray-800 group-hover:bg-gray-50 dark:group-hover:bg-gray-900"
+      class="px-2 w-[1%] white-space-nowrap text-right align-middle dark:bg-gray-800 group-hover:bg-gray-50 dark:group-hover:bg-gray-900"
     >
       <div class="flex items-center justify-end space-x-0 text-gray-400">
         <InlineActionDropdown
@@ -194,6 +194,7 @@ export default {
   emits: ['actionExecuted'],
 
   inject: [
+    'resourceHasId',
     'authorizedToViewAnyResources',
     'authorizedToUpdateAnyResources',
     'authorizedToDeleteAnyResources',
@@ -266,7 +267,9 @@ export default {
     },
 
     handleClick(e) {
-      if (this.clickAction === 'edit') {
+      if (this.resourceHasId === false) {
+        return
+      } else if (this.clickAction === 'edit') {
         return this.navigateToEditView(e)
       } else if (this.clickAction === 'select') {
         return this.toggleSelection()
@@ -380,7 +383,9 @@ export default {
     },
 
     clickableRow() {
-      if (this.clickAction === 'edit') {
+      if (this.resourceHasId === false) {
+        return false
+      } else if (this.clickAction === 'edit') {
         return this.resource.authorizedToUpdate
       } else if (this.clickAction === 'select') {
         return this.shouldShowCheckboxes
@@ -405,9 +410,10 @@ export default {
 
     userHasAnyOptions() {
       return (
-        this.resource.authorizedToReplicate ||
-        this.shouldShowPreviewLink ||
-        this.canBeImpersonated
+        this.resourceHasId &&
+        (this.resource.authorizedToReplicate ||
+          this.shouldShowPreviewLink ||
+          this.canBeImpersonated)
       )
     },
 

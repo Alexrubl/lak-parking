@@ -11,6 +11,7 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Makeable;
 use Laravel\Nova\URL;
 use Laravel\Nova\WithBadge;
+use Laravel\Nova\WithIcon;
 
 /**
  * @method static static make(string $name, array|iterable $items = [], string $icon = 'collection')
@@ -20,6 +21,7 @@ class MenuSection implements JsonSerializable
     use AuthorizedToSee;
     use Makeable;
     use WithBadge;
+    use WithIcon;
     use Macroable;
     use Collapsable;
 
@@ -45,13 +47,6 @@ class MenuSection implements JsonSerializable
     public $items;
 
     /**
-     * the menu's icon.
-     *
-     * @var string
-     */
-    public $icon;
-
-    /**
      * The menu's path.
      *
      * @var string|null
@@ -69,7 +64,7 @@ class MenuSection implements JsonSerializable
     {
         $this->name = $name;
         $this->items = new MenuCollection($items);
-        $this->icon = $icon;
+        $this->withIcon($icon);
     }
 
     /**
@@ -181,16 +176,16 @@ class MenuSection implements JsonSerializable
         $url = ! empty($this->path) ? URL::make($this->path) : null;
 
         return [
-            'key' => md5($this->name.'-'.$this->path),
-            'name' => $this->name,
-            'component' => $this->component,
-            'items' => $this->items->authorized($request)->withoutEmptyItems()->all(),
-            'collapsable' => $this->collapsable,
-            'collapsedByDefault' => $this->collapsedByDefault,
-            'icon' => $this->icon,
-            'path' => (string) $url,
             'active' => optional($url)->active() ?? false,
             'badge' => $this->resolveBadge(),
+            'collapsable' => $this->collapsable,
+            'collapsedByDefault' => $this->collapsedByDefault,
+            'component' => $this->component,
+            'icon' => $this->icon,
+            'items' => $this->items->authorized($request)->withoutEmptyItems()->all(),
+            'key' => md5($this->name.'-'.$this->path),
+            'name' => $this->name,
+            'path' => (string) $url,
         ];
     }
 }

@@ -228,6 +228,13 @@ class Nova
     public static $withThemeSwitcher = true;
 
     /**
+     * Indicates if Nova's notification center should show unread count.
+     *
+     * @var bool
+     */
+    public static $showUnreadCountInNotificationCenter = false;
+
+    /**
      * Get the current Nova version.
      *
      * @return string
@@ -1026,6 +1033,9 @@ class Nova
                 'themeSwitcherEnabled' => function () {
                     return static::$withThemeSwitcher;
                 },
+                'showUnreadCountInNotificationCenter' => function () {
+                    return static::$showUnreadCountInNotificationCenter;
+                },
                 'withAuthentication' => static::$withAuthentication,
                 'withPasswordReset' => static::$withPasswordReset,
                 'customLoginPath' => config('nova.routes.login', false),
@@ -1066,7 +1076,9 @@ class Nova
      */
     public static function checkLicenseValidity()
     {
-        return true;
+        return Cache::remember('nova_valid_license_key', 3600, function () {
+            return true;
+        });
     }
 
     /**
@@ -1417,7 +1429,7 @@ class Nova
     {
         return Blade::render('
             <p class="text-center">Powered by <a class="link-default" href="https://nova.laravel.com">Laravel Nova</a> · v{!! $version !!}</p>
-            <p class="text-center">&copy; {!! $year !!} Laravel LLC &middot; by Taylor Otwell and David Hemphill.</p>
+            <p class="text-center">&copy; {!! $year !!} Laravel Holdings Inc.</p>
         ', [
             'version' => static::version(),
             'year' => date('Y'),
@@ -1546,5 +1558,17 @@ class Nova
         }
 
         return new Support\PendingTranslation($key, $replace, $locale);
+    }
+
+    /**
+     * Enable unread notifications count in the notification center.
+     *
+     * @return static
+     */
+    public static function showUnreadCountInNotificationCenter()
+    {
+        static::$showUnreadCountInNotificationCenter = true;
+
+        return new static;
     }
 }

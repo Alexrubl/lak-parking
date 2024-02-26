@@ -200,7 +200,9 @@ export default {
 
     formattedValue() {
       if (!this.isNullValue) {
-        return this.prefix + Nova.formatNumber(String(this.value), this.format)
+        return (
+          this.prefix + Nova.formatNumber(new String(this.value), this.format)
+        )
       }
 
       return ''
@@ -208,10 +210,7 @@ export default {
 
     tooltipFormattedValue() {
       if (!this.isNullValue) {
-        return (
-          this.prefix +
-          Nova.formatNumber(String(this.value), this.tooltipFormat)
-        )
+        return this.value
       }
 
       return ''
@@ -219,10 +218,7 @@ export default {
 
     tooltipFormattedPreviousValue() {
       if (!this.isNullPreviousValue) {
-        return (
-          this.prefix +
-          Nova.formatNumber(String(this.previous), this.tooltipFormat)
-        )
+        return this.previous
       }
 
       return ''

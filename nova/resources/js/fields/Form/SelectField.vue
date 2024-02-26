@@ -13,13 +13,14 @@
         @input="performSearch"
         @clear="clearSelection"
         @selected="selectOption"
-        :error="hasError"
+        :has-error="hasError"
         :value="selectedOption"
         :data="filteredOptions"
         :clearable="currentField.nullable"
         trackBy="value"
         class="w-full"
         :mode="mode"
+        :disabled="currentlyIsReadonly"
       >
         <!-- The Selected Option Slot -->
         <div v-if="selectedOption" class="flex items-center">
@@ -45,7 +46,7 @@
         v-model:selected="value"
         @change="handleChange"
         class="w-full"
-        :select-classes="{ 'form-input-border-error': hasError }"
+        :has-error="hasError"
         :options="currentField.options"
         :disabled="currentlyIsReadonly"
       >
@@ -75,7 +76,7 @@ export default {
     if (this.field.value) {
       let selectedOption = find(
         this.field.options,
-        v => v.value == this.field.value
+        v => v.value === this.field.value
       )
 
       this.$nextTick(() => {
@@ -145,7 +146,7 @@ export default {
     handleChange(value) {
       let selectedOption = find(
         this.currentField.options,
-        v => v.value == value
+        v => v.value === value
       )
 
       this.selectOption(selectedOption)
@@ -162,13 +163,13 @@ export default {
         hasValue = true
         currentSelectedOption = find(
           this.currentField.options,
-          v => v.value == this.selectedOption.value
+          v => v.value === this.selectedOption.value
         )
       }
 
       let selectedOption = find(
         this.currentField.options,
-        v => v.value == this.currentField.value
+        v => v.value === this.currentField.value
       )
 
       if (isNil(currentSelectedOption)) {

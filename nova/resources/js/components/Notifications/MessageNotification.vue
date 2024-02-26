@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-white dark:bg-gray-800 flex items-start py-4 px-4 space-x-4"
+    class="relative flex items-start px-4 gap-4"
     :dusk="`notification-${notification.id}`"
   >
     <div class="shrink-0">
@@ -30,38 +30,19 @@
         :label="notification.actionText"
         size="small"
       />
-
-      <div class="flex items-start -ml-3">
-        <Button
-          @click.stop="handleDeleteClick"
-          dusk="delete-button"
-          variant="ghost"
-          size="small"
-          leading-icon="trash"
-          :label="__('Delete')"
-        />
-
-        <Button
-          @click.stop="$emit('mark-as-read')"
-          dusk="mark-as-read-button"
-          variant="ghost"
-          size="small"
-          leading-icon="eye"
-          :label="__('Mark Read')"
-        />
-      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapMutations } from 'vuex'
 import { Button } from 'laravel-nova-ui'
 
 export default {
   components: {
     Button,
   },
+
+  emits: ['delete-notification', 'toggle-mark-as-read', 'toggle-notifications'],
 
   name: 'MessageNotification',
 
@@ -73,12 +54,10 @@ export default {
   },
 
   methods: {
-    ...mapMutations(['toggleNotifications']),
-
     handleClick() {
-      this.toggleNotifications()
+      this.$emit('toggle-mark-as-read')
+      this.$emit('toggle-notifications')
       this.visit()
-      this.$emit('hide')
     },
 
     handleDeleteClick() {

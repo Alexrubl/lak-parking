@@ -2,6 +2,7 @@
 
 namespace Laravel\Nova;
 
+use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Actions\ActionCollection;
 use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\MorphToMany;
@@ -29,25 +30,15 @@ trait ResolvesActions
                     ->filter->authorizedToSee($request);
 
         if (optional($resource)->exists === true) {
-            return $actions->filter->authorizedToRun($request, $resource)->values();
+            return $actions->each->authorizedToRun($request, $resource)->values();
         }
 
         if (! is_null($resources = $request->selectedResources())) {
-            $rejectedActions = collect();
-
-            $resources->each(function ($resource) use ($request, $actions, $rejectedActions) {
-                $actions->each(function ($action) use ($request, $resource, $rejectedActions) {
-                    if (! $action->authorizedToRun($request, $resource)) {
-                        $rejectedActions->push($action->uriKey());
-                    }
-                });
+            $resources->each(function ($resource) use ($request, $actions) {
+                $actions->each->authorizedToRun($request, $resource);
             });
 
-            return $actions->reject(function ($action) use ($rejectedActions) {
-                return $rejectedActions->contains(function ($value) use ($action) {
-                    return $action->uriKey() === $value;
-                });
-            })->values();
+            return $actions->values();
         }
 
         return $actions->values();
@@ -67,25 +58,15 @@ trait ResolvesActions
                     ->authorizedToSeeOnIndex($request);
 
         if (optional($resource)->exists === true) {
-            return $actions->filter->authorizedToRun($request, $resource)->values();
+            return $actions->each->authorizedToRun($request, $resource)->values();
         }
 
         if (! is_null($resources = $request->selectedResources())) {
-            $rejectedActions = collect();
-
-            $resources->each(function ($resource) use ($request, $actions, $rejectedActions) {
-                $actions->each(function ($action) use ($request, $resource, $rejectedActions) {
-                    if (! $action->authorizedToRun($request, $resource)) {
-                        $rejectedActions->push($action->uriKey());
-                    }
-                });
+            $resources->each(function ($resource) use ($request, $actions) {
+                $actions->each->authorizedToRun($request, $resource);
             });
 
-            return $actions->reject(function ($action) use ($rejectedActions) {
-                return $rejectedActions->contains(function ($value) use ($action) {
-                    return $action->uriKey() === $value;
-                });
-            })->values();
+            return $actions->values();
         }
 
         return $actions->values();
@@ -101,7 +82,9 @@ trait ResolvesActions
     {
         return $this->resolveActions($request)
                     ->authorizedToSeeOnDetail($request)
-                    ->filter->authorizedToRun($request, $this->resource)
+                    ->each(function (Action $a) use ($request) {
+                        $a->authorizedToRun($request, $this->resource);
+                    })
                     ->values();
     }
 
@@ -115,7 +98,9 @@ trait ResolvesActions
     {
         return $this->resolveActions($request)
                     ->authorizedToSeeOnTableRow($request)
-                    ->filter->authorizedToRun($request, $this->resource)
+                    ->each(function (Action $a) use ($request) {
+                        $a->authorizedToRun($request, $this->resource);
+                    })
                     ->values();
     }
 
@@ -175,7 +160,8 @@ trait ResolvesActions
         $field = $resource->availableFields($request)->first(function ($field) use ($request) {
             return isset($field->resourceName) &&
                    $field->resourceName == $request->resource &&
-                   ($field instanceof BelongsToMany || $field instanceof MorphToMany);
+                   ($field instanceof BelongsToMany || $field instanceof MorphToMany) &&
+                   $field->manyToManyRelationship === $request->viaRelationship;
         });
 
         if ($field && isset($field->actionsCallback)) {

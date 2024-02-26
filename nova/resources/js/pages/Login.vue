@@ -16,8 +16,8 @@
         <label class="block mb-2" for="email">{{ __('Email Address') }}</label>
         <input
           v-model="form.email"
-          class="form-control form-input form-input-bordered w-full"
-          :class="{ 'form-input-border-error': form.errors.has('email') }"
+          class="form-control form-input form-control-bordered w-full"
+          :class="{ 'form-control-bordered-error': form.errors.has('email') }"
           id="email"
           type="email"
           name="email"
@@ -34,8 +34,10 @@
         <label class="block mb-2" for="password">{{ __('Password') }}</label>
         <input
           v-model="form.password"
-          class="form-control form-input form-input-bordered w-full"
-          :class="{ 'form-input-border-error': form.errors.has('password') }"
+          class="form-control form-input form-control-bordered w-full"
+          :class="{
+            'form-control-bordered-error': form.errors.has('password'),
+          }"
           id="password"
           type="password"
           name="password"

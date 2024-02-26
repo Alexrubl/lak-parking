@@ -260,4 +260,14 @@ class Transport extends Resource
     public static function afterSave(Request $request, $model) {
   
     }
+
+    public static function redirectAfterCreate(NovaRequest $request, $resource)
+    {
+        return '/resources/'.static::uriKey();
+    }
+
+    public static function redirectAfterUpdate(NovaRequest $request, $resource)
+    {
+        return '/resources/'.static::uriKey();
+    }
 }

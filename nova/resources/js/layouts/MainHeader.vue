@@ -31,10 +31,12 @@
           dusk="global-search-component"
         />
 
-        <div class="flex items-center pl-6 ml-auto">
+        <div class="isolate relative flex items-center pl-6 ml-auto">
           <ThemeDropdown />
-          <NotificationCenter v-if="notificationCenterEnabled" />
-          <div class="hidden md:flex ml-2">
+          <div class="relative z-50">
+            <NotificationCenter v-if="notificationCenterEnabled" />
+          </div>
+          <div class="relative z-[40] hidden md:flex ml-2">
             <UserMenu />
           </div>
         </div>

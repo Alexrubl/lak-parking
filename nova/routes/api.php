@@ -38,6 +38,7 @@ use Laravel\Nova\Http\Controllers\NotificationDeleteController;
 use Laravel\Nova\Http\Controllers\NotificationIndexController;
 use Laravel\Nova\Http\Controllers\NotificationReadAllController;
 use Laravel\Nova\Http\Controllers\NotificationReadController;
+use Laravel\Nova\Http\Controllers\NotificationUnreadController;
 use Laravel\Nova\Http\Controllers\PivotFieldDestroyController;
 use Laravel\Nova\Http\Controllers\RelatableAuthorizationController;
 use Laravel\Nova\Http\Controllers\ResourceAttachController;
@@ -98,6 +99,7 @@ Route::get('/dashboards/cards/{dashboard}', DashboardCardController::class);
 Route::get('/nova-notifications', NotificationIndexController::class);
 Route::post('/nova-notifications/read-all', NotificationReadAllController::class);
 Route::post('/nova-notifications/{notification}/read', NotificationReadController::class);
+Route::post('/nova-notifications/{notification}/unread', NotificationUnreadController::class);
 Route::delete('/nova-notifications/', NotificationDeleteAllController::class);
 Route::delete('/nova-notifications/{notification}', NotificationDeleteController::class);
 

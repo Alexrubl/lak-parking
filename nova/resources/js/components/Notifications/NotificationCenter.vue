@@ -6,10 +6,20 @@
       @click.stop="toggleNotifications"
       dusk="notifications-dropdown"
     >
-      <span
-        v-if="unreadNotifications"
-        class="absolute border-[3px] border-white dark:border-gray-800 top-[3px] right-[4px] inline-block bg-red-500 rounded-full w-4 h-4"
-      />
+      <template v-if="unreadNotifications">
+        <!-- Notification Indicator w/ Count -->
+        <span
+          v-if="shouldShowUnreadCount"
+          v-html="unreadNotifications > 99 ? '99+' : unreadNotifications"
+          class="font-black tracking-normal absolute border-[3px] border-white dark:border-gray-800 top-[-5px] left-[15px] inline-flex items-center justify-center bg-primary-500 rounded-full text-white text-xxs p-[0px] px-1 min-w-[26px]"
+        />
+
+        <!-- Notification Indicator -->
+        <span
+          v-else
+          class="absolute border-[3px] border-white dark:border-gray-800 top-0 right-[3px] inline-block bg-primary-500 rounded-full w-4 h-4"
+        />
+      </template>
     </Button>
   </div>
 
@@ -32,6 +42,7 @@
         <div
           class="relative divide-y divide-gray-200 dark:divide-gray-700 shadow bg-gray-100 dark:bg-gray-800 w-[20rem] ml-auto border-b border-gray-200 dark:border-gray-700 overflow-x-hidden overflow-y-scroll"
         >
+          <!-- Notification Header -->
           <nav
             v-if="notifications.length > 0"
             class="bg-white dark:bg-gray-800 flex items-center h-14 px-4"
@@ -61,7 +72,6 @@
                       <DropdownMenuItem
                         as="button"
                         @click="handleDeleteAllNotifications"
-                        destructive
                       >
                         {{ __('Delete all notifications') }}
                       </DropdownMenuItem>
@@ -72,37 +82,13 @@
             </div>
           </nav>
 
-          <div
+          <!-- Notification List -->
+          <NotificationList
             v-if="notifications.length > 0"
-            class="divide-y divide-gray-200 dark:divide-gray-600"
-            dusk="notifications-content"
-          >
-            <div
-              v-for="notification in notifications"
-              :key="notification.id"
-              class="dark:border-gray-600"
-            >
-              <!-- Leave the extra div below, it allows the side border to work correctly -->
-              <div
-                class="border-l-4"
-                :class="{
-                  'border-white dark:border-gray-800': notification.read_at,
-                  'border-red-500 dark:border-red-500': !notification.read_at,
-                }"
-              >
-                <component
-                  :is="notification.component || `MessageNotification`"
-                  :notification="notification"
-                  @hide="toggleNotifications"
-                  @delete-notification="
-                    () => deleteNotification(notification.id)
-                  "
-                  @mark-as-read="() => markNotificationAsRead(notification.id)"
-                />
-              </div>
-            </div>
-          </div>
+            :notifications="notifications"
+          />
 
+          <!-- No Notifications -->
           <div v-else class="py-12">
             <p class="text-center">
               <svg
@@ -182,7 +168,11 @@ export default {
     ]),
 
     handleDeleteAllNotifications() {
-      if (confirm('Are you sure you want to delete all the notifications?')) {
+      if (
+        confirm(
+          this.__('Are you sure you want to delete all the notifications?')
+        )
+      ) {
         this.deleteAllNotifications()
       }
     },
@@ -195,6 +185,10 @@ export default {
       'notifications',
       'unreadNotifications',
     ]),
+
+    shouldShowUnreadCount() {
+      return Nova.config('showUnreadCountInNotificationCenter')
+    },
   },
 }
 </script>

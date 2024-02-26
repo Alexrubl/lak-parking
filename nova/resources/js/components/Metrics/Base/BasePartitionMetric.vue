@@ -30,9 +30,8 @@
 
       <div
         ref="chart"
-        class="right-[20px]"
-        :class="chartClasses"
-        style="width: 90px; height: 90px; bottom: 30px; top: calc(50% + 15px)"
+        class="absolute top-[calc(50%+15px)] right-[20px] bottom-[30px] translate-y-1/2 rounded-b-lg ct-chart mr-4 w-[90px] h-[90px]"
+        :class="{ invisible: this.currentTotal <= 0 }"
       />
     </div>
   </LoadingCard>
@@ -131,13 +130,7 @@ export default {
 
   computed: {
     chartClasses() {
-      return [
-        'vertical-center',
-        'rounded-b-lg',
-        'ct-chart',
-        'mr-4',
-        this.currentTotal <= 0 ? 'invisible' : '',
-      ]
+      return []
     },
 
     formattedChartData() {
