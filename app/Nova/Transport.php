@@ -23,6 +23,7 @@ use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Laravel\Nova\Panel;
 use Laravel\Nova\Nova;
+use App\Nova\Metrics\inTransport;
 use Laravel\Nova\Actions\Action;
 use Formfeed\DependablePanel\DependablePanel;
 use Alexrubl\DateRange\DateRange;
@@ -81,6 +82,7 @@ class Transport extends Resource
             $query->whereIn('tenant_id', $tenant_id);
         }
     }
+
 
     /**
      * Get the fields displayed by the resource.
@@ -174,7 +176,7 @@ class Transport extends Resource
     {
         return [
             // \Alexrubl\Toolbar\Toolbar::make(),
-            // new ReloadResources
+            inTransport::make()->refreshWhenFiltersChange()->width('1/4')->icon('question-mark-circle'),
         ];
     }
 
@@ -215,12 +217,13 @@ class Transport extends Resource
             \App\Nova\Actions\CreateGuestTransport::make()
             ->standalone()->onlyOnIndex()
             ->icon('<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 0 1 0 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 0 1 0-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375Z" />
-                </svg>
-                '),
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 0 1 0 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 0 1 0-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375Z" />
+                    </svg>'),
             Action::using('Закрыть доступ', function (ActionFields $fields, Collection $models) {
                 $models->each->update(['access' => false]);
-            })->icon('ban'),            
+            })->icon('<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                      </svg>'),            
         ];
     }
 

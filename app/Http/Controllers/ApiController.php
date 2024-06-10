@@ -50,11 +50,13 @@ class ApiController extends Controller
         }
         
         // Для сигура
-        $sigur = new Sigur;
-        $sigur->controller_id = $this->getChannelId($controller->id, $request->entry) ;
-        $sigur->number = $request->plate;
-        $sigur->direction = $request->entry == 'in' ? 'up' : 'down';
-        $sigur->save();
+        if (nova_get_setting('active_sigur_exchange', false)) {
+            $sigur = new Sigur;
+            $sigur->controller_id = $this->getChannelId($controller->id, $request->entry) ;
+            $sigur->number = $request->plate;
+            $sigur->direction = $request->entry == 'in' ? 'up' : 'down';
+            $sigur->save();
+        }
         // Конец блока для сигура  
 
         $transport = Transport::where('number', $request->plate)->first();
@@ -86,9 +88,12 @@ class ApiController extends Controller
             } else {
                 $transport->inside = 0;
                 if ($transport->guest == true) {
-                    $transport->access= 0;                    
-                }  
-                $transport->save();             
+                    $transport->access= 0;
+                    $transport->save();
+                    $transport->delete();                    
+                } else { 
+                    $transport->save();
+                }             
             } 
             $tenant->balance -= $sum; 
             $tenant->count_credit = $tenant->balance < 1 ? $tenant->count_credit + 1 : 0;             

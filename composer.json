@@ -27,11 +27,13 @@
         "laravel/nova": "*",
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
+        "maatwebsite/laravel-nova-excel": "^1.3",
         "norman-huth/nova-radio-field": "^1.1",
         "outl1ne/nova-settings": "^5.2",
         "pavloniym/nova-action-buttons": "^1.1",
         "pbmedia/laravel-ffmpeg": "^8.3",
         "php-junior/nova-logs": "^1.1",
+        "psr/simple-cache": "^3.0",
         "simplesquid/nova-advanced-number-field": "^3.1",
         "symfony/process": "^6.3",
         "titasgailius/search-relations": "^2.0",
@@ -142,6 +144,11 @@
         {
             "type": "path",
             "url": "./nova-components/nova-reload-resources"
+        },
+        {
+            "type": "path",
+            "url": "./nova-components/Laravel-Nova-Excel",
+            "canonical": false
         }
     ],
     "minimum-stability": "dev",

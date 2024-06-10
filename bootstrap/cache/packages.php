@@ -148,6 +148,24 @@
       0 => 'Laravel\\Ui\\UiServiceProvider',
     ),
   ),
+  'maatwebsite/excel' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Maatwebsite\\Excel\\ExcelServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Excel' => 'Maatwebsite\\Excel\\Facades\\Excel',
+    ),
+  ),
+  'maatwebsite/laravel-nova-excel' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Maatwebsite\\LaravelNovaExcel\\LaravelNovaExcelServiceProvider',
+    ),
+  ),
   'nesbot/carbon' => 
   array (
     'providers' => 

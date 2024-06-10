@@ -4,7 +4,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\CkassaController;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -39,3 +38,4 @@ Route::post('createPass', [ApiController::class, 'createPass']);
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+

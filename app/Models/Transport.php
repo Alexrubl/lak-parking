@@ -64,6 +64,11 @@ class Transport extends Model
     |--------------------------------------------------------------------------
     */
 
+    public function scopeInside($query)
+    {
+        return $query->where('inside', 1);
+    }
+
     /*
     |--------------------------------------------------------------------------
     | ACCESSORS
