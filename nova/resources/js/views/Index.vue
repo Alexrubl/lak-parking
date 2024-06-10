@@ -282,6 +282,7 @@ export default {
     this.getLenses()
 
     Nova.$on('refresh-resources', this.getResources)
+    Nova.$on('resources-detached', this.getAuthorizationToRelate)
 
     if (this.actionCanceller !== null) this.actionCanceller()
   },
@@ -297,6 +298,7 @@ export default {
     }
 
     Nova.$off('refresh-resources', this.getResources)
+    Nova.$off('resources-detached', this.getAuthorizationToRelate)
 
     if (this.actionCanceller !== null) this.actionCanceller()
   },

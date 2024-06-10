@@ -23,13 +23,13 @@ use Laravel\Nova\Util;
 abstract class Field extends FieldElement implements JsonSerializable, Resolvable
 {
     use DependentFields;
+    use HandlesValidation;
     use HasHelpText;
     use Macroable;
     use PeekableFields;
     use PreviewableFields;
     use SupportsFullWidthFields;
     use Tappable;
-    use HandlesValidation;
 
     const LEFT_ALIGN = 'left';
 

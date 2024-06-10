@@ -14,7 +14,8 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Date extends Field implements FilterableField
 {
-    use FieldFilterable, SupportsDependentFields;
+    use FieldFilterable;
+    use SupportsDependentFields;
 
     /**
      * The field's component.

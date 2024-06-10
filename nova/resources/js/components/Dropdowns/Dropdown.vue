@@ -13,6 +13,8 @@ import {
   h,
   mergeProps,
   nextTick,
+  onBeforeUnmount,
+  onMounted,
   ref,
   Teleport,
   Transition,
@@ -48,6 +50,20 @@ export default {
       allowOutsideClick: true,
     })
 
+    const usesFocusTrap = ref(true)
+
+    const hasTrapFocus = computed(() => {
+      return menuShown.value === true && usesFocusTrap.value === true
+    })
+
+    const disableModalFocusTrap = () => {
+      usesFocusTrap.value = false
+    }
+
+    const enableModalFocusTrap = () => {
+      usesFocusTrap.value = true
+    }
+
     useCloseOnEsc(() => (menuShown.value = false))
 
     const dropdownButtonLabel = computed(
@@ -81,12 +97,24 @@ export default {
     })
 
     watch(
-      () => menuShown.value,
+      () => hasTrapFocus,
       async v => {
         await nextTick()
         v ? activate() : deactivate()
       }
     )
+
+    onMounted(() => {
+      Nova.$on('disable-focus-trap', disableModalFocusTrap)
+      Nova.$on('enable-focus-trap', enableModalFocusTrap)
+    })
+
+    onBeforeUnmount(() => {
+      Nova.$off('disable-focus-trap', disableModalFocusTrap)
+      Nova.$off('enable-focus-trap', enableModalFocusTrap)
+
+      usesFocusTrap.value = false
+    })
 
     return () => {
       const children = renderSlotFragments(slots.default())

@@ -130,7 +130,7 @@
           <Backdrop
             @click="closeSearch"
             :show="showOverlay"
-            class="bg-gray-500 dark:bg-gray-900 opacity-75 z-0"
+            class="bg-gray-500/75 dark:bg-gray-900/75 z-0"
           />
         </transition>
       </teleport>

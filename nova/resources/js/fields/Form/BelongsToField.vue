@@ -107,6 +107,7 @@ import {
   TogglesTrashed,
 } from '@/mixins'
 import filled from '@/util/filled'
+import findIndex from 'lodash/findIndex'
 
 export default {
   mixins: [
@@ -238,7 +239,7 @@ export default {
 
             if (
               isNil(selectedResource) &&
-              !this.shouldIgnoresViaRelatedResource
+              !this.shouldIgnoreViaRelatedResource
             ) {
               return Nova.visit('/404')
             }
@@ -287,13 +288,34 @@ export default {
      * Toggle the trashed state of the search
      */
     toggleWithTrashed() {
-      // Reload the data if the component doesn't have selected resource
-      if (!filled(this.selectedResource)) {
-        this.withTrashed = !this.withTrashed
+      let currentlySelectedResource
+      let currentlySelectedResourceId
 
-        if (!this.useSearchInput) {
-          this.getAvailableResources()
-        }
+      if (filled(this.selectedResource)) {
+        currentlySelectedResource = this.selectedResource
+        currentlySelectedResourceId = this.selectedResource.value
+      }
+
+      this.withTrashed = !this.withTrashed
+
+      this.selectedResource = null
+      this.selectedResourceId = null
+
+      if (!this.useSearchInput) {
+        this.getAvailableResources().then(() => {
+          let index = findIndex(this.availableResources, r => {
+            return r.value === currentlySelectedResourceId
+          })
+
+          if (index > -1) {
+            this.selectedResource = this.availableResources[index]
+            this.selectedResourceId = currentlySelectedResourceId
+          } else {
+            // We didn't find the resource anymore, so let's remove the selection...
+            this.selectedResource = null
+            this.selectedResourceId = null
+          }
+        })
       }
     },
 
@@ -449,7 +471,7 @@ export default {
     shouldLoadFirstResource() {
       return (
         (this.initializingWithExistingResource &&
-          !this.shouldIgnoresViaRelatedResource) ||
+          !this.shouldIgnoreViaRelatedResource) ||
         Boolean(this.currentlyIsReadonly && this.selectedResourceId)
       )
     },
@@ -502,7 +524,7 @@ export default {
       return this.availableResources
     },
 
-    shouldIgnoresViaRelatedResource() {
+    shouldIgnoreViaRelatedResource() {
       return this.viaRelatedResource && filled(this.search)
     },
 
