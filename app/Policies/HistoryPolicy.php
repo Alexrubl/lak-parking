@@ -37,30 +37,30 @@ class HistoryPolicy
     //  */
     public function update(User $user, History $history): bool
     {
-         return $user->isRoot();
+        return $user->isRoot();
     }
 
-    // /**
-    //  * Determine whether the user can delete the model.
-    //  */
-    // public function delete(User $user, History $history): bool
-    // {
-    //     return true;
-    // }
+    /**
+     * Determine whether the user can delete the model.
+     */
+    public function delete(User $user, History $history): bool
+    {
+        return $user->isRoot();
+    }
 
-    // /**
-    //  * Determine whether the user can restore the model.
-    //  */
-    // public function restore(User $user, History $history): bool
-    // {
-    //     return true;
-    // }
+    /**
+     * Determine whether the user can restore the model.
+     */
+    public function restore(User $user, History $history): bool
+    {
+        return $user->isRoot();
+    }
 
-    // /**
-    //  * Determine whether the user can permanently delete the model.
-    //  */
-    // public function forceDelete(User $user, History $history): bool
-    // {
-    //     return true;
-    // }
+    /**
+     * Determine whether the user can permanently delete the model.
+     */
+    public function forceDelete(User $user, History $history): bool
+    {
+        return $user->isRoot();
+    }
 }

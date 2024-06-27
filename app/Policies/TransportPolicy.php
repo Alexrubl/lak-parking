@@ -112,6 +112,6 @@ class TransportPolicy
 
     public function replicate(User $user, Transport $transport): bool
     {
-        return true;
+        return false;
     }
 }

@@ -39,8 +39,8 @@ class Rate extends Model
         info($this);
         if ($this->type == 'Разовый') {
             foreach ($this->items as $key => $value) {          
-                if ($value['fields']['тип_тс'] == $transport->type->id) {
-                    return $value['fields']['Price']; 
+                if ($value['fields']['type_transport'] == $transport->type->id) {
+                    return $value['fields']['price']; 
                 }
             }
         }
@@ -52,8 +52,8 @@ class Rate extends Model
             if (isset($history) && $history->created_at > Carbon::now()->startOfDay()) {
             } else {
                 foreach ($this->items as $key => $value) {          
-                    if ($value['fields']['тип_тс'] == $transport->type->id) {
-                        return $value['fields']['Price']; 
+                    if ($value['fields']['type_transport'] == $transport->type->id) {
+                        return $value['fields']['price']; 
                     }
                 }
                 //info('Надо списать...');                
