@@ -10,9 +10,9 @@ use Laravel\Nova\Fields\Password;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Fields\MorphToMany;
-use Vyuldashev\NovaPermission\PermissionBooleanGroup;
-use Vyuldashev\NovaPermission\RoleBooleanGroup;
-use Vyuldashev\NovaPermission\RoleSelect;
+use Alexrubl\NovaPermission\PermissionBooleanGroup;
+use Alexrubl\NovaPermission\RoleBooleanGroup;
+use Alexrubl\NovaPermission\RoleSelect;
 use Laravel\Nova\Fields\BelongsToMany;
 
 class User extends Resource
@@ -94,8 +94,8 @@ class User extends Resource
 
             RoleSelect::make('Роль', 'roles')->canSee(fn () => $request->user()->isAdmin()),
             
-            // MorphToMany::make('Roles', 'roles', \Vyuldashev\NovaPermission\Role::class)->canSee(fn () => $request->user()->isAdmin()),
-            // MorphToMany::make('Permissions', 'permissions', \Vyuldashev\NovaPermission\Permission::class)->canSee(fn () => $request->user()->isAdmin()),
+            // MorphToMany::make('Roles', 'roles', \Alexrubl\NovaPermission\Role::class)->canSee(fn () => $request->user()->isAdmin()),
+            // MorphToMany::make('Permissions', 'permissions', \Alexrubl\NovaPermission\Permission::class)->canSee(fn () => $request->user()->isAdmin()),
 
         ];
     }

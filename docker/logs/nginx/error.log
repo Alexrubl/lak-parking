@@ -1,11 +1,2 @@
-2023/11/05 00:21:40 [emerg] 13#13: cannot load certificate "/etc/nginx/ssl/fullchain.pem": BIO_new_file() failed (SSL: error:80000002:system library::No such file or directory:calling fopen(/etc/nginx/ssl/fullchain.pem, r) error:10000080:BIO routines::no such file)
-2023/12/12 00:00:00 [notice] 63#63: signal process started
-2023/12/12 00:00:00 [notice] 64#64: signal process started
-2023/12/12 00:00:00 [notice] 62#62: signal process started
-2023/12/12 00:00:00 [notice] 65#65: signal process started
-2023/12/12 00:00:00 [notice] 66#66: signal process started
-2023/12/12 00:00:00 [notice] 67#67: signal process started
-2023/12/28 00:00:00 [notice] 229#229: signal process started
-2024/02/08 00:00:00 [notice] 190#190: signal process started
-2024/02/12 11:58:45 [emerg] 13#13: host not found in upstream "php-fpm:9000" in /etc/nginx/conf.d/upstream.conf:1
-2024/03/20 00:00:00 [notice] 134#134: signal process started
+2024/07/14 15:56:14 [emerg] 13#13: host not found in upstream "php-fpm:8000" in /etc/nginx/conf.d/upstream.conf:1
+2024/07/15 03:32:47 [emerg] 13#13: cannot load certificate "/etc/nginx/certs/server.pem": BIO_new_file() failed (SSL: error:80000002:system library::No such file or directory:calling fopen(/etc/nginx/certs/server.pem, r) error:10000080:BIO routines::no such file)

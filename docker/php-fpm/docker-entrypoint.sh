@@ -30,6 +30,7 @@ fi
 . ~/.bashrc
 
 # Start the cron service.
+#service supervisor start
 service cron start
 
 # Toggle xdebug
@@ -55,4 +56,22 @@ elif [ -f /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini ]; then
   rm -rf /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 fi
 
-exec "$@"
+if [ ! -z "$WWWUSER" ]; then
+    usermod -u $WWWUSER sail
+fi
+
+if [ ! -d /.composer ]; then
+    mkdir /.composer
+fi
+
+chmod -R ugo+rw /.composer
+
+# # if [ $# -gt 0 ]; then
+# #     echo "$@"
+# # #    exec gosu $WWWUSER "$@"
+# # else
+#   echo "Запуск Супервизора"
+exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
+# # fi
+
+#exec "$@"

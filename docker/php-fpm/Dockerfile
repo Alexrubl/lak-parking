@@ -3,6 +3,9 @@ FROM php:8.2-fpm
 MAINTAINER support@cyber-duck.co.uk
 
 ENV COMPOSER_MEMORY_LIMIT='-1'
+ARG WWWGROUP
+
+WORKDIR /var/www/html
 
 RUN apt-get update && \
     apt-get install -y --force-yes --no-install-recommends \
@@ -24,9 +27,11 @@ RUN apt-get update && \
     libreadline-dev \
     libgmp-dev \
     mariadb-client \
-    unzip
-
-RUN apt-get -y install ffmpeg
+    unzip \
+    mc \
+    supervisor \
+    gosu \
+    ffmpeg
 
 # Install soap extention
 RUN docker-php-ext-install soap
@@ -96,7 +101,7 @@ RUN pecl install memcached && docker-php-ext-enable memcached
 
 # Install composer and add its bin to the PATH.
 RUN curl -s http://getcomposer.org/installer | php && \
-    echo "export PATH=${PATH}:/var/www/vendor/bin" >> ~/.bashrc && \
+    echo "export PATH=${PATH}:/var/www/html/vendor/bin" >> ~/.bashrc && \
     mv composer.phar /usr/local/bin/composer
 # Source the bash
 RUN . ~/.bashrc
@@ -105,8 +110,11 @@ RUN . ~/.bashrc
 # Laravel Schedule Cron Job:
 #####################################
 
-RUN echo "* * * * * www-data /usr/local/bin/php /var/www/artisan schedule:run >> /dev/null 2>&1"  >> /etc/cron.d/laravel-scheduler
-RUN chmod 0644 /etc/cron.d/laravel-scheduler
+RUN echo "* * * * * www-data /usr/local/bin/php /var/www/html/artisan schedule:run >> /dev/null 2>&1"  >> /etc/cron.d/laravel-scheduler
+RUN chmod 0644 /etc/cron.d/laravel-scheduler \ 
+    && crontab /etc/cron.d/laravel-scheduler \ 
+    && touch /var/log/cron.log
+
 
 #
 #--------------------------------------------------------------------------
@@ -120,40 +128,42 @@ ADD ./laravel.ini /usr/local/etc/php/conf.d
 # Aliases:
 #####################################
 # docker-compose exec php-fpm dep --> locally installed Deployer binaries
-RUN echo '#!/bin/bash\n/usr/local/bin/php /var/www/vendor/bin/dep "$@"' > /usr/bin/dep
+RUN echo '#!/bin/bash\n/usr/local/bin/php /var/www/html/vendor/bin/dep "$@"' > /usr/bin/dep
 RUN chmod +x /usr/bin/dep
 # docker-compose exec php-fpm art --> php artisan
-RUN echo '#!/bin/bash\n/usr/local/bin/php /var/www/artisan "$@"' > /usr/bin/art
+RUN echo '#!/bin/bash\n/usr/local/bin/php /var/www/html/artisan "$@"' > /usr/bin/art
 RUN chmod +x /usr/bin/art
 # docker-compose exec php-fpm migrate --> php artisan migrate
-RUN echo '#!/bin/bash\n/usr/local/bin/php /var/www/artisan migrate "$@"' > /usr/bin/migrate
+RUN echo '#!/bin/bash\n/usr/local/bin/php /var/www/html/artisan migrate "$@"' > /usr/bin/migrate
 RUN chmod +x /usr/bin/migrate
 # docker-compose exec php-fpm fresh --> php artisan migrate:fresh --seed
-RUN echo '#!/bin/bash\n/usr/local/bin/php /var/www/artisan migrate:fresh --seed' > /usr/bin/fresh
+RUN echo '#!/bin/bash\n/usr/local/bin/php /var/www/html/artisan migrate:fresh --seed' > /usr/bin/fresh
 RUN chmod +x /usr/bin/fresh
 # docker-compose exec php-fpm t --> run the tests for the project and generate testdox
-RUN echo '#!/bin/bash\n/usr/local/bin/php /var/www/artisan config:clear\n/var/www/vendor/bin/phpunit -d memory_limit=2G --stop-on-error --stop-on-failure --testdox-text=tests/report.txt "$@"' > /usr/bin/t
+RUN echo '#!/bin/bash\n/usr/local/bin/php /var/www/html/artisan config:clear\n/var/www/html/vendor/bin/phpunit -d memory_limit=2G --stop-on-error --stop-on-failure --testdox-text=tests/report.txt "$@"' > /usr/bin/t
 RUN chmod +x /usr/bin/t
 # docker-compose exec php-fpm d --> run the Laravel Dusk browser tests for the project
-RUN echo '#!/bin/bash\n/usr/local/bin/php /var/www/artisan config:clear\n/bin/bash\n/usr/local/bin/php /var/www/artisan dusk -d memory_limit=2G --stop-on-error --stop-on-failure --testdox-text=tests/report-dusk.txt "$@"' > /usr/bin/d
+RUN echo '#!/bin/bash\n/usr/local/bin/php /var/www/html/artisan config:clear\n/bin/bash\n/usr/local/bin/php /var/www/html/artisan dusk -d memory_limit=2G --stop-on-error --stop-on-failure --testdox-text=tests/report-dusk.txt "$@"' > /usr/bin/d
 RUN chmod +x /usr/bin/d
 
 RUN rm -r /var/lib/apt/lists/*
-
 RUN usermod -u 1000 www-data
 
-RUN useradd sail
+RUN groupadd --force -g $WWWGROUP sail
+RUN useradd -ms /bin/bash --no-user-group -g $WWWGROUP -u 1337 sail
 
+# COPY start-container /usr/local/bin/start-container
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+# RUN chmod +x /usr/local/bin/start-container
 
-
-WORKDIR /var/www/html
 # Assign permissions of the working directory to the www-data user
+RUN chown -R www-data:www-data /var/www/html
 #RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 COPY ./docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 RUN ln -s /usr/local/bin/docker-entrypoint.sh /
-ENTRYPOINT ["docker-entrypoint.sh"]
 
 EXPOSE 9000
+ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["php-fpm"]

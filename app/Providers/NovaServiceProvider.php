@@ -136,13 +136,13 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     public function tools()
     {
         return [
-            \Vyuldashev\NovaPermission\NovaPermissionTool::make()
+            \Alexrubl\NovaPermission\NovaPermissionTool::make()
                 ->rolePolicy(RolePolicy::class)
                 ->permissionPolicy(PermissionPolicy::class),            
             \Outl1ne\NovaSettings\NovaSettings::make()->canSee(fn ($request) => $request->user()->isAdmin()),
-            (new \PhpJunior\NovaLogViewer\Tool())->canSee(function ($request) {
-                return $request->user()->isRoot();
-            }),
+            // (new \PhpJunior\NovaLogViewer\Tool())->canSee(function ($request) {
+            //     return $request->user()->isRoot();
+            // }),
         ];
     }
 

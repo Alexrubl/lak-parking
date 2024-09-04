@@ -1,0 +1,41 @@
+{
+    "name": "vyuldashev/nova-permission",
+    "description": "A Laravel Nova tool for Spatie's Permission library.",
+    "keywords": [
+        "laravel",
+        "nova",
+        "spatie-permission"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": "^7.4|^8.0",
+        "laravel/nova": "^4.0",
+        "spatie/laravel-permission": "^6.0"
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://nova.laravel.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Vyuldashev\\NovaPermission\\": "src/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0-dev"
+        },
+        "laravel": {
+            "providers": [
+                "Vyuldashev\\NovaPermission\\ToolServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

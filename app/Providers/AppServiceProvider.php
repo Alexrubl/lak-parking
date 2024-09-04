@@ -17,18 +17,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        
+        //
     }
 
-    /**         
+    /**
      * Bootstrap any application services.
      */
     public function boot(): void
-    {  
+    {
         Transport::observe(TransportObserver::class);
         Tenant::observe(TenantObserver::class);
         Log::observe(LogObserver::class);
     }
-
-
 }

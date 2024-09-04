@@ -31,9 +31,10 @@ use Alexrubl\TimeRange\TimeRange;
 use App\Http\Controllers\ApiController as Api;
 use Laravel\Nova\Fields\ActionFields;
 use Illuminate\Support\Collection;
+use Greg0x46\MaskedField\MaskedField;
 
 
-class Transport extends Resource    
+class Transport extends Resource
 {
     use HasCallbacks;
 
@@ -78,7 +79,7 @@ class Transport extends Resource
             $tenant_id = array();
             foreach ($request->user()->tenant as $key => $value) {
                 $tenant_id[] = $value->id;
-            }          
+            }
             $query->whereIn('tenant_id', $tenant_id);
         }
     }
@@ -103,14 +104,27 @@ class Transport extends Resource
                 ->sortable()
                 ->rules('required', 'max:255'),
 
-            Text::make('Номер ТС', 'number')
+            MaskedField::make('Номер ТС', 'number')->mask('A###AA###')
                 ->sortable()
-                ->rules('required', 'max:10')
+                ->rules('required', function($attribute, $value, $fail) {
+                    if (!preg_match("/^([a-zA-Z])\s?(\d)\s?(\d{2})\s?([a-zA-Z]{2})\s?(\d{2,3})$/ui",$value)) {
+                        return $fail('Не правильный формат номера.');
+                    }
+                    return true;
+                })
                 ->help('на английской раскладке')
                 ->creationRules('unique:transports,number')
                 ->updateRules('alpha_num:ascii','unique:transports,number,{{resourceId}}'),
-            
-            BelongsTo::make('Тип ТС', 'type', 'App\Nova\TypeTransport')->showCreateRelationButton()->rules('required'),            
+
+            MaskedField::make('UHF метка (TID)', 'uhf')->mask('########## ###,#####')->hideFromIndex(),
+
+            Select::make('Способ аутентификации ТС', 'type_auth')->options([
+                'number' => 'По номеру',
+                'uhf' => 'По метке UHF',
+                'dual' => 'Номер + метка UHF',
+            ])->default('number')->hideFromIndex(),
+
+            BelongsTo::make('Тип ТС', 'type', 'App\Nova\TypeTransport')->showCreateRelationButton()->rules('required'),
 
             BelongsTo::make('Арендатор', 'tenant', 'App\Nova\Tenant')->rules('required')
                 // ->withMeta([
@@ -129,7 +143,7 @@ class Transport extends Resource
                 //         $model->{$attribute} = $request->tenant;
                 //     }
                 // })
-                
+
                 // ->canSee(function ($request) {
                 //     if ($request->user()->tenant->count() == 1) {
                 //         return !$request->user()->isTenant();
@@ -144,16 +158,16 @@ class Transport extends Resource
                             $query->where('default_guest', true);
                         });
                     }
-                }),   
+                }),
 
-            Boolean::make('На территории', 'inside')->onlyOnIndex(),
-            
+            Boolean::make('На территории', 'inside')->onlyOnIndex()->filterable(),
+
             Boolean::make('Доступ', 'access'),
-            
+
             Boolean::make('Гостевой', 'guest'),
 
             Boolean::make('Ограничения', 'restrictions')->hideFromIndex(),
-            
+
             DependablePanel::make('Расписание', $this->scheduleFields())
                 ->dependsOn(
                     ['guest', 'restrictions'],
@@ -176,7 +190,7 @@ class Transport extends Resource
     {
         return [
             // \Alexrubl\Toolbar\Toolbar::make(),
-            inTransport::make()->refreshWhenFiltersChange()->width('1/4')->icon('question-mark-circle'),
+            inTransport::make()->refreshWhenFiltersChange()->width('1/4')->icon('question-mark-circle')->defaultRange('ALL'),
         ];
     }
 
@@ -223,7 +237,7 @@ class Transport extends Resource
                 $models->each->update(['access' => false]);
             })->icon('<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
-                      </svg>'),            
+                      </svg>'),
         ];
     }
 
@@ -232,7 +246,7 @@ class Transport extends Resource
         $model = ['From', 'To'];
         return [
             // Boolean::make('Гостевой', 'guest'),
-            
+
             AdvancedNumber::make('Ограничение по таймауту', 'time_limit')->default(0)->step(1)->hideFromIndex()->help('Задаётся в часах'),
             TimeRange::make('Временной интервал', ['fromTime', 'toTime'])->hideFromIndex(),
             DateRange::make('Период', ['fromDate', 'toDate'])->hideFromIndex(),
@@ -256,12 +270,12 @@ class Transport extends Resource
         ];
     }
 
-    public static function afterCreate(Request $request, $model) {  
-          
+    public static function afterCreate(Request $request, $model) {
+
     }
 
     public static function afterSave(Request $request, $model) {
-  
+
     }
 
     public static function redirectAfterCreate(NovaRequest $request, $resource)

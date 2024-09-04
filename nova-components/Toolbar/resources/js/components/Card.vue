@@ -42,6 +42,9 @@
                 dusk="name"
                 maxlength="-1"
               />
+              <div class="text-red-500 help-text" v-if="errorInput.name">
+                  {{ errorInput.name[0] }}
+              </div>
             </div>
           </div>
         </div>
@@ -63,6 +66,9 @@
                 dusk="driver"
                 maxlength="-1"
               />
+              <div class="text-red-500 help-text" v-if="errorInput.driver">
+                  Поле заполено неверно
+              </div>
             </div>            
           </div>
         </div>
@@ -94,6 +100,9 @@
                 dusk="number"
                 maxlength="-1"
               />
+              <div class="text-red-500 help-text" v-if="errorInput.number">
+                  {{ errorInput.number[0] }}
+              </div>
             </div>
             <p class="help-text">на английской раскладке</p>
           </div>
@@ -117,16 +126,17 @@
           >
             <div class="flex items-center space-x-2">
               <div class="flex relative w-full">
-                <select
+                <model-list-select 
+                  class="form-control form-select form-select-bordered"
+                  :list="typeTransport"
                   v-model="transport.type_id"
-                  data-testid="type-transports"
-                  dusk="type-transports-select"
-                  class="w-full block form-control form-select form-select-bordered"
-                >
-                  <option disabled="" value="">—</option>
-                  <option v-for="type in typeTransport" :value="type.id">{{ type.name }}</option>
-                </select
-                ><svg
+                  option-value="id"
+                  option-text="name"
+                ></model-list-select>
+                <div class="text-red-500 help-text" v-if="errorInput.type_id">
+                    {{ errorInput.type_id[0] }}
+                </div>
+                <!-- <svg
                   class="flex-shrink-0 pointer-events-none form-select-arrow"
                   xmlns="http://www.w3.org/2000/svg"
                   width="10"
@@ -137,7 +147,7 @@
                     class="fill-current"
                     d="M8.292893.292893c.390525-.390524 1.023689-.390524 1.414214 0 .390524.390525.390524 1.023689 0 1.414214l-4 4c-.390525.390524-1.023689.390524-1.414214 0l-4-4c-.390524-.390525-.390524-1.023689 0-1.414214.390525-.390524 1.023689-.390524 1.414214 0L5 3.585786 8.292893.292893z"
                   ></path>
-                </svg>                
+                </svg>                 -->
               </div>
             </div>
           </div>
@@ -163,6 +173,9 @@
                           @searchchange="searchTenant"
                           @update:modelValue="onSelectTenant">
                         </model-list-select>
+                        <div class="text-red-500 help-text" v-if="errorInput.tenant_id">
+                            {{ errorInput.tenant_id[0] }}
+                        </div>
                     </div>
                 </div>
             </div>            
@@ -172,17 +185,14 @@
       </ModalContent>
       <ModalFooter>
         <div class="flex items-center ml-auto">
+          <BasicButton variant="solid" state="danger" type="submit" class="mr-2" @click="showModalOpen = false"> Отмена </BasicButton>
           <DefaultButton
-            class="mr-2"
+            type="submit"
             :disabled="validate"
-            @click="
-              clickCreate();
-              showModalOpen = false;
-            "
+            @click.prevent="clickCreate();"
           >
             Создать
-          </DefaultButton>
-          <BasicButton type="submit" @click="showModalOpen = false"> Отмена </BasicButton>
+          </DefaultButton>          
         </div>
       </ModalFooter>
     </Modal>
@@ -218,7 +228,9 @@ export default {
         tenant_id: null,
       },
       tenants: [],
-      tenantItem: {}
+      tenantItem: {},
+      errorInput: {},
+      working: false
     };
   },
   computed: {
@@ -231,19 +243,28 @@ export default {
   },
   methods: {
     clickCreate() {
-      axios.post('/api/createPass', this.transport).then(response => {
+      this.working = true;
+      Nova.request().post('/nova-vendor/toolbar/createPass', this.transport).then(response => {
+        this.working = false;
+        console.log('response', response);
         if (response.status == 204) {
           Nova.success('Успешно.')
+          this.showModalOpen = false;
+          this.transport = { name: '',driver: '',number: [],type_id: null,tenant_id: null }
         }
       }).catch(error => {
-        console.log(error.response);
-        Nova.error(error.response.data.message);
-      });
+        if (error.response.status >= 410) {
+          this.working = false;
+          this.errorInput = error.response.data.errors
+          Nova.$emit('error', error.response.data.message)
+        }
+      })
     },
     async clickGuestPass() {
       this.showModalOpen = true;
-      let { data } = await axios.get('/api/getTypeTransport');
-      this.typeTransport = data;
+      Nova.request().get('/nova-vendor/toolbar/getTypeTransport').then(response => {
+          this.typeTransport = response.data
+      })
       console.log("clickGuestPass");
     },
     onSelectTenant(item) {
@@ -251,17 +272,18 @@ export default {
     },
     searchTenant(searchText) {
         console.log(searchText);
-        if(searchText.trim().length > 2) {
-            axios.get('/api/search/tenant/' + searchText.trim()).then(response => {
-                this.tenants = response.data.tenants;
-                console.log(response.data);
-            }).catch(error => {
-                console.log(error.response);
-            });
+      if (searchText.trim().length > 2) {
+          Nova.request().get('/nova-vendor/toolbar/search/tenant/' + searchText.trim()).then(response => {
+            this.tenants = response.data.tenants;
+            console.log(response.data);
+          }).catch(error => {
+            console.log(error.response);
+          });
         }
     },
   },
   async mounted() {
+
     // var { data } = await axios.get('/api/getTypeTransport');
     //console.log(this.typeTransport);
   },

@@ -22,8 +22,8 @@ use Response;
 class ApiController extends Controller
 {
     public function event(Request $request) {
-        //info('event from controller:');
-        //info($request);
+        info('event from controller:');
+        info(collect($request));
         $image_name = null;
         $count_credit = nova_get_setting('count_credit', $default = 5);
         //$data = $request;
@@ -34,21 +34,23 @@ class ApiController extends Controller
         ]);
         $controller = Controller::where('apikey', $request->apikey)->first();
         if (!isset($controller)) {
+            \Log::error('Неизвестный apikey контроллера.');
             return response()->json($fail->put('message', 'Неизвестный apikey.'), 401);
         }
 
         if (!$controller->active) {
+            \Log::error('Контроллер выключен.');
             return response()->json($fail->put('message', 'Контроллер выключен.'), 401);
         }
-    
+
         if (isset($request->UrlPhoto)) {
             try {
                 $image_name = $this->setImage($controller->ip. '/assets/img/'. $request->UrlPhoto, $controller->id.'/'.Carbon::now()->format('Ymd'));
             } catch (\Throwable $th) {
                 info($th->getMessage());
-            }            
+            }
         }
-        
+
         // Для сигура
         if (nova_get_setting('active_sigur_exchange', false)) {
             $sigur = new Sigur;
@@ -57,13 +59,13 @@ class ApiController extends Controller
             $sigur->direction = $request->entry == 'in' ? 'up' : 'down';
             $sigur->save();
         }
-        // Конец блока для сигура  
+        // Конец блока для сигура
 
         $transport = Transport::where('number', $request->plate)->first();
         if (!isset($transport) || !isset($transport->tenant)) {
             logist(($request->entry && $request->entry == "in" ? 'Запрос на въезд. ':'Запрос на выезд. ').'Номер транспорта: '.$request->plate.', доступ ЗАПРЕЩЁН (не найден транспорт с таким номером)', $image_name, Controller::where('apikey', $request->apikey)->first()->id, $request->entry);
             return response()->json($fail->put('message', 'Не найден транспорт с таким номером или некорректно заполнены данные.'), 200);
-        }            
+        }
 
         $tenant = $transport->tenant;
         $last_history_entry = History::where('transport_id', $transport->id)->orderby('id', 'desc')->first();
@@ -73,14 +75,14 @@ class ApiController extends Controller
         } catch (\Throwable $th) {
             $ev_date = Carbon::now();
         }
-        # inside - если больше 11 часов то не считается , что транспорт внутри  
+        # inside - если больше 11 часов то не считается , что транспорт внутри
         //info($ev_date);
-        $rate = $transport->rate;        
+        $rate = $transport->rate;
         if ($request->access == 'enable' || $request->access == 1) {
            // info('if $request->access == enabled');info($transport->inside <> 1);info(Carbon::parse($last_history_entry->created_at)->addHours(11) > $ev_date);
             $sum = 0;
             if ($request->entry == 'in' || $request->entry == 1) {
-                if ($transport->inside <> 1 || (isset($last_history_entry) && Carbon::parse($last_history_entry->created_at)->addHours(12) < $ev_date)) { 
+                if ($transport->inside <> 1 || (isset($last_history_entry) && Carbon::parse($last_history_entry->created_at)->addHours(12) < $ev_date)) {
                     $transport->inside = 1;
                     $sum = $rate->getPrice($transport);
                     $transport->save();
@@ -90,13 +92,13 @@ class ApiController extends Controller
                 if ($transport->guest == true) {
                     $transport->access= 0;
                     $transport->save();
-                    $transport->delete();                    
-                } else { 
+                    $transport->delete();
+                } else {
                     $transport->save();
-                }             
-            } 
-            $tenant->balance -= $sum; 
-            $tenant->count_credit = $tenant->balance < 1 ? $tenant->count_credit + 1 : 0;             
+                }
+            }
+            $tenant->balance -= $sum;
+            $tenant->count_credit = $tenant->balance < 1 ? $tenant->count_credit + 1 : 0;
             $tenant->save();
             $history = new History;
             $history->controller_id = $controller->id;
@@ -107,7 +109,7 @@ class ApiController extends Controller
             $history->price = $sum;
             $history->image = $image_name;
             $history->is_credit = $tenant->balance < 1;
-            $history->created_at = $ev_date;       
+            $history->created_at = $ev_date;
             $history->save();
 
             if ($tenant->balance < 1) {
@@ -120,7 +122,7 @@ class ApiController extends Controller
                                 NovaNotification::make()
                                     ->message('У арендатора '. $tenant->name .' отрицательный баланс!')
                                     ->type('info')
-                                
+
                             );
                             if ($user->email) {
                                 $data['text'] = 'Уведомляем Вас, что у арендатора '. $tenant->name .' отрицательный баланс!';
@@ -128,7 +130,7 @@ class ApiController extends Controller
                                 dispatch(new \App\Jobs\sendMail($data));
                             }
                         }
-                    }                    
+                    }
                 }
                 if ($tenant->count_credit > $count_credit) {  # Не блокирум и пропускаем пять раз в  кредит
                     //info('count_credit');
@@ -138,7 +140,7 @@ class ApiController extends Controller
                         } else {
                             $current_last_history_entry = History::where('transport_id', $transp->id)->orderby('id', 'desc')->first();
                         }
-                                                    # Проверка на то что транспорт больше 12 чсов на территории и его у же там возможно нет;
+                                                    # Проверка на то что транспорт больше 12 часов на территории и его у же там возможно нет;
                         if ($transp->inside == 0 || (isset($current_last_history_entry) && Carbon::parse($current_last_history_entry->created_at)->addHours(12) < $ev_date)) {
                             $transp->inside == 0;
                             $transp->access = 0;
@@ -162,7 +164,7 @@ class ApiController extends Controller
                     'message' => 'Успешно.',
                     'sum' => $sum
                 ], 200);
-        } 
+        }
 
         logist(($request->entry && $request->entry == "in" ? 'Запрос на въезд. ':'Запрос на выезд. ').'Номер транспорта: '.$request->plate.', доступ ЗАПРЕЩЁН', $image_name, Controller::where('apikey', $request->apikey)->first()->id, $request->entry);
         return response()->json($fail->put('message', 'неизвестная ошибка.'), 200);
@@ -185,11 +187,11 @@ class ApiController extends Controller
         } else {
             $transport->inside = 0;
             if ($transport->guest == true) {
-                $transport->access= 0;                    
-            }  
-            $transport->save();             
-        } 
-        $tenant->balance -= $sum;            
+                $transport->access= 0;
+            }
+            $transport->save();
+        }
+        $tenant->balance -= $sum;
         $tenant->save();
         $history = new History;
         $history->controller_id = $controller->id;
@@ -198,7 +200,7 @@ class ApiController extends Controller
         $history->comment = 'Списание, Въезд c кнопки охраны';
         $history->direction = 'in';
         $history->price = $sum;
-        $history->image = null;        
+        $history->image = null;
         $history->save();
 
         if ($tenant->balance < 1) {
@@ -210,7 +212,7 @@ class ApiController extends Controller
                             NovaNotification::make()
                                 ->message('У арендатора '. $tenant->name .' отрицательный баланс!')
                                 ->type('info')
-                            
+
                         );
                         if ($user->email) {
                             $data['text'] = 'Уведомляем Вас, что у арендатора '. $tenant->name .' отрицательный баланс!';
@@ -218,7 +220,7 @@ class ApiController extends Controller
                             dispatch(new \App\Jobs\sendMail($data));
                         }
                     }
-                }                    
+                }
             }
             foreach ($tenant->transport as $key => $transp) {
                 if ($transp->inside == 0) {
@@ -229,9 +231,9 @@ class ApiController extends Controller
         }
         logist('Запрос на въезд. Номер транспорта: '.$transport->number.', доступ c кнопки охраны. '. ($sum > 0 ? ', Списано '.$sum.' руб.' :''), null, $controller->id, 'in');
         return 0;
-    } 
-    
-    public static function sendNewTransportToControllers($transport) {  
+    }
+
+    public static function sendNewTransportToControllers($transport) {
         $controllers = Controller::all();
         foreach ($controllers as $key => $controller) {
             if (!$controller->active)  continue;
@@ -247,15 +249,17 @@ class ApiController extends Controller
                 'apikey' => $controller->apikey,
                 'request_id' => Carbon::now()->format('Ymdhms'),
                 'ev_date' => Carbon::now()->format('Y.m.d H:m:s'),
-                'create' => [ 
+                'create' => [
                     'parent' => [
                         'name' => $transport->tenant->name,
                         'id' => $transport->tenant->id,
-                        'access' => $transport->balance <= 0 ? 0 : 1, 
+                        'access' => $transport->balance <= 0 ? 0 : 1,
                     ],
                     'plate' => $transport->number,
                     'fio' => $transport->driver,
                     'access' => intval($transport->access),
+                    'authentication' => $transport->type_auth,
+                    'tid' => $transport->tid()
                 ],
                 'access' => [
                     'time_limit' => $transport->restrictions ? intval($transport->time_limit) : 0,
@@ -316,9 +320,9 @@ class ApiController extends Controller
             $transport = Transport::find($request->transport_id)->first();
             $tenant = $transport->tenant;
             $this->fixEntry($controller, $transport);
-        }       
+        }
 
-        //return response()->json(['status' => false,'message' => 'Не найден контроллер'], 200); 
+        //return response()->json(['status' => false,'message' => 'Не найден контроллер'], 200);
 
         $curl = curl_init();
 
@@ -332,7 +336,7 @@ class ApiController extends Controller
         } else {
             if(isset($controller->id_open_stream)) {
                 return response()->json(['status' => false,'message' => 'Не заполнен ID Stream'], 200);
-            } 
+            }
             $url = $controller->ip.'/api/plate/serv';
             curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'POST');
             $data = [
@@ -366,13 +370,13 @@ class ApiController extends Controller
 
         if ($err) {
             info("cURL Error #: " . $err.'. Code http status: '.$httpcode);
-            return response()->json(['message' => 'cURL Error #: '.$err, 'status' => $httpcode], 503); 
+            return response()->json(['message' => 'cURL Error #: '.$err, 'status' => $httpcode], 503);
         } else {
             info('openGate (Code http status: '.$httpcode.'):');
             info($response);
         }
         logist('Открытие проезда с кнопки охраны.');
-        return response()->json($response, 200);        
+        return response()->json($response, 200);
     }
 
     function closeGate(Request $request = null, $controller = null) {
@@ -400,7 +404,7 @@ class ApiController extends Controller
         } else {
             if(isset($controller->id_open_stream)) {
                 return response()->json(['status' => false,'message' => 'Не заполнен ID Stream'], 200);
-            } 
+            }
             $url = $controller->ip.'/api/plate/serv';
             curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'POST');
             $data = [
@@ -434,19 +438,19 @@ class ApiController extends Controller
 
         if ($err) {
             info("cURL Error #: " . $err.'. Code http status: '.$httpcode);
-            return response()->json(['message' => 'cURL Error #: '.$err, 'status' => $httpcode], 503); 
+            return response()->json(['message' => 'cURL Error #: '.$err, 'status' => $httpcode], 503);
         } else {
             info('closeGate (Code http status: '.$httpcode.'):');
             info($response);
         }
         logist('Закрытие проезда с кнопки охраны.');
-        return response()->json($response, 200);        
+        return response()->json($response, 200);
     }
 
     public function getLogs(Request $request) {
         // info($request);
         if ($request->entry == 'in') {
-            return response()->json(\App\Models\Log::where('controller_id', $request->controller_id)                                                    
+            return response()->json(\App\Models\Log::where('controller_id', $request->controller_id)
                                                     ->where('entry', $request->entry)->orWhereNull('entry')
                                                     ->latest('id')
                                                     ->take(25)
@@ -466,7 +470,7 @@ class ApiController extends Controller
             $return = 'http://' . $url;
         }
         return $return;
-    } 
+    }
 
     public function setImage($value, $path = 'images') {
         $attribute_name = "image";
@@ -493,7 +497,7 @@ class ApiController extends Controller
         }
     }
 
-    public function test_createTransport(Request $request) {        
+    public function test_createTransport(Request $request) {
         $transport = Transport::where('number', 'A456OA25')->first();
         if (!isset($transport)) {
             return response()->json(['message' => 'Не найдено авто'], 200);
@@ -506,11 +510,11 @@ class ApiController extends Controller
             'apikey' => Controller::first()->apikey,
             'request_id' => Carbon::now()->format('Ymdhms'),
             'ev_date' => Carbon::now()->format('Y.m.d H:m:s'),
-            'create' => [ 
+            'create' => [
                 'parent' => [
                         'name' => $transport->tenant->name,
                         'id' => $transport->tenant->id,
-                        'access' => $transport->balance <= 0 ? 0 : 1, 
+                        'access' => $transport->balance <= 0 ? 0 : 1,
                     ],
                 'plate' => $transport->number,
                 'fio' => $transport->driver,
@@ -600,7 +604,7 @@ class ApiController extends Controller
             ];
             $data['tenants'][] = [
                 'id' => $value->tenant->id,
-                'name' => $value->tenant->name  
+                'name' => $value->tenant->name
             ];
         }
         return response()->json($data, 200);
@@ -634,18 +638,31 @@ class ApiController extends Controller
         return response()->json(TypeTransport::all('id', 'name'), 200);
     }
 
+
+    /**
+     * [Создание разового пропуска]
+     *
+     * @param Request $request
+     *
+     * @return [type]
+     *
+     */
     function createPass(Request $request) {
-        info($request);
+        //info($request);
         $validated = $request->validate([
             'name' => 'required|max:255',
-            'number' => 'required|unique:transports',
+            'number' => 'required|max:10',
             'tenant_id' => 'required',
             'type_id' => 'required',
         ]);
-        $transport = new Transport;
-        $transport->fill($request->all());
-        $transport->rate_id = Rate::where('default_guest', 1)->first()->id;
-        $transport->save();
+        $transport = Transport::updateOrCreate(['number' => $request->number], array_merge($request->all(), [ 'rate_id' => Rate::where('default_guest', 1)->first()->id, 'access' => true ]));
+        $history = new History;
+        $history->tenant_id = isset($transport->tenant->id) ? $transport->tenant->id : \Auth::user()->tenant()->first()->id;
+        $history->transport_id = $transport->id;
+        $history->comment = 'Создание разового пропуска '. $transport->number. ' - ' . $transport->tenant->name ;
+        $history->save();
+
+        logist('Создание разового пропуска для транспорта с номером '.$transport->number.'. Создан: '.\Auth::user());
 
         return response()->noContent();
     }
@@ -657,7 +674,7 @@ class ApiController extends Controller
         // if (isset($history)){
         //     $transport = Transport::find($history->transport_id);
         //     $controller = Controller::find($history->controller_id);
-        //     if (isset($controller) && isset($transport) && isset($history->direction)) {                
+        //     if (isset($controller) && isset($transport) && isset($history->direction)) {
         //         $data = [
         //             "type" => "9183e0da-8ab7-4d86-a6d7-5745cb514032",
         //             "channelId" => (string) $controller->id,
@@ -677,7 +694,7 @@ class ApiController extends Controller
         //     "direction": "down"
         // }
         $sigur = Sigur::first();
-        if (isset($sigur)){              
+        if (isset($sigur)){
             $data = [
                 "type" => "9183e0da-8ab7-4d86-a6d7-5745cb514032",
                 "channelId" => (string) $sigur->controller_id,
@@ -707,7 +724,7 @@ class ApiController extends Controller
                     $data['channels'][] = ['id' => $this->translit(mb_strtolower(str_replace(" ", "-", $cont->name) .'-'.(string) $cont->id.'-'.str_replace(" ", "-", $camera['fields']['name']).'-'.($camkey +1))), 'name' => $cont->name.'. '.$camera['fields']['name']];
                 }
             }
-            
+
         }
         return response()->json($data, 200);
     }
@@ -717,7 +734,7 @@ class ApiController extends Controller
         foreach ($cont->cameras as $key => $cam) {
             if ($cam['fields']['entry'] == $entry) {
                 return $this->translit(mb_strtolower(str_replace(" ", "-", $cont->name) .'-'.(string) $cont->id.'-'.str_replace(" ", "-", $cam['fields']['name']).'-'.($key +1)));
-            } 
+            }
         }
     }
 

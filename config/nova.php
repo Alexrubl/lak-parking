@@ -103,7 +103,7 @@ return [
         HandleInertiaRequests::class,
         DispatchServingNovaEvent::class,
         BootTools::class,
-        \Vyuldashev\NovaPermission\ForgetCachedPermissions::class,
+        \Alexrubl\NovaPermission\ForgetCachedPermissions::class,
     ],
 
     'api_middleware' => [
@@ -123,7 +123,7 @@ return [
     |
     */
 
-    'pagination' => 'links',
+    'pagination' => 'simple',
 
     /*
     |--------------------------------------------------------------------------
@@ -149,7 +149,7 @@ return [
     |
     */
 
-    'currency' => 'RUB',
+    'currency' => 'USD',
 
     /*
     |--------------------------------------------------------------------------
@@ -165,12 +165,11 @@ return [
 
     'brand' => [
         'logo' => resource_path('/img/logo.svg'),
-        //dd(resource_path('/img/logo.svg')),
-        // 'colors' => [
-        //     "400" => "24, 182, 155, 0.5",
-        //     "500" => "24, 182, 155",
-        //     "600" => "24, 182, 155, 0.75",
-        // ]
+        'colors' => [
+            "400" => "24, 182, 155, 0.5",
+            "500" => "24, 182, 155",
+            "600" => "24, 182, 155, 0.75",
+        ]
     ],
 
     /*
@@ -203,8 +202,5 @@ return [
         'started' => '/',
         'stopped' => '/',
     ],
-
-    
-
 
 ];

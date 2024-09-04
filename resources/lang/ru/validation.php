@@ -157,6 +157,11 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'name' => 'Наименование',
+        'tenant_id' => 'Арендатор',
+        'transport_id' => 'Транспорт',
+        'number' => 'Номер транспорта'
+    ],
 
 ];

@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Models\TypeTransport;
+use App\Http\Controllers\ApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,3 +23,11 @@ use Illuminate\Support\Facades\Route;
 // Route::get('/api/getTypeTransport', function (Request $request) {
 //     info('kjhjhjhj');
 // });
+
+Route::get('getTypeTransport', function(Request $request) {
+    return response()->json(TypeTransport::all('id', 'name'), 200);
+});
+
+Route::get('search/transport/{searchText}', [ApiController::class, 'searchTransport']);
+Route::get('search/tenant/{searchText}', [ApiController::class, 'searchTenant']);
+Route::post('createPass', [ApiController::class, 'createPass']);

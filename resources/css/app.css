@@ -1,3 +1,7 @@
 .input:checked + .switch {
   background-color:cornflowerblue;
 }
+
+button[disabled] {
+  opacity: .25;
+}

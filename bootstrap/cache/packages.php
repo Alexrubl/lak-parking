@@ -1,11 +1,4 @@
 <?php return array (
-  'acme/analytics' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Acme\\Analytics\\CardServiceProvider',
-    ),
-  ),
   'alexrubl/date-range' => 
   array (
     'providers' => 
@@ -18,6 +11,13 @@
     'providers' => 
     array (
       0 => 'Alexrubl\\Daterangefilter\\FilterServiceProvider',
+    ),
+  ),
+  'alexrubl/nova-permission' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Alexrubl\\NovaPermission\\ToolServiceProvider',
     ),
   ),
   'alexrubl/nova-reload-resources' => 
@@ -48,21 +48,6 @@
       0 => 'Alexrubl\\Video\\CardServiceProvider',
     ),
   ),
-  'arcanedev/log-viewer' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Arcanedev\\LogViewer\\LogViewerServiceProvider',
-      1 => 'Arcanedev\\LogViewer\\Providers\\DeferredServicesProvider',
-    ),
-  ),
-  'coderello/laravel-nova-lang' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Coderello\\LaravelNovaLang\\Providers\\LaravelNovaLangServiceProvider',
-    ),
-  ),
   'digital-creative/icon-action-toolbar' => 
   array (
     'providers' => 
@@ -77,11 +62,11 @@
       0 => 'Formfeed\\DependablePanel\\FieldServiceProvider',
     ),
   ),
-  'formfeed-uk/nova-subfield-dependson' => 
+  'greg0x46/masked-field' => 
   array (
     'providers' => 
     array (
-      0 => 'Formfeed\\SubfieldDependsOn\\SubfieldServiceProvider',
+      0 => 'Greg0x46\\MaskedField\\FieldServiceProvider',
     ),
   ),
   'inertiajs/inertia-laravel' => 
@@ -89,24 +74,6 @@
     'providers' => 
     array (
       0 => 'Inertia\\ServiceProvider',
-    ),
-  ),
-  'intervention/image' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Intervention\\Image\\ImageServiceProvider',
-    ),
-    'aliases' => 
-    array (
-      'Image' => 'Intervention\\Image\\Facades\\Image',
-    ),
-  ),
-  'laracasts/generators' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Laracasts\\Generators\\GeneratorsServiceProvider',
     ),
   ),
   'laravel/nova' => 
@@ -231,24 +198,6 @@
       0 => 'Pavloniym\\ActionButtons\\FieldServiceProvider',
     ),
   ),
-  'pbmedia/laravel-ffmpeg' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'ProtoneMedia\\LaravelFFMpeg\\Support\\ServiceProvider',
-    ),
-    'aliases' => 
-    array (
-      'FFMpeg' => 'ProtoneMedia\\LaravelFFMpeg\\Support\\FFMpeg',
-    ),
-  ),
-  'php-junior/nova-logs' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'PhpJunior\\NovaLogViewer\\ToolServiceProvider',
-    ),
-  ),
   'rap2hpoutre/fast-excel' => 
   array (
     'providers' => 
@@ -256,21 +205,18 @@
       0 => 'Rap2hpoutre\\FastExcel\\Providers\\FastExcelServiceProvider',
     ),
   ),
+  'ryoluo/sail-ssl' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Ryoluo\\SailSsl\\SailSslServiceProvider',
+    ),
+  ),
   'simplesquid/nova-advanced-number-field' => 
   array (
     'providers' => 
     array (
-    ),
-  ),
-  'spatie/laravel-ignition' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Spatie\\LaravelIgnition\\IgnitionServiceProvider',
-    ),
-    'aliases' => 
-    array (
-      'Flare' => 'Spatie\\LaravelIgnition\\Facades\\Flare',
+      0 => 'SimpleSquid\\Nova\\Fields\\AdvancedNumber\\FieldServiceProvider',
     ),
   ),
   'spatie/laravel-permission' => 
@@ -278,13 +224,6 @@
     'providers' => 
     array (
       0 => 'Spatie\\Permission\\PermissionServiceProvider',
-    ),
-  ),
-  'vyuldashev/nova-permission' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Vyuldashev\\NovaPermission\\ToolServiceProvider',
     ),
   ),
 );

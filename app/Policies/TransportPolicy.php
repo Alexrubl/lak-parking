@@ -41,7 +41,7 @@ class TransportPolicy
             $access = true;
             if ($tenant->balance < 1) {
                 $access = false;
-                break;   
+                break;
             }
         }
         return $user->isAdmin() || ($user->isTenant() && $access);
@@ -64,7 +64,7 @@ class TransportPolicy
             $access = true;
             if ($tenant->balance < 1 && $tenant->id == $transport->tenant_id) {
                 $access = false;
-                break;   
+                break;
             }
         }
         return $user->isAdmin() || $user->isRoot() || ($user->isTenant() && $access);
@@ -80,7 +80,7 @@ class TransportPolicy
             $access = true;
             if ($tenant->balance < 1) {
                 $access = false;
-                break;   
+                break;
             }
         }
         return $user->isAdmin() || ($user->isTenant() && $access);
@@ -96,7 +96,7 @@ class TransportPolicy
             $access = true;
             if ($tenant->balance < 1) {
                 $access = false;
-                break;   
+                break;
             }
         }
         return $user->isAdmin() || ($user->isTenant() && $access);
@@ -107,6 +107,7 @@ class TransportPolicy
      */
     public function forceDelete(User $user, Transport $transport): bool
     {
+        //info($user->isRoot());info(collect($transport));
         return $user->isRoot();
     }
 

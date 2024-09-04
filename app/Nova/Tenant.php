@@ -41,7 +41,7 @@ class Tenant extends Resource
             $tenant_id = array();
             foreach ($request->user()->tenant as $key => $value) {
                 $tenant_id[] = $value->id;
-            }          
+            }
             $query->whereIn('id', $tenant_id);
         }
     }
@@ -95,6 +95,8 @@ class Tenant extends Resource
                     return $fail('Вы не можете уменьшать баланс');
                 }
             }),
+
+            Boolean::make('Проезд при отрицательной балансе', 'is_negative_balance')->hideFromIndex(),
 
             Boolean::make('Заблокирован', 'is_blocked')->hideFromIndex(),
 
@@ -170,8 +172,8 @@ class Tenant extends Resource
         }
     }
 
-    public static function afterCreate(Request $request, $model) {  
-          
+    public static function afterCreate(Request $request, $model) {
+
     }
 
     public static function afterSave(Request $request, $model) {

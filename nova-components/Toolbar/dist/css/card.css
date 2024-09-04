@@ -1,2 +1,5 @@
 /* Nova Card CSS */
-
+button[disabled][type=submit] {
+  background-color: rgba(var(--colors-primary-400));
+  cursor:   default;
+}

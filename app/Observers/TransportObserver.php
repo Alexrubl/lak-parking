@@ -11,28 +11,28 @@ class TransportObserver
      * Handle the Transport "created" event.
      */
     public function created(Transport $transport): void
-    {        
+    {
         try {
             info('created Transport');
             $api = new Api;
-            $api->sendNewTransportToControllers($transport);            
+            $api->sendNewTransportToControllers($transport);
         } catch (\Throwable $th) {
             info($th->getMessage());
-        } 
+        }
     }
 
     /**
      * Handle the Transport "updated" event.
      */
     public function updated(Transport $transport): void
-    {        
+    {
         try {
             info('updated Transport');
             $api = new Api;
-            $api->sendNewTransportToControllers($transport);            
+            $api->sendNewTransportToControllers($transport);
         } catch (\Throwable $th) {
             info($th->getMessage());
-        } 
+        }
     }
 
     /**
@@ -57,6 +57,7 @@ class TransportObserver
      */
     public function forceDeleted(Transport $transport): void
     {
-        //
+        info('forcedelete');
+        $transport->forceDeleteQuietly();
     }
 }

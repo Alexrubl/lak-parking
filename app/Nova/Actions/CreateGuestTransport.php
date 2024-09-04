@@ -15,6 +15,7 @@ use App\Models\Transport;
 use App\Models\Rate;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use App\Models\History;
 
 class CreateGuestTransport extends Action
 {
@@ -37,7 +38,7 @@ class CreateGuestTransport extends Action
                 'number' => $fields->number
             ],
             [
-                'name' => 'Гостевой пропуск ' . $fields->number,
+                'name' => 'Гостевой разовый пропуск ' . $fields->number,
                 'driver' => 'Гость',
                 'type_id' => $fields->type->id,
                 'tenant_id' => isset($fields->tenant->id) ? $fields->tenant->id : \Auth::user()->tenant()->first()->id,
@@ -47,6 +48,12 @@ class CreateGuestTransport extends Action
                 'deleted_at' => null
             ]
         );
+
+        $history = new History;
+        $history->tenant_id = isset($fields->tenant->id) ? $fields->tenant->id : \Auth::user()->tenant()->first()->id;
+        $history->transport_id = $model->id;
+        $history->comment = 'Создание разового пропуска '. $model->number. ' - ' . $fields->tenant->name ;
+        $history->save();
 
         return Action::message('Готово!');
     }
@@ -59,7 +66,7 @@ class CreateGuestTransport extends Action
      */
     public function fields(NovaRequest $request)
     {
-        return [ 
+        return [
             Text::make('Номер ТС', 'number')
                 ->sortable()
                 ->rules('required', function($attribute, $value, $fail) {
@@ -69,12 +76,17 @@ class CreateGuestTransport extends Action
                     return true;
                 })
                 ->help('на английской раскладке'),
-            
-            BelongsTo::make('Тип ТС', 'type', 'App\Nova\TypeTransport')->rules('required'),            
+
+            BelongsTo::make('Тип ТС', 'type', 'App\Nova\TypeTransport')->rules('required'),
 
             $request->user()->tenant->count() != 1 ? BelongsTo::make('Арендатор', 'tenant', 'App\Nova\Tenant')->rules('required')->default(($request->user()->tenant->count() == 1 && $request->user()->isTenant()) ? $request->user()->tenant[0]->id : null)
                 ->withoutTrashed()->searchable(!$request->user()->isTenant()) : Hidden::make('Require Verification'),
 
         ];
+    }
+
+    public function uriKey()
+    {
+        return 'create-guest-transport';
     }
 }

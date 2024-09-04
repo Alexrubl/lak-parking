@@ -15,6 +15,7 @@ use App\Policies\TransportPolicy;
 use App\Policies\HistoryPolicy;
 use App\Policies\LogPolicy;
 use App\Policies\AdminPolicy;
+use App\Policies\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
