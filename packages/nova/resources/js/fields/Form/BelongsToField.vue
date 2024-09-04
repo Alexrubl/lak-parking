@@ -175,7 +175,7 @@ export default {
 
           this.getAvailableResources().then(() => this.selectInitialResource())
         }
-      } else if (!this.isSearchable) {
+      } else if (!this.isSearchable && this.currentlyIsVisible) {
         // If we don't need to select an initial resource because the user
         // came to create a resource directly and there's no parent resource,
         // and the field is searchable we'll just load all of the resources.

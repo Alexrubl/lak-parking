@@ -140,7 +140,9 @@ trait HasAttachments
 
         $maybeCallback = parent::fillAttribute($request, $requestAttribute, $model, $attribute);
 
-        $attribute = Str::replace('.', '->', "{$this->attribute}DraftId");
+        $attribute = Str::contains($requestAttribute, '.') && $this->attribute !== $requestAttribute
+            ? "{$requestAttribute}DraftId"
+            : Str::replace('.', '->', "{$this->attribute}DraftId");
 
         if (is_callable($maybeCallback)) {
             $callbacks[] = $maybeCallback;

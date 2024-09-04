@@ -264,25 +264,25 @@
         },
         {
             "name": "brick/math",
-            "version": "0.11.0",
+            "version": "0.12.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/brick/math.git",
-                "reference": "0ad82ce168c82ba30d1c01ec86116ab52f589478"
+                "reference": "f510c0a40911935b77b86859eb5223d58d660df1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/brick/math/zipball/0ad82ce168c82ba30d1c01ec86116ab52f589478",
-                "reference": "0ad82ce168c82ba30d1c01ec86116ab52f589478",
+                "url": "https://api.github.com/repos/brick/math/zipball/f510c0a40911935b77b86859eb5223d58d660df1",
+                "reference": "f510c0a40911935b77b86859eb5223d58d660df1",
                 "shasum": ""
             },
             "require": {
-                "php": "^8.0"
+                "php": "^8.1"
             },
             "require-dev": {
                 "php-coveralls/php-coveralls": "^2.2",
-                "phpunit/phpunit": "^9.0",
-                "vimeo/psalm": "5.0.0"
+                "phpunit/phpunit": "^10.1",
+                "vimeo/psalm": "5.16.0"
             },
             "type": "library",
             "autoload": {
@@ -302,12 +302,17 @@
                 "arithmetic",
                 "bigdecimal",
                 "bignum",
+                "bignumber",
                 "brick",
-                "math"
+                "decimal",
+                "integer",
+                "math",
+                "mathematics",
+                "rational"
             ],
             "support": {
                 "issues": "https://github.com/brick/math/issues",
-                "source": "https://github.com/brick/math/tree/0.11.0"
+                "source": "https://github.com/brick/math/tree/0.12.1"
             },
             "funding": [
                 {
@@ -315,34 +320,34 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-01-15T23:15:59+00:00"
+            "time": "2023-11-29T23:19:16+00:00"
         },
         {
             "name": "brick/money",
-            "version": "0.8.1",
+            "version": "0.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/brick/money.git",
-                "reference": "25f484a347756b7f3fbe7ad63ed9ad2d87b20004"
+                "reference": "60f8b6ceab2e1c9527e625198a76498fa477804a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/brick/money/zipball/25f484a347756b7f3fbe7ad63ed9ad2d87b20004",
-                "reference": "25f484a347756b7f3fbe7ad63ed9ad2d87b20004",
+                "url": "https://api.github.com/repos/brick/money/zipball/60f8b6ceab2e1c9527e625198a76498fa477804a",
+                "reference": "60f8b6ceab2e1c9527e625198a76498fa477804a",
                 "shasum": ""
             },
             "require": {
-                "brick/math": "~0.10.1 || ~0.11.0",
+                "brick/math": "~0.12.0",
                 "ext-json": "*",
-                "php": "^8.0"
+                "php": "^8.1"
             },
             "require-dev": {
                 "brick/varexporter": "~0.3.0",
                 "ext-dom": "*",
                 "ext-pdo": "*",
                 "php-coveralls/php-coveralls": "^2.2",
-                "phpunit/phpunit": "^9.4.3",
-                "vimeo/psalm": "5.14.1"
+                "phpunit/phpunit": "^10.1",
+                "vimeo/psalm": "5.16.0"
             },
             "suggest": {
                 "ext-intl": "Required to format Money objects"
@@ -365,7 +370,7 @@
             ],
             "support": {
                 "issues": "https://github.com/brick/money/issues",
-                "source": "https://github.com/brick/money/tree/0.8.1"
+                "source": "https://github.com/brick/money/tree/0.9.0"
             },
             "funding": [
                 {
@@ -373,7 +378,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-09-23T21:17:11+00:00"
+            "time": "2023-11-26T16:51:39+00:00"
         },
         {
             "name": "carbonphp/carbon-doctrine-types",
@@ -2281,14 +2286,14 @@
         },
         {
             "name": "laravel/nova",
-            "version": "4.33.2",
+            "version": "4.34.3",
             "dist": {
                 "type": "path",
                 "url": "./packages/nova",
-                "reference": "155174fa2e844355f8cc53323f4715429910b58a"
+                "reference": "679d6b65258d98cb8dde33bd3bf43f9386558b9e"
             },
             "require": {
-                "brick/money": "^0.5.0|^0.6.0|^0.7.0|^0.8.0",
+                "brick/money": "^0.5|^0.6|^0.7|^0.8|^0.9",
                 "doctrine/dbal": "^2.13.3|^3.1.2|^4.0",
                 "ext-json": "*",
                 "illuminate/support": "^8.83.4|^9.3.1|^10.0|^11.0",
@@ -3140,16 +3145,16 @@
         },
         {
             "name": "maatwebsite/excel",
-            "version": "3.1.56",
+            "version": "3.1.57",
             "source": {
                 "type": "git",
                 "url": "https://github.com/SpartnerNL/Laravel-Excel.git",
-                "reference": "0381d0225b42c3f328d90f0dd05ca071fca3953f"
+                "reference": "3571496c00ca1812c25ee19cda50faad216b7909"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/SpartnerNL/Laravel-Excel/zipball/0381d0225b42c3f328d90f0dd05ca071fca3953f",
-                "reference": "0381d0225b42c3f328d90f0dd05ca071fca3953f",
+                "url": "https://api.github.com/repos/SpartnerNL/Laravel-Excel/zipball/3571496c00ca1812c25ee19cda50faad216b7909",
+                "reference": "3571496c00ca1812c25ee19cda50faad216b7909",
                 "shasum": ""
             },
             "require": {
@@ -3157,7 +3162,7 @@
                 "ext-json": "*",
                 "illuminate/support": "5.8.*||^6.0||^7.0||^8.0||^9.0||^10.0||^11.0",
                 "php": "^7.0||^8.0",
-                "phpoffice/phpspreadsheet": "^1.18",
+                "phpoffice/phpspreadsheet": "^1.29.1",
                 "psr/simple-cache": "^1.0||^2.0||^3.0"
             },
             "require-dev": {
@@ -3205,7 +3210,7 @@
             ],
             "support": {
                 "issues": "https://github.com/SpartnerNL/Laravel-Excel/issues",
-                "source": "https://github.com/SpartnerNL/Laravel-Excel/tree/3.1.56"
+                "source": "https://github.com/SpartnerNL/Laravel-Excel/tree/3.1.57"
             },
             "funding": [
                 {
@@ -3217,27 +3222,27 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-08-19T09:40:43+00:00"
+            "time": "2024-09-04T07:37:43+00:00"
         },
         {
             "name": "maatwebsite/laravel-nova-excel",
-            "version": "1.3.8",
+            "version": "1.3.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/SpartnerNL/Laravel-Nova-Excel.git",
-                "reference": "976a5740eaf5b3ac98d485221372b6ba3b390f21"
+                "reference": "a499f0bf65c546cc6a0976602af50614f5b8c9b8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/SpartnerNL/Laravel-Nova-Excel/zipball/976a5740eaf5b3ac98d485221372b6ba3b390f21",
-                "reference": "976a5740eaf5b3ac98d485221372b6ba3b390f21",
+                "url": "https://api.github.com/repos/SpartnerNL/Laravel-Nova-Excel/zipball/a499f0bf65c546cc6a0976602af50614f5b8c9b8",
+                "reference": "a499f0bf65c546cc6a0976602af50614f5b8c9b8",
                 "shasum": ""
             },
             "require": {
                 "laravel/nova": "^4.0",
                 "laravie/serialize-queries": "^1.0|^2.0|^3.0",
-                "maatwebsite/excel": "^3.1",
-                "php": ">=7.1.0"
+                "maatwebsite/excel": "^3.1.57",
+                "php": "^7.1||^8.0"
             },
             "type": "library",
             "extra": {
@@ -3273,9 +3278,9 @@
             ],
             "support": {
                 "issues": "https://github.com/SpartnerNL/Laravel-Nova-Excel/issues",
-                "source": "https://github.com/SpartnerNL/Laravel-Nova-Excel/tree/1.3.8"
+                "source": "https://github.com/SpartnerNL/Laravel-Nova-Excel/tree/1.3.9"
             },
-            "time": "2024-08-19T09:37:12+00:00"
+            "time": "2024-09-04T13:10:00+00:00"
         },
         {
             "name": "maennchen/zipstream-php",
@@ -3995,20 +4000,20 @@
         },
         {
             "name": "nova-kit/nova-packages-tool",
-            "version": "v1.15.0",
+            "version": "v1.16.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nova-kit/nova-packages-tool.git",
-                "reference": "a1edba0116c8f92fda89bf7ee7ef6ae59912a585"
+                "reference": "7311518831f19c3eda6454609de6766271874f2d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nova-kit/nova-packages-tool/zipball/a1edba0116c8f92fda89bf7ee7ef6ae59912a585",
-                "reference": "a1edba0116c8f92fda89bf7ee7ef6ae59912a585",
+                "url": "https://api.github.com/repos/nova-kit/nova-packages-tool/zipball/7311518831f19c3eda6454609de6766271874f2d",
+                "reference": "7311518831f19c3eda6454609de6766271874f2d",
                 "shasum": ""
             },
             "require": {
-                "laravel/nova": ">=4.33.0 <4.34.0",
+                "laravel/nova": ">=4.34.3 <4.35.0",
                 "php": "^7.3 || ^8.0"
             },
             "require-dev": {
@@ -4017,6 +4022,9 @@
             },
             "type": "library",
             "extra": {
+                "branch-alias": {
+                    "dev-develop": "2.x-dev"
+                },
                 "laravel": {
                     "providers": [
                         "NovaKit\\NovaPackagesTool\\LaravelServiceProvider"
@@ -4040,9 +4048,9 @@
             ],
             "description": "Tool for Laravel Nova Packages Development",
             "support": {
-                "source": "https://github.com/nova-kit/nova-packages-tool/tree/v1.15.0"
+                "source": "https://github.com/nova-kit/nova-packages-tool/tree/v1.16.1"
             },
-            "time": "2024-03-12T14:24:28+00:00"
+            "time": "2024-06-12T22:02:33+00:00"
         },
         {
             "name": "nunomaduro/termwind",
@@ -8480,16 +8488,16 @@
         },
         {
             "name": "laravel/sail",
-            "version": "v1.31.2",
+            "version": "v1.31.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/sail.git",
-                "reference": "b4af38e1ab16fe7aa729eddf5b810229f42d2ad3"
+                "reference": "0a7e2891a85eba2d448a9ffc6fc5ce367e924bc1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/sail/zipball/b4af38e1ab16fe7aa729eddf5b810229f42d2ad3",
-                "reference": "b4af38e1ab16fe7aa729eddf5b810229f42d2ad3",
+                "url": "https://api.github.com/repos/laravel/sail/zipball/0a7e2891a85eba2d448a9ffc6fc5ce367e924bc1",
+                "reference": "0a7e2891a85eba2d448a9ffc6fc5ce367e924bc1",
                 "shasum": ""
             },
             "require": {
@@ -8539,7 +8547,7 @@
                 "issues": "https://github.com/laravel/sail/issues",
                 "source": "https://github.com/laravel/sail"
             },
-            "time": "2024-09-03T13:44:23+00:00"
+            "time": "2024-09-03T20:05:33+00:00"
         },
         {
             "name": "mockery/mockery",
@@ -9224,16 +9232,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "11.3.2",
+            "version": "11.3.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "8a4de85cc4a78c59dd31cc4ef454b0029f8440dc"
+                "reference": "8ed08766d9a2ed979a2f5fdbb95a0671523419c1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/8a4de85cc4a78c59dd31cc4ef454b0029f8440dc",
-                "reference": "8a4de85cc4a78c59dd31cc4ef454b0029f8440dc",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/8ed08766d9a2ed979a2f5fdbb95a0671523419c1",
+                "reference": "8ed08766d9a2ed979a2f5fdbb95a0671523419c1",
                 "shasum": ""
             },
             "require": {
@@ -9304,7 +9312,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/11.3.2"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/11.3.3"
             },
             "funding": [
                 {
@@ -9320,7 +9328,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-09-03T12:00:26+00:00"
+            "time": "2024-09-04T13:34:52+00:00"
         },
         {
             "name": "ryoluo/sail-ssl",

@@ -80,7 +80,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                 Text::make('SMTP сервер', 'smtp_server'),
                 Number::make('SMTP порт', 'smtp_port')->default(465),
                 Text::make('Шифрование', 'smtp_encryption'),
-                Text::make('Эл.почта', 'smtp_email'),   
+                Text::make('Эл.почта', 'smtp_email'),
                 Text::make('Логин', 'smtp_username'),
                 Text::make('Пароль', 'smtp_password')->withMeta(['type' => 'password']),
             ])
@@ -138,7 +138,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
         return [
             \Alexrubl\NovaPermission\NovaPermissionTool::make()
                 ->rolePolicy(RolePolicy::class)
-                ->permissionPolicy(PermissionPolicy::class),            
+                ->permissionPolicy(PermissionPolicy::class),
             \Outl1ne\NovaSettings\NovaSettings::make()->canSee(fn ($request) => $request->user()->isAdmin()),
             // (new \PhpJunior\NovaLogViewer\Tool())->canSee(function ($request) {
             //     return $request->user()->isRoot();
