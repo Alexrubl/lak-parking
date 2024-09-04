@@ -54,7 +54,8 @@
     50 => 'SimpleSquid\\Nova\\Fields\\AdvancedNumber\\FieldServiceProvider',
     51 => 'Spatie\\Permission\\PermissionServiceProvider',
     52 => 'App\\Providers\\AppServiceProvider',
-    53 => 'App\\Providers\\NovaServiceProvider',
+    53 => 'App\\Providers\\AuthServiceProvider',
+    54 => 'App\\Providers\\NovaServiceProvider',
   ),
   'eager' => 
   array (
@@ -96,7 +97,8 @@
     35 => 'SimpleSquid\\Nova\\Fields\\AdvancedNumber\\FieldServiceProvider',
     36 => 'Spatie\\Permission\\PermissionServiceProvider',
     37 => 'App\\Providers\\AppServiceProvider',
-    38 => 'App\\Providers\\NovaServiceProvider',
+    38 => 'App\\Providers\\AuthServiceProvider',
+    39 => 'App\\Providers\\NovaServiceProvider',
   ),
   'deferred' => 
   array (
