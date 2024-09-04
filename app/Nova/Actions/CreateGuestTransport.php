@@ -32,7 +32,6 @@ class CreateGuestTransport extends Action
      */
     public function handle(ActionFields $fields, Collection $models)
     {
-
         $model = Transport::withTrashed()->updateOrCreate(
             [
                 'number' => $fields->number
@@ -55,7 +54,7 @@ class CreateGuestTransport extends Action
         $history->comment = 'Создание разового пропуска '. $model->number. ' - ' . $fields->tenant->name ;
         $history->save();
 
-        return Action::message('Готово!');
+        return Action::message('Создан разовый пропуск');
     }
 
     /**
@@ -79,8 +78,8 @@ class CreateGuestTransport extends Action
 
             BelongsTo::make('Тип ТС', 'type', 'App\Nova\TypeTransport')->rules('required'),
 
-            $request->user()->tenant->count() != 1 ? BelongsTo::make('Арендатор', 'tenant', 'App\Nova\Tenant')->rules('required')->default(($request->user()->tenant->count() == 1 && $request->user()->isTenant()) ? $request->user()->tenant[0]->id : null)
-                ->withoutTrashed()->searchable(!$request->user()->isTenant()) : Hidden::make('Require Verification'),
+            $request->user()->tenant->count() != 1 ? BelongsTo::make('Арендатор', 'tenant', 'App\Nova\Tenant')->default(($request->user()->tenant->count() == 1 && $request->user()->isTenant()) ? $request->user()->tenant[0]->id : null)
+                ->withoutTrashed()->searchable(!$request->user()->isTenant()) : Hidden::make('Require Verification')->rules('required'),
 
         ];
     }
