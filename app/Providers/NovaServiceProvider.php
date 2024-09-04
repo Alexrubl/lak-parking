@@ -14,6 +14,23 @@ use Laravel\Nova\Fields\Password;
 use Illuminate\Support\Facades\Blade;
 use App\Policies\RolePolicy;
 use App\Policies\PermissionPolicy;
+use Illuminate\Http\Request;
+use App\Nova\Dashboards\Main;
+use Laravel\Nova\Menu\Menu;
+use Laravel\Nova\Menu\MenuGroup;
+use Laravel\Nova\Menu\MenuItem;
+use Laravel\Nova\Menu\MenuSection;
+use App\Nova\Tenant;
+use App\Nova\Transport;
+use App\Nova\History;
+use App\Nova\Log;
+use App\Nova\User;
+use App\Nova\TypeTransport;
+use App\Nova\Rate;
+use App\Nova\Controller;
+use Alexrubl\NovaPermission\Role;
+use Alexrubl\NovaPermission\Permission;
+
 
 class NovaServiceProvider extends NovaApplicationServiceProvider
 {
@@ -38,20 +55,40 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
             ');
         });
 
+        Nova::mainMenu(function (Request $request) {
+            return [
+                MenuSection::dashboard(Main::class)->icon('chart-bar'),
+                MenuSection::make('Справочники', [
+                    MenuItem::resource(Tenant::class),
+                    MenuItem::resource(Transport::class),
+                    MenuItem::resource(TypeTransport::class),
+                    MenuItem::resource(Rate::class),
+                    MenuItem::resource(Controller::class),
+                ])->collapsable()->icon('collection'),
+                MenuSection::make('Отчёты', [
+                    // MenuItem::resource(Report::class),
+                    MenuItem::resource(History::class),
+                    MenuItem::resource(Log::class),
+                ])->collapsable()->icon('document-report'),
+                MenuSection::make('Настройки ', [
+                    MenuItem::make('Основные')->path('/settings/general'),
+                    MenuItem::make('Эквайринг Ckassa')->path('/settings/ekvairing-ckassa'),
+                    MenuItem::make('Эквайринг Ckassa')->path('/settings/uvedomleniia'),
+                ])->collapsable()->icon('adjustments'),
+                MenuSection::make('Учётные записи', [
+                    MenuItem::resource(User::class),
+                    MenuItem::resource(Role::class),
+                    MenuItem::resource(Permission::class),
+                ])->collapsable()->icon('user')
+            ];
+        });
+
         \Outl1ne\NovaSettings\NovaSettings::addSettingsFields([
             Text::make('api key', 'apikey'),
             Boolean::make('Открыть проезд в обход контроллера', 'openForceEntry'),
             Number::make('Кол-во проездов в кредит', 'count_credit')->default(5),
             Boolean::make('Интеграция с Сигуром', 'active_sigur_exchange'),
         ]);
-
-        // \Outl1ne\NovaSettings\NovaSettings::addSettingsFields([
-        //     Panel::make('Эквайринг Ckassa', [
-        //         Boolean::make('Тестовые настройки', 'test_ckassa'),
-        //         Text::make('тестовый ApiLoginAuthorization', 'test_ApiLoginAuthorization'),
-        //         Text::make('тестовый ApiAuthorization', 'test_ApiAuthorization'),
-        //     ]),
-        // ]);
 
         \Outl1ne\NovaSettings\NovaSettings::addSettingsFields([
             Panel::make('Тестовые настройки', [

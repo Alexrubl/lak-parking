@@ -24,7 +24,7 @@ use Maatwebsite\LaravelNovaExcel\Actions\DownloadExcel;
 class History extends Resource
 {
     use SearchesRelations;
-    
+
     public static $group = ' Отчеты';
     /**
      * The model the resource corresponds to.
@@ -76,7 +76,7 @@ class History extends Resource
             $tenant_id = array();
             foreach ($request->user()->tenant as $key => $value) {
                 $tenant_id[] = $value->id;
-            }          
+            }
             $query->whereIn('tenant_id', $tenant_id);
         }
     }
@@ -98,11 +98,11 @@ class History extends Resource
                     return $state->name .' ('.$state->number.')';
                 })->searchable()
                 ->rules('required'),
-            Currency::make('Движение', 'price')->rules('required','numeric'),
             Text::make('Описание', 'comment')->rules('required'),
+            Currency::make('Движение', 'price')->rules('required','numeric'),
             Image::make('Фото', 'image')->showOnDetail(function (NovaRequest $request, $resource) {
                 return $this->image;
-            })->readonly(true)->nullable(),  
+            })->readonly(true)->nullable(),
             DateTime::make('Создано', 'created_at')->default(now())->rules('required')->readonly(true),
         ];
     }
@@ -128,7 +128,7 @@ class History extends Resource
             Image::make('Фото', 'image')->maxWidth(300)->readonly(true)->nullable(),
                 //->thumbnail(function ($value) {
                 //    return "image";
-               // }),   
+               // }),
             DateTime::make('Создано', 'created_at')->default(now())->rules('required')->readonly(true),
         ];
     }
@@ -206,7 +206,7 @@ class History extends Resource
     public function lenses(NovaRequest $request)
     {
         return [
-            
+
         ];
     }
 
@@ -230,6 +230,6 @@ class History extends Resource
         ];
     }
 
- 
+
 
 }
