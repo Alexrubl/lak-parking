@@ -74,6 +74,7 @@ class SendTransportInfoToController implements ShouldQueue
         foreach ($controllers as $key => $controller) {            
             if (!$controller->active)  continue;
             info('SendTransportInfoToController: отправляем транспорт "'. $transport->number .'" на контроллер "'.$controller->name.'"');
+            echo 'SendTransportInfoToController: отправляем транспорт "'. $transport->number .'" на контроллер "'.$controller->name.'"';
             $week = '';
             if ($transport->week) {
                 foreach ($transport->week as $key => $value) {
