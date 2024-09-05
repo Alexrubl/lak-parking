@@ -11,6 +11,8 @@ use App\Models\Controller;
 use App\Models\Transport;
 use Illuminate\Support\Carbon;
 use DateTime;
+use Laravel\Nova\Notifications\NovaNotification;
+use App\Models\User;
 
 class SendTransportInfoToController implements ShouldQueue
 {
@@ -41,6 +43,16 @@ class SendTransportInfoToController implements ShouldQueue
      * @var int
      */
     public $maxExceptions = 3;
+
+    /**
+    * Рассчитать количество секунд ожидания перед повторной попыткой выполнения задания.
+    *
+    * @return array<int, int>
+    */
+    public function backoff(): array
+    {
+        return [10, 90, 180];
+    }
 
     protected $transport;
 
@@ -127,5 +139,23 @@ class SendTransportInfoToController implements ShouldQueue
             }
         }
         //info(json_encode($data));
+    }
+
+    /**
+     * Обработать провал задания.
+     */
+    public function failed(?Throwable $exception): void
+    {
+        // Отправляем пользователю уведомление об ошибке и т.д.
+        $users = \App\Models\User::all()->filter(function ($value, $key) {
+            return $value->isRoot();
+        });
+        
+        foreach ($users as $key => $user) {
+            $user->notify(NovaNotification::make()
+                ->message('Ошибка доставки данный контроллеру: '.$exception->getMessage())
+                ->type('error')
+            );
+        }
     }
 }

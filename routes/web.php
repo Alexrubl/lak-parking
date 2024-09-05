@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\CkassaController;
+use Laravel\Nova\Notifications\NovaNotification;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,4 +25,18 @@ use App\Http\Controllers\CkassaController;
 // Route::get('/getOrder', [CkassaController::class, 'getOrder']);
 Route::get('getchannels', [ApiController::class, 'sigurGetChannels']);  
 Route::post('pay/ckassa', [CkassaController::class, 'callback']);
+
+Route::get('/abc', function() {
+    $users = \App\Models\User::all()->filter(function ($value, $key) {
+        return $value->isRoot();
+    });
+    
+    foreach ($users as $key => $user) {
+        $user->notify(NovaNotification::make()
+            ->message('Сообщение')
+            ->type('error')
+        );
+    }
+    
+});
 
