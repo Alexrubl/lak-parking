@@ -83,6 +83,17 @@
       0 => 'Inertia\\ServiceProvider',
     ),
   ),
+  'intervention/image-laravel' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Intervention\\Image\\Laravel\\ServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Image' => 'Intervention\\Image\\Laravel\\Facades\\Image',
+    ),
+  ),
   'laravel/nova' => 
   array (
     'providers' => 

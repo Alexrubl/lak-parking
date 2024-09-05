@@ -16,7 +16,8 @@ use Illuminate\Support\Facades\Config;
 use ProtoneMedia\LaravelFFMpeg\Support\FFMpeg;
 use Laravel\Nova\Notifications\NovaNotification;
 use Illuminate\Support\Facades\Notification;
-use Storage;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Laravel\Facades\Image;
 use Response;
 
 class ApiController extends Controller
@@ -480,11 +481,9 @@ class ApiController extends Controller
 
         $this->http_check($value);
 
-        info($value);
-
         if (isset($value))
         {
-            $image = \Image::make($value);
+            $image = Image::read(file_get_contents($value));
             if ($image->width() > 1080) {
                 $image->resize(1080, null, function ($constraint) {
                     $constraint->aspectRatio();
@@ -492,7 +491,7 @@ class ApiController extends Controller
             }
             $filename = $attribute_name.Carbon::now()->format('YmdHis').'.jpg';
             // 2. Store the image on disk.
-            \Storage::disk($disk)->put($destination_path.'/'.$filename, $image->stream('jpg', 75));
+            Storage::disk($disk)->put($destination_path.'/'.$filename, $image->toJpeg(70));
             // 3. Save the path to the database
             return $destination_path . '/' . $filename;
         }

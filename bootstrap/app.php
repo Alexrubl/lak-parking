@@ -16,6 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->append(TrimStrings::class);
         $middleware->redirectGuestsTo(fn () => route('nova.pages.login'));
+        $middleware->alias([
+            'Image' => Intervention\Image\Laravel\Facades\Image::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
