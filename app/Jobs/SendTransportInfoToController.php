@@ -23,6 +23,8 @@ class SendTransportInfoToController implements ShouldQueue
      */
     public $tries = 5;
 
+    public $timeout = 15;
+
     /**
      * Задать временной предел попыток выполнить задания.
      *
@@ -30,7 +32,7 @@ class SendTransportInfoToController implements ShouldQueue
      */
     public function retryUntil(): DateTime
     {
-        return now()->addMinutes(1);
+        return now()->addMinutes(5);
     }
 
     /**
@@ -103,7 +105,7 @@ class SendTransportInfoToController implements ShouldQueue
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
+            CURLOPT_TIMEOUT => 10,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => "POST",
             CURLOPT_POSTFIELDS => json_encode($data), //http_build_query($data),
@@ -119,6 +121,7 @@ class SendTransportInfoToController implements ShouldQueue
 
             if ($err) {
                 info("cURL Error #: " . $err);
+                $this->release(60);
             } else {
                 //info($response);
             }

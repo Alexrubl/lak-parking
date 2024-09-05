@@ -297,7 +297,6 @@ class ApiController extends Controller
 
             if ($err) {
                 info("cURL Error #: " . $err);
-                $this->fail();
             } else {
                 //info($response);
             }
