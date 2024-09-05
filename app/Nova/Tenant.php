@@ -13,6 +13,8 @@ use App\Nova\Actions\PayCkassaStatus;
 use Pavloniym\ActionButtons\ActionButton;
 use Laravel\Nova\Fields\Currency;
 use Ganyicz\NovaCallbacks\HasCallbacks;
+use Laravel\Nova\Fields\BelongsToMany;
+use Laravel\Nova\Fields\HasMany;
 
 class Tenant extends Resource
 {
@@ -107,6 +109,8 @@ class Tenant extends Resource
                 ->classes(['shadow relative bg-primary-500 hover:bg-primary-400 text-white dark:text-gray-900 rounded text-sm font-bold focus:outline-none focus:ring ring-primary-200 dark:ring-gray-600 inline-flex items-center justify-center h-9 px-3 shadow relative bg-primary-500 hover:bg-primary-400 text-white dark:text-gray-900']) // Custom css classes (optional)
                 ->action(new PayCkassa, $this->resource->id) // Provide action instance and resource id
                 ->asToolbarButton(), // Display as row toolbar button (optional)
+
+            HasMany::make('Транспорт', 'transport', 'App\Nova\Transport'),
         ];
     }
 
@@ -158,6 +162,10 @@ class Tenant extends Resource
 
     public static function beforeUpdate(Request $request, $model)
     {
+        info('beforeUpdate tenant');
+        info($request);
+        info($model);
+
         if ($model->is_blocked != $request->is_blocked) {
             foreach ($model->transport as $transport) {
                 $transport->access = $request->balance > 0 ? !$request->is_blocked : 0;
@@ -170,6 +178,12 @@ class Tenant extends Resource
                 $transport->save();
             }
         }
+    }
+
+    public static function afterUpdate(Request $request, $model){
+        info('afterUpdate tenant');
+        info($request);
+        info($model);
     }
 
     public static function afterCreate(Request $request, $model) {
