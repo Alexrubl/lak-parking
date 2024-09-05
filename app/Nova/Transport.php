@@ -31,12 +31,14 @@ use Alexrubl\TimeRange\TimeRange;
 use App\Http\Controllers\ApiController as Api;
 use Laravel\Nova\Fields\ActionFields;
 use Illuminate\Support\Collection;
-use Greg0x46\MaskedField\MaskedField;
+use Alexrubl\MaskInput\MaskInput;
+use Alexwenzel\DependencyContainer\HasDependencies;
+use Alexwenzel\DependencyContainer\DependencyContainer;
 
 
 class Transport extends Resource
 {
-    use HasCallbacks;
+    use HasCallbacks, HasDependencies;
 
     public static $group = '  Справочники';
 
@@ -63,6 +65,7 @@ class Transport extends Resource
     public static function singularlabel() {
         return 'Транспорт';
     }
+
 
     /**
      * The columns that should be searched.
@@ -104,7 +107,7 @@ class Transport extends Resource
                 ->sortable()
                 ->rules('required', 'max:255'),
 
-            MaskedField::make('Номер ТС', 'number')->mask('A###AA###')
+            MaskInput::make('Номер ТС', 'number')->mask('A###AA###')
                 ->sortable()
                 ->rules('required', function($attribute, $value, $fail) {
                     if (!preg_match("/^([a-zA-Z])\s?(\d)\s?(\d{2})\s?([a-zA-Z]{2})\s?(\d{2,3})$/ui",$value)) {
@@ -116,7 +119,7 @@ class Transport extends Resource
                 ->creationRules('unique:transports,number')
                 ->updateRules('alpha_num:ascii','unique:transports,number,{{resourceId}}'),
 
-            MaskedField::make('UHF метка (TID)', 'uhf')->mask('########## ###,#####')->hideFromIndex(),
+            MaskInput::make('UHF метка (TID)', 'uhf')->mask('########## ###,#####')->hideFromIndex(),
 
             Select::make('Способ аутентификации ТС', 'type_auth')->options([
                 'number' => 'По номеру',
@@ -168,15 +171,18 @@ class Transport extends Resource
 
             Boolean::make('Ограничения', 'restrictions')->hideFromIndex(),
 
-            DependablePanel::make('Расписание', $this->scheduleFields())
-                ->dependsOn(
-                    ['guest', 'restrictions'],
-                    function (DependablePanel $panel, NovaRequest $request, FormData $formData) {
-                        if ($formData->guest == true || $formData->restrictions == false) {
-                            $panel->hide();
-                        }
-                    }
-                )->separatePanel(true),
+            // DependablePanel::make('Расписание', $this->scheduleFields())
+            //     ->dependsOn(
+            //         ['guest', 'restrictions'],
+            //         function (DependablePanel $panel, NovaRequest $request, FormData $formData) {
+            //             if ($formData->guest == true || $formData->restrictions == false) {
+            //                 $panel->hide();
+            //             }
+            //         }
+            //     )->separatePanel(true),
+
+            DependencyContainer::make( $this->scheduleFields())
+                ->dependsOn('restrictions', 1)
         ];
     }
 
@@ -228,8 +234,7 @@ class Transport extends Resource
     {
         return [
             //(new \App\Nova\Actions\SaveAllTransport)->standalone()
-            \App\Nova\Actions\CreateGuestTransport::make()
-            ->standalone()->onlyOnIndex()
+            \App\Nova\Actions\CreateGuestTransport::make()->standalone()
             ->icon('<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 0 1 0 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 0 1 0-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375Z" />
             </svg>'),

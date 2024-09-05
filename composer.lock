@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0e6ccb84abf23b77bb5121aeab6cf9e8",
+    "content-hash": "f9ca547bb64c27c67e3968aa86a6b78f",
     "packages": [
         {
             "name": "alexrubl/date-range",
@@ -70,6 +70,42 @@
                 "MIT"
             ],
             "description": "A Laravel Nova filter.",
+            "keywords": [
+                "laravel",
+                "nova"
+            ],
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "alexrubl/mask-input",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "./nova-components/MaskInput",
+                "reference": "30c7919b4378fc9a07f08cfb29608f283fd075ad"
+            },
+            "require": {
+                "php": "^7.3|^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Alexrubl\\MaskInput\\FieldServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Alexrubl\\MaskInput\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "A Laravel Nova field.",
             "keywords": [
                 "laravel",
                 "nova"
@@ -261,6 +297,71 @@
             "transport-options": {
                 "relative": true
             }
+        },
+        {
+            "name": "alexwenzel/nova-dependency-container",
+            "version": "1.12",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/alexwenzel/nova-dependency-container.git",
+                "reference": "72d21696ac2cd3b75f20261693ec7b089d15e8b3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/alexwenzel/nova-dependency-container/zipball/72d21696ac2cd3b75f20261693ec7b089d15e8b3",
+                "reference": "72d21696ac2cd3b75f20261693ec7b089d15e8b3",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "^8.0|^9.0|^10.0|^11.0",
+                "laravel/nova": "^4.0",
+                "php": "^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Alexwenzel\\DependencyContainer\\FieldServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Alexwenzel\\DependencyContainer\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "alexwenzel",
+                    "email": "alexander.wenzel.berlin@gmail.com"
+                },
+                {
+                    "name": "Epartment E-commerce",
+                    "email": "support@epartment.nl"
+                }
+            ],
+            "description": "A Laravel Nova 4 form container for grouping fields that depend on other field values.",
+            "keywords": [
+                "field",
+                "laravel",
+                "nova",
+                "nova-4"
+            ],
+            "support": {
+                "issues": "https://github.com/alexwenzel/nova-dependency-container/issues",
+                "source": "https://github.com/alexwenzel/nova-dependency-container/tree/1.12"
+            },
+            "funding": [
+                {
+                    "url": "https://www.paypal.com/donate/?hosted_button_id=LHJQRG9FXSYCU",
+                    "type": "custom"
+                }
+            ],
+            "time": "2024-06-02T20:37:02+00:00"
         },
         {
             "name": "brick/math",
@@ -1403,53 +1504,6 @@
                 }
             ],
             "time": "2024-07-20T21:45:45+00:00"
-        },
-        {
-            "name": "greg0x46/masked-field",
-            "version": "v1.1.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/greg0x46/laravel-nova-masked-field.git",
-                "reference": "dbc012d8d29cf5adbf5f33fd84c3474d71c06b51"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/greg0x46/laravel-nova-masked-field/zipball/dbc012d8d29cf5adbf5f33fd84c3474d71c06b51",
-                "reference": "dbc012d8d29cf5adbf5f33fd84c3474d71c06b51",
-                "shasum": ""
-            },
-            "require": {
-                "laravel/nova": "^4.0",
-                "php": "^7.3|^8.0"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Greg0x46\\MaskedField\\FieldServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Greg0x46\\MaskedField\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "A Laravel Nova field.",
-            "keywords": [
-                "laravel",
-                "mask",
-                "nova"
-            ],
-            "support": {
-                "issues": "https://github.com/greg0x46/laravel-nova-masked-field/issues",
-                "source": "https://github.com/greg0x46/laravel-nova-masked-field/tree/v1.1.1"
-            },
-            "time": "2023-12-05T19:29:44+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -4139,6 +4193,53 @@
                 }
             ],
             "time": "2024-03-06T16:17:14+00:00"
+        },
+        {
+            "name": "nurmuhammet/nova-inputmask",
+            "version": "2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nurmuhammet-ali/nova-inputmask.git",
+                "reference": "9453b3ce701913bb195f7076d13858003d427f60"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nurmuhammet-ali/nova-inputmask/zipball/9453b3ce701913bb195f7076d13858003d427f60",
+                "reference": "9453b3ce701913bb195f7076d13858003d427f60",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "^8.0|^9.0|^10.0|^11.0",
+                "laravel/nova": "^4.0",
+                "php": "^7.3|^8.0|^8.1|^8.2|^8.3"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Nurmuhammet\\NovaInputmask\\FieldServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Nurmuhammet\\NovaInputmask\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A Laravel Nova field.",
+            "keywords": [
+                "laravel",
+                "nova"
+            ],
+            "support": {
+                "issues": "https://github.com/nurmuhammet-ali/nova-inputmask/issues",
+                "source": "https://github.com/nurmuhammet-ali/nova-inputmask/tree/2.0.0"
+            },
+            "time": "2024-04-18T14:55:34+00:00"
         },
         {
             "name": "openspout/openspout",
@@ -10442,6 +10543,7 @@
     "stability-flags": {
         "alexrubl/date-range": 20,
         "alexrubl/daterangefilter": 20,
+        "alexrubl/mask-input": 20,
         "alexrubl/nova-permission": 20,
         "alexrubl/nova-reload-resources": 20,
         "alexrubl/time-range": 20,

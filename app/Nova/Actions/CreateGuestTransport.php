@@ -14,8 +14,10 @@ use Laravel\Nova\Fields\FormData;
 use App\Models\Transport;
 use App\Models\Rate;
 use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use App\Models\History;
+use App\Nova\Fields\BelongsToForActions;
 
 class CreateGuestTransport extends Action
 {
@@ -32,27 +34,27 @@ class CreateGuestTransport extends Action
      */
     public function handle(ActionFields $fields, Collection $models)
     {
-        $model = Transport::withTrashed()->updateOrCreate(
-            [
-                'number' => $fields->number
-            ],
-            [
-                'name' => 'Гостевой разовый пропуск ' . $fields->number,
-                'driver' => 'Гость',
-                'type_id' => $fields->type->id,
-                'tenant_id' => isset($fields->tenant->id) ? $fields->tenant->id : \Auth::user()->tenant()->first()->id,
-                'rate_id' => Rate::where('default_guest', 1)->first()->id,
-                'guest' => 1,
-                'access' => 1,
-                'deleted_at' => null
-            ]
-        );
+        // $model = Transport::withTrashed()->updateOrCreate(
+        //     [
+        //         'number' => $fields->number
+        //     ],
+        //     [
+        //         'name' => 'Гостевой разовый пропуск ' . $fields->number,
+        //         'driver' => 'Гость',
+        //         'type_id' => $fields->type->id,
+        //         'tenant_id' => isset($fields->tenant->id) ? $fields->tenant->id : \Auth::user()->tenant()->first()->id,
+        //         'rate_id' => Rate::where('default_guest', 1)->first()->id,
+        //         'guest' => 1,
+        //         'access' => 1,
+        //         'deleted_at' => null
+        //     ]
+        // );
 
-        $history = new History;
-        $history->tenant_id = isset($fields->tenant->id) ? $fields->tenant->id : \Auth::user()->tenant()->first()->id;
-        $history->transport_id = $model->id;
-        $history->comment = 'Создание разового пропуска '. $model->number. ' - ' . $fields->tenant->name ;
-        $history->save();
+        // $history = new History;
+        // $history->tenant_id = isset($fields->tenant->id) ? $fields->tenant->id : \Auth::user()->tenant()->first()->id;
+        // $history->transport_id = $model->id;
+        // $history->comment = 'Создание разового пропуска '. $model->number. ' - ' . $fields->tenant->name ;
+        // $history->save();
 
         return Action::message('Создан разовый пропуск');
     }
@@ -76,10 +78,14 @@ class CreateGuestTransport extends Action
                 })
                 ->help('на английской раскладке'),
 
-            BelongsTo::make('Тип ТС', 'type', 'App\Nova\TypeTransport')->rules('required'),
+            BelongsToForActions::make('Тип ТС', 'type', 'App\Nova\TypeTransport')->rules('required'),
+            //Select::make('Тип ТС', 'type')->options(\App\Models\TypeTransport::pluck('Name', 'id'))->rules('required'),
 
-            $request->user()->tenant->count() != 1 ? BelongsTo::make('Арендатор', 'tenant', 'App\Nova\Tenant')->default(($request->user()->tenant->count() == 1 && $request->user()->isTenant()) ? $request->user()->tenant[0]->id : null)
+            $request->user()->tenant->count() != 1 ? BelongsToForActions::make('Арендатор', 'tenant', 'App\Nova\Tenant')->default(($request->user()->tenant->count() == 1 && $request->user()->isTenant()) ? $request->user()->tenant[0]->id : null)
                 ->withoutTrashed()->searchable(!$request->user()->isTenant()) : Hidden::make('Require Verification')->rules('required'),
+
+            // $request->user()->tenant->count() != 1 ? Select::make('Арендатор', 'tenant')->options(\App\Models\TypeTransport::pluck('Name', 'id'))->rules('required')->default(($request->user()->tenant->count() == 1 && $request->user()->isTenant()) ? $request->user()->tenant[0]->id : null)
+            //     ->withoutTrashed()->searchable(!$request->user()->isTenant()) : Hidden::make('Require Verification')->rules('required'),
 
         ];
     }

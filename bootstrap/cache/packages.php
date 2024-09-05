@@ -13,6 +13,13 @@
       0 => 'Alexrubl\\Daterangefilter\\FilterServiceProvider',
     ),
   ),
+  'alexrubl/mask-input' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Alexrubl\\MaskInput\\FieldServiceProvider',
+    ),
+  ),
   'alexrubl/nova-permission' => 
   array (
     'providers' => 
@@ -48,6 +55,13 @@
       0 => 'Alexrubl\\Video\\CardServiceProvider',
     ),
   ),
+  'alexwenzel/nova-dependency-container' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Alexwenzel\\DependencyContainer\\FieldServiceProvider',
+    ),
+  ),
   'digital-creative/icon-action-toolbar' => 
   array (
     'providers' => 
@@ -60,13 +74,6 @@
     'providers' => 
     array (
       0 => 'Formfeed\\DependablePanel\\FieldServiceProvider',
-    ),
-  ),
-  'greg0x46/masked-field' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Greg0x46\\MaskedField\\FieldServiceProvider',
     ),
   ),
   'inertiajs/inertia-laravel' => 
@@ -173,6 +180,13 @@
     'providers' => 
     array (
       0 => 'Termwind\\Laravel\\TermwindServiceProvider',
+    ),
+  ),
+  'nurmuhammet/nova-inputmask' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Nurmuhammet\\NovaInputmask\\FieldServiceProvider',
     ),
   ),
   'outl1ne/nova-settings' => 

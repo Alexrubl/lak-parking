@@ -2,21 +2,25 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "keywords": [
+        "laravel",
+        "framework"
+    ],
     "license": "MIT",
     "require": {
         "php": "^8.2",
         "alexrubl/date-range": "@dev",
         "alexrubl/daterangefilter": "@dev",
+        "alexrubl/mask-input": "@dev",
         "alexrubl/nova-permission": "@dev",
         "alexrubl/nova-reload-resources": "dev-main",
         "alexrubl/time-range": "@dev",
         "alexrubl/toolbar": "@dev",
         "alexrubl/video": "@dev",
+        "alexwenzel/nova-dependency-container": "^1.12",
         "digital-creative/icon-action-toolbar": "^0.1.2",
         "formfeed-uk/nova-dependable-panel": "^1.1",
         "ganyicz/nova-callbacks": "^1.1",
-        "greg0x46/masked-field": "^1.1",
         "intervention/image": "^3.7",
         "laravel/framework": "^11.9",
         "laravel/nova": "^4.33",
@@ -24,6 +28,7 @@
         "laravel/tinker": "^2.9",
         "maatwebsite/laravel-nova-excel": "^1.3",
         "norman-huth/nova-radio-field": "^1.2",
+        "nurmuhammet/nova-inputmask": "^2.0",
         "outl1ne/nova-settings": "^5.2",
         "pavloniym/nova-action-buttons": "^1.1",
         "simplesquid/nova-advanced-number-field": "^1.0",
@@ -43,7 +48,10 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+        "files": [
+            "app/Helpers/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
@@ -128,6 +136,10 @@
             "type": "path",
             "url": "./packages/nova-permission",
             "canonical": false
+        },
+        {
+            "type": "path",
+            "url": "./nova-components/MaskInput"
         }
     ],
     "minimum-stability": "stable",

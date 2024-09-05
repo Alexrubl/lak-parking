@@ -17,7 +17,11 @@
         "build-daterangefilter": "cd nova-components/Daterangefilter && npm run dev",
         "build-daterangefilter-prod": "cd nova-components/Daterangefilter && npm run prod",
         "build-icon-toolbar": "cd nova-components/IconToolbar && npm run dev",
-        "build-icon-toolbar-prod": "cd nova-components/IconToolbar && npm run prod"
+        "build-icon-toolbar-prod": "cd nova-components/IconToolbar && npm run prod",
+        "build-MaskInput": "cd nova-components/MaskInput && npm run dev",
+        "build-MaskInput-prod": "cd nova-components/MaskInput && npm run prod",
+        "build-mask-input": "cd nova-components/MaskInput && npm run dev",
+        "build-mask-input-prod": "cd nova-components/MaskInput && npm run prod"
     },
     "devDependencies": {
         "@vitejs/plugin-vue": "^4.3.4",
