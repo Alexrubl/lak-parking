@@ -18,6 +18,7 @@ use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use App\Models\History;
 use App\Nova\Fields\BelongsToForActions;
+use Alexrubl\MaskInput\MaskInput;
 
 class CreateGuestTransport extends Action
 {
@@ -34,6 +35,7 @@ class CreateGuestTransport extends Action
      */
     public function handle(ActionFields $fields, Collection $models)
     {
+        info($fields);
         // $model = Transport::withTrashed()->updateOrCreate(
         //     [
         //         'number' => $fields->number
@@ -68,8 +70,9 @@ class CreateGuestTransport extends Action
     public function fields(NovaRequest $request)
     {
         return [
-            Text::make('Номер ТС', 'number')
+            MaskInput::make('Номер ТС', 'number')
                 ->sortable()
+                ->mask('A###AA###')
                 ->rules('required', function($attribute, $value, $fail) {
                     if (!preg_match("/^([a-zA-Z])\s?(\d)\s?(\d{2})\s?([a-zA-Z]{2})\s?(\d{2,3})$/ui",$value)) {
                         return $fail('Не правильный формат номера.');
@@ -78,14 +81,16 @@ class CreateGuestTransport extends Action
                 })
                 ->help('на английской раскладке'),
 
-            BelongsToForActions::make('Тип ТС', 'type', 'App\Nova\TypeTransport')->rules('required'),
-            //Select::make('Тип ТС', 'type')->options(\App\Models\TypeTransport::pluck('Name', 'id'))->rules('required'),
+            // BelongsToForActions::make('Тип ТС', 'type', 'App\Nova\TypeTransport')->rules('required'),
+            Select::make('Тип ТС', 'type')->options(\App\Models\TypeTransport::pluck('Name', 'id'))->rules('required'),
 
-            $request->user()->tenant->count() != 1 ? BelongsToForActions::make('Арендатор', 'tenant', 'App\Nova\Tenant')->default(($request->user()->tenant->count() == 1 && $request->user()->isTenant()) ? $request->user()->tenant[0]->id : null)
-                ->withoutTrashed()->searchable(!$request->user()->isTenant()) : Hidden::make('Require Verification')->rules('required'),
-
-            // $request->user()->tenant->count() != 1 ? Select::make('Арендатор', 'tenant')->options(\App\Models\TypeTransport::pluck('Name', 'id'))->rules('required')->default(($request->user()->tenant->count() == 1 && $request->user()->isTenant()) ? $request->user()->tenant[0]->id : null)
+            // $request->user()->tenant->count() != 1 ? BelongsToForActions::make('Арендатор', 'tenant', 'App\Nova\Tenant')->default(($request->user()->tenant->count() == 1 && $request->user()->isTenant()) ? $request->user()->tenant[0]->id : null)
             //     ->withoutTrashed()->searchable(!$request->user()->isTenant()) : Hidden::make('Require Verification')->rules('required'),
+            
+            $request->user()->tenant->count() != 1  
+                ? Select::make('Арендатор', 'tenant')->options(\App\Models\Tenant::pluck('Name', 'id'))->rules('required')->default(($request->user()->tenant->count() == 1 && $request->user()->isTenant()) ? $request->user()->tenant[0]->id : null)->searchable(!$request->user()->isTenant())
+                : Hidden::make('Require Verification')->rules('required'),
+
 
         ];
     }
