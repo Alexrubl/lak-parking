@@ -27,14 +27,14 @@ class TransportObserver
      */
     public function updated(Transport $transport): void
     {
-        // try {
+        try {
             info('updated Transport');
             // $api = new Api;
             // $api->sendNewTransportToControllers($transport);
             \App\Jobs\SendTransportInfoToController::dispatch($transport);
-        // } catch (\Throwable $th) {
-        //     info($th->getMessage());
-        // }
+        } catch (\Throwable $th) {
+            info($th->getMessage());
+        }
     }
 
     /**
