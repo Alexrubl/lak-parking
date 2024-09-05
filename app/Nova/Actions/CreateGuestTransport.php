@@ -34,7 +34,8 @@ class CreateGuestTransport extends Action
      * @return mixed
      */
     public function handle(ActionFields $fields, Collection $models)
-    {
+    {        
+        //info($fields);
         $model = Transport::withTrashed()->updateOrCreate(
             [
                 'number' => $fields->number
@@ -42,8 +43,8 @@ class CreateGuestTransport extends Action
             [
                 'name' => 'Гостевой разовый пропуск ' . $fields->number,
                 'driver' => 'Гость',
-                'type_id' => $fields->type->id,
-                'tenant_id' => isset($fields->tenant->id) ? $fields->tenant->id : \Auth::user()->tenant()->first()->id,
+                'type_id' => $fields->type,
+                'tenant_id' => isset($fields->tenant) ? $fields->tenant : \Auth::user()->tenant()->first()->id,
                 'rate_id' => Rate::where('default_guest', 1)->first()->id,
                 'guest' => 1,
                 'access' => 1,
@@ -52,10 +53,12 @@ class CreateGuestTransport extends Action
         );
 
         $history = new History;
-        $history->tenant_id = isset($fields->tenant->id) ? $fields->tenant->id : \Auth::user()->tenant()->first()->id;
+        $history->tenant_id = isset($fields->tenant) ? $fields->tenant : \Auth::user()->tenant()->first()->id;
         $history->transport_id = $model->id;
-        $history->comment = 'Создание разового пропуска '. $model->number. ' - ' . $fields->tenant->name ;
+        $history->comment = 'Создание разового пропуска '. $model->number. ' - ' . $model->tenant->name ;
         $history->save();
+
+        logist('Создание разового пропуска. Транспорт: '.$model->number.', Арендатор: '. $model->tenant->name .'. Создан: '.\Auth::user()->name .' ('.\Auth::user()->id.')');
 
         return Action::message('Создан разовый пропуск');
     }

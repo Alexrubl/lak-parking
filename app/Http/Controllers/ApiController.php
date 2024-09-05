@@ -11,7 +11,7 @@ use App\Models\Rate;
 use App\Models\User;
 use App\Models\Sigur;
 use App\Models\Controller;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Config;
 use ProtoneMedia\LaravelFFMpeg\Support\FFMpeg;
 use Laravel\Nova\Notifications\NovaNotification;
@@ -280,7 +280,7 @@ class ApiController extends Controller
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
+            CURLOPT_TIMEOUT => 7,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => "POST",
             CURLOPT_POSTFIELDS => json_encode($data), //http_build_query($data),
@@ -296,6 +296,7 @@ class ApiController extends Controller
 
             if ($err) {
                 info("cURL Error #: " . $err);
+                $this->fail();
             } else {
                 //info($response);
             }
@@ -662,7 +663,7 @@ class ApiController extends Controller
         $history->comment = 'Создание разового пропуска '. $transport->number. ' - ' . $transport->tenant->name ;
         $history->save();
 
-        logist('Создание разового пропуска для транспорта с номером '.$transport->number.'. Создан: '.\Auth::user());
+        logist('Создание разового пропуска. Транспорт: '.$transport->number.', Арендатор: '. $transport->tenant->name .'. Создан: '.\Auth::user()->name .' ('.\Auth::user()->id.')');
 
         return response()->noContent();
     }

@@ -162,10 +162,6 @@ class Tenant extends Resource
 
     public static function beforeUpdate(Request $request, $model)
     {
-        info('beforeUpdate tenant');
-        info($request);
-        info($model);
-
         if ($model->is_blocked != $request->is_blocked) {
             foreach ($model->transport as $transport) {
                 $transport->access = $request->balance > 0 ? !$request->is_blocked : 0;
@@ -181,9 +177,7 @@ class Tenant extends Resource
     }
 
     public static function afterUpdate(Request $request, $model){
-        info('afterUpdate tenant');
-        info($request);
-        info($model);
+
     }
 
     public static function afterCreate(Request $request, $model) {

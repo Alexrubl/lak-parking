@@ -14,8 +14,9 @@ class TransportObserver
     {
         try {
             info('created Transport');
-            $api = new Api;
-            $api->sendNewTransportToControllers($transport);
+            // $api = new Api;
+            // $api->sendNewTransportToControllers($transport);
+            \App\Jobs\SendTransportInfoToController::dispatch($transport);
         } catch (\Throwable $th) {
             info($th->getMessage());
         }
@@ -26,13 +27,14 @@ class TransportObserver
      */
     public function updated(Transport $transport): void
     {
-        try {
+        // try {
             info('updated Transport');
-            $api = new Api;
-            $api->sendNewTransportToControllers($transport);
-        } catch (\Throwable $th) {
-            info($th->getMessage());
-        }
+            // $api = new Api;
+            // $api->sendNewTransportToControllers($transport);
+            \App\Jobs\SendTransportInfoToController::dispatch($transport);
+        // } catch (\Throwable $th) {
+        //     info($th->getMessage());
+        // }
     }
 
     /**
