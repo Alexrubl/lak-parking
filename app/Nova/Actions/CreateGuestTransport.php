@@ -35,28 +35,27 @@ class CreateGuestTransport extends Action
      */
     public function handle(ActionFields $fields, Collection $models)
     {
-        info($fields);
-        // $model = Transport::withTrashed()->updateOrCreate(
-        //     [
-        //         'number' => $fields->number
-        //     ],
-        //     [
-        //         'name' => 'Гостевой разовый пропуск ' . $fields->number,
-        //         'driver' => 'Гость',
-        //         'type_id' => $fields->type->id,
-        //         'tenant_id' => isset($fields->tenant->id) ? $fields->tenant->id : \Auth::user()->tenant()->first()->id,
-        //         'rate_id' => Rate::where('default_guest', 1)->first()->id,
-        //         'guest' => 1,
-        //         'access' => 1,
-        //         'deleted_at' => null
-        //     ]
-        // );
+        $model = Transport::withTrashed()->updateOrCreate(
+            [
+                'number' => $fields->number
+            ],
+            [
+                'name' => 'Гостевой разовый пропуск ' . $fields->number,
+                'driver' => 'Гость',
+                'type_id' => $fields->type->id,
+                'tenant_id' => isset($fields->tenant->id) ? $fields->tenant->id : \Auth::user()->tenant()->first()->id,
+                'rate_id' => Rate::where('default_guest', 1)->first()->id,
+                'guest' => 1,
+                'access' => 1,
+                'deleted_at' => null
+            ]
+        );
 
-        // $history = new History;
-        // $history->tenant_id = isset($fields->tenant->id) ? $fields->tenant->id : \Auth::user()->tenant()->first()->id;
-        // $history->transport_id = $model->id;
-        // $history->comment = 'Создание разового пропуска '. $model->number. ' - ' . $fields->tenant->name ;
-        // $history->save();
+        $history = new History;
+        $history->tenant_id = isset($fields->tenant->id) ? $fields->tenant->id : \Auth::user()->tenant()->first()->id;
+        $history->transport_id = $model->id;
+        $history->comment = 'Создание разового пропуска '. $model->number. ' - ' . $fields->tenant->name ;
+        $history->save();
 
         return Action::message('Создан разовый пропуск');
     }
