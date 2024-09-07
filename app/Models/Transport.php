@@ -72,9 +72,18 @@ class Transport extends Model
         return $query->where('inside', 1);
     }
 
-    public function scopeWithTenant($query)
+    public function scopeWithTenant($query, $tenant)
     {
-        return $query->has('tenant');
+        return $query->has('tenant', $tenant);
+    }
+
+    public function scopeCurrentTenant($query)
+    {
+        $tenant_id = array();
+        foreach (Auth::user()->tenant as $key => $value) {
+            $tenant_id[] = $value->id;
+        }
+        $query->whereIn('tenant_id', $tenant_id);
     }
 
     /*

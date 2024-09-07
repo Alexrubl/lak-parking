@@ -89,8 +89,8 @@ class User extends Authenticatable
         return false;
     }
 
-    public function scopeWithTenant($query)
+    public function scopeWithTenant($query, $tenant)
     {
-        return $query->has('tenant');
+        return $query->has('tenant', $tenant);
     }
 }

@@ -30,7 +30,7 @@ class inTransport extends Value
     {
         $timezone = Nova::resolveUserTimezone($request) ?? $request->timezone;      
         //return $this->result(DB::table('transports')->whereBetween( 'created_at', $this->currentRange($request->range, $timezone))->count());
-        return $this->count($request, \Auth::user()->isTenant() ? Transport::withTenant()->inside() : Transport::inside(), null, 'updated_at')->suffix('шт.');
+        return $this->count($request, $request->user()->isTenant() ? Transport::currentTenant()->inside() : Transport::inside(), null, 'updated_at')->suffix('шт.');
     }
 
     /**
