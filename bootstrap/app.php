@@ -26,4 +26,3 @@ return Application::configure(basePath: dirname(__DIR__))
         //$schedule->call(new DeleteRecentUsers)->daily();
     })->create();
 
-    

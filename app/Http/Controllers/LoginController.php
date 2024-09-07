@@ -60,12 +60,11 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, $user)
     {
+        info('authenticated');
         if ($user->isTenant()) {
-            $redirect = redirect()->intended(Nova::url('resources/transports'));
-        } else {
-            $redirect = redirect()->intended($this->redirectPath($request));
+            Nova::initialPath('/resources/transports');
         }
-
+        $redirect = redirect()->intended($this->redirectPath($request));
 
         return $request->wantsJson()
             ? new JsonResponse([

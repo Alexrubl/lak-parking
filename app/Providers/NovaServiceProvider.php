@@ -31,7 +31,7 @@ use App\Nova\Controller;
 use Alexrubl\NovaPermission\Role;
 use Alexrubl\NovaPermission\Permission;
 use Laravel\Nova\Http\Controllers\LoginController;
-
+use Laravel\Nova\Http\Middleware\Authorize;
 
 class NovaServiceProvider extends NovaApplicationServiceProvider
 {
@@ -197,5 +197,6 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     public function register()
     {
        $this->app->bind(LoginController::class, \App\Http\Controllers\LoginController::class);
+       $this->app->bind(Authorize::class, \App\Http\Middleware\Authorize::class);
     }
 }
