@@ -74,7 +74,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                     MenuItem::make('Основные')->path('/settings/general'),
                     MenuItem::make('Эквайринг Ckassa')->path('/settings/ekvairing-ckassa'),
                     MenuItem::make('Эквайринг Ckassa')->path('/settings/uvedomleniia'),
-                ])->collapsable()->icon('adjustments'),
+                ])->collapsable()->icon('adjustments')->canSee(fn ($request) => $request->user()->isAdmin()),
                 MenuSection::make('Учётные записи', [
                     MenuItem::resource(User::class),
                     MenuItem::resource(Role::class),

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\belongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 
 
@@ -69,6 +70,11 @@ class Transport extends Model
     public function scopeInside($query)
     {
         return $query->where('inside', 1);
+    }
+
+    public function scopeWithTenant($query)
+    {
+        return $query->has('tenant');
     }
 
     /*

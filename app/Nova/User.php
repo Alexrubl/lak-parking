@@ -90,7 +90,7 @@ class User extends Resource
                 ->creationRules('required', Rules\Password::defaults()->min(6))
                 ->updateRules('nullable', Rules\Password::defaults()->min(6)),
             
-            BelongsToMany::make('Арендатор', 'tenant', 'App\Nova\Tenant')->canSee(fn () => $request->user()->isAdmin()),
+            BelongsToMany::make('Арендатор', 'tenant', 'App\Nova\Tenant')->canSee(fn () => $request->user()->isAdmin())->searchable(!$request->user()->isTenant()),
 
             RoleSelect::make('Роль', 'roles')->canSee(fn () => $request->user()->isAdmin()),
             

@@ -19,6 +19,7 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 use App\Models\History;
 use App\Nova\Fields\BelongsToForActions;
 use Alexrubl\MaskInput\MaskInput;
+use App\Models\Tenant;
 
 class CreateGuestTransport extends Action
 {
@@ -35,7 +36,6 @@ class CreateGuestTransport extends Action
      */
     public function handle(ActionFields $fields, Collection $models)
     {        
-        //info($fields);
         $model = Transport::withTrashed()->updateOrCreate(
             [
                 'number' => $fields->number
@@ -44,7 +44,7 @@ class CreateGuestTransport extends Action
                 'name' => 'Гостевой разовый пропуск ' . $fields->number,
                 'driver' => 'Гость',
                 'type_id' => $fields->type,
-                'tenant_id' => isset($fields->tenant) ? $fields->tenant : \Auth::user()->tenant()->first()->id,
+                'tenant_id' => isset($fields->tenant) ? $fields->tenant : \Auth::user()->tenant->first()->id,
                 'rate_id' => Rate::where('default_guest', 1)->first()->id,
                 'guest' => 1,
                 'access' => 1,
@@ -53,7 +53,7 @@ class CreateGuestTransport extends Action
         );
 
         $history = new History;
-        $history->tenant_id = isset($fields->tenant) ? $fields->tenant : \Auth::user()->tenant()->first()->id;
+        $history->tenant_id = isset($fields->tenant) ? $fields->tenant : \Auth::user()->tenant->first()->id;
         $history->transport_id = $model->id;
         $history->comment = 'Создание разового пропуска '. $model->number. ' - ' . $model->tenant->name ;
         $history->save();
@@ -90,10 +90,8 @@ class CreateGuestTransport extends Action
             //     ->withoutTrashed()->searchable(!$request->user()->isTenant()) : Hidden::make('Require Verification')->rules('required'),
             
             $request->user()->tenant->count() != 1  
-                ? Select::make('Арендатор', 'tenant')->options(\App\Models\Tenant::pluck('Name', 'id'))->rules('required')->default(($request->user()->tenant->count() == 1 && $request->user()->isTenant()) ? $request->user()->tenant[0]->id : null)->searchable(!$request->user()->isTenant())
-                : Hidden::make('Require Verification')->rules('required'),
-
-
+                ? Select::make('Арендатор', 'tenant')->options($request->user()->isTenant() ? $request->user()->tenant->pluck('name', 'id') : Tenant::all()->pluck('name', 'id'))->rules('required')->default(($request->user()->tenant->count() == 1 && $request->user()->isTenant()) ? $request->user()->tenant[0]->id : null)->searchable(!$request->user()->isTenant())
+                : Hidden::make('Require Verification'),
         ];
     }
 
