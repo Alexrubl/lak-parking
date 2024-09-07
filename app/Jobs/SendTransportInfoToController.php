@@ -145,7 +145,7 @@ class SendTransportInfoToController implements ShouldQueue
     /**
      * Обработать провал задания.
      */
-    public function failed(?Throwable $exception): void
+    public function failed(Throwable $exception): void
     {
         // Отправляем пользователю уведомление об ошибке и т.д.
         $users = \App\Models\User::all()->filter(function ($value, $key) {
