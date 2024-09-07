@@ -1,6 +1,6 @@
 <?php
 
-namespace Laravel\Nova\Http\Controllers;
+namespace App\Http\Controllers;
 
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -60,7 +60,12 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, $user)
     {
-        $redirect = redirect()->intended($this->redirectPath($request));
+        if ($user->isTenant()) {
+            $redirect = redirect()->intended(Nova::url('resources/transports'));
+        } else {
+            $redirect = redirect()->intended($this->redirectPath($request));
+        }
+
 
         return $request->wantsJson()
             ? new JsonResponse([
@@ -92,7 +97,6 @@ class LoginController extends Controller
      */
     public function redirectPath(Request $request)
     {
-        info('kjjkhhkljhiuyuiyyit65656756');
         return Nova::url(Nova::resolveInitialPath($request));
     }
 

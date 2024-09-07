@@ -40,8 +40,8 @@ class Main extends Dashboard
                         $val[] = (new Video($controller, $camera))->canSee(function ($request) {
                                                                         return Auth::user()->isAdmin() || Auth::user()->isSecurity();
                                                                     });
-                    }   
-                }            
+                    }
+                }
             }
         }
         return $val;

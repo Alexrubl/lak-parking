@@ -30,6 +30,7 @@ use App\Nova\Rate;
 use App\Nova\Controller;
 use Alexrubl\NovaPermission\Role;
 use Alexrubl\NovaPermission\Permission;
+use Laravel\Nova\Http\Controllers\LoginController;
 
 
 class NovaServiceProvider extends NovaApplicationServiceProvider
@@ -41,11 +42,16 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
      */
     public function boot()
     {
+        parent::boot();
+
         Nova::sortResourcesBy(function ($resource) {
             return $resource::$priority ?? 9999;
         });
 
-        parent::boot();
+        //if (Auth::user()) {
+           //Nova::initialPath('/resources/transports');
+        //}
+
         //Nova::withBreadcrumbs();
         Nova::footer(function ($request) {
             return Blade::render('
@@ -190,6 +196,6 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
      */
     public function register()
     {
-        //
+       $this->app->bind(LoginController::class, \App\Http\Controllers\LoginController::class);
     }
 }

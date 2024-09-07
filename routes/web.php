@@ -23,20 +23,22 @@ use Laravel\Nova\Notifications\NovaNotification;
 // Route::get('/ckassa', [CkassaController::class, 'show']);
 
 // Route::get('/getOrder', [CkassaController::class, 'getOrder']);
-Route::get('getchannels', [ApiController::class, 'sigurGetChannels']);  
+Route::get('getchannels', [ApiController::class, 'sigurGetChannels']);
 Route::post('pay/ckassa', [CkassaController::class, 'callback']);
 
 Route::get('/abc', function() {
     $users = \App\Models\User::all()->filter(function ($value, $key) {
         return $value->isRoot();
     });
-    
+
     foreach ($users as $key => $user) {
         $user->notify(NovaNotification::make()
             ->message('Сообщение')
             ->type('error')
         );
     }
-    
+
 });
+
+
 
