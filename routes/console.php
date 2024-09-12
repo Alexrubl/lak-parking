@@ -9,3 +9,8 @@ use Illuminate\Support\Facades\Schedule;
 // })->purpose('Display an inspiring quote')->hourly();
 
 Schedule::job(new \App\Jobs\InsideTransportVerify)->hourly();
+
+
+#Очистка пакетов
+Schedule::command('queue:prune-batches --hours=48')->daily();
+Schedule::command('queue:flush --hours=48')->daily();

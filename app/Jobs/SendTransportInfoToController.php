@@ -13,6 +13,7 @@ use Illuminate\Support\Carbon;
 use DateTime;
 use Laravel\Nova\Notifications\NovaNotification;
 use App\Models\User;
+use Throwable;
 
 class SendTransportInfoToController implements ShouldQueue
 {
@@ -23,7 +24,7 @@ class SendTransportInfoToController implements ShouldQueue
      *
      * @var int
      */
-    public $tries = 5;
+    public $tries = 10;
 
     public $timeout = 15;
 
@@ -51,33 +52,34 @@ class SendTransportInfoToController implements ShouldQueue
     */
     public function backoff(): array
     {
-        return [10, 90, 180];
+        return [10, 30, 60];
     }
 
     protected $transport;
+    protected $tenant;
 
     /**
      * Create a new job instance.
      */
     public function __construct(Transport $transport)
     {
-        $this->transport = $transport;
+        $this->transport = $transport->withoutRelations();
+        $this->tenant = $transport->tenant->withoutRelations();
     }
 
     /**
      * Execute the job.
      */
     public function handle(): void
-    {        
-        $controllers = Controller::all();
-        $transport = $this->transport;
-        foreach ($controllers as $key => $controller) {            
+    {
+        $controllers = Controller::all(['apikey', 'active' ,'id', 'name', 'ip']);
+        foreach ($controllers as $key => $controller) {
             if (!$controller->active)  continue;
-            info('SendTransportInfoToController: отправляем транспорт "'. $transport->number .'" на контроллер "'.$controller->name.'"');
-            echo 'SendTransportInfoToController: отправляем транспорт "'. $transport->number .'" на контроллер "'.$controller->name.'"' . PHP_EOL;
+            info('SendTransportInfoToController: отправляем транспорт "'. $this->transport->number .'" на контроллер "'.$controller->name.'"');
+            echo 'SendTransportInfoToController: отправляем транспорт "'. $this->transport->number .'" на контроллер "'.$controller->name.'"' . PHP_EOL;
             $week = '';
-            if ($transport->week) {
-                foreach ($transport->week as $key => $value) {
+            if ($this->transport->week) {
+                foreach ($this->transport->week as $key => $value) {
                     $week .= ($value == 1) ? '1':'0';
                 }
             } else {
@@ -89,21 +91,21 @@ class SendTransportInfoToController implements ShouldQueue
                 'ev_date' => Carbon::now()->format('Y.m.d H:m:s'),
                 'create' => [
                     'parent' => [
-                        'name' => $transport->tenant->name,
-                        'id' => $transport->tenant->id,
-                        'access' => $transport->balance <= 0 ? 0 : 1,
+                        'name' => $this->tenant->name,
+                        'id' => $this->tenant->id,
+                        'access' => $this->transport->balance <= 0 ? 0 : 1,
                     ],
-                    'plate' => $transport->number,
-                    'fio' => $transport->driver,
-                    'access' => intval($transport->access),
-                    'authentication' => $transport->type_auth,
-                    'tid' => $transport->tid()
+                    'plate' => $this->transport->number,
+                    'fio' => $this->transport->driver,
+                    'access' => intval($this->transport->access),
+                    'authentication' => $this->transport->type_auth,
+                    'tid' => $this->transport->tid()
                 ],
                 'access' => [
-                    'time_limit' => $transport->restrictions ? intval($transport->time_limit) : 0,
-                    'week' => $transport->restrictions ? $week : '1111111',
-                    'time_interval' => $transport->restrictions ? str_replace([':'], '', isset($transport->fromTime)? $transport->fromTime : '00:00') .'-'.str_replace([':'], '', isset($transport->toTime)? $transport->toTime : '23:59') : '0000-2359',
-                    'date_interval' => $transport->restrictions ? (isset($transport->fromDate) ? Carbon::parse($transport->fromDate)->format('Ymd') : Carbon::now()->format('Ymd')).'-'. (isset($transport->toDate) ? Carbon::parse($transport->toDate)->format('Ymd') : '21191231') : Carbon::now()->format('Ymd').'-21191231',
+                    'time_limit' => $this->transport->restrictions ? intval($this->transport->time_limit) : 0,
+                    'week' => $this->transport->restrictions ? $week : '1111111',
+                    'time_interval' => $this->transport->restrictions ? str_replace([':'], '', isset($this->transport->fromTime)? $this->transport->fromTime : '00:00') .'-'.str_replace([':'], '', isset($this->transport->toTime)? $this->transport->toTime : '23:59') : '0000-2359',
+                    'date_interval' => $this->transport->restrictions ? (isset($this->transport->fromDate) ? Carbon::parse($this->transport->fromDate)->format('Ymd') : Carbon::now()->format('Ymd')).'-'. (isset($this->transport->toDate) ? Carbon::parse($this->transport->toDate)->format('Ymd') : '21191231') : Carbon::now()->format('Ymd').'-21191231',
                 ]
             ];
 
@@ -118,7 +120,7 @@ class SendTransportInfoToController implements ShouldQueue
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 10,
+            CURLOPT_TIMEOUT => 5,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => "POST",
             CURLOPT_POSTFIELDS => json_encode($data), //http_build_query($data),
@@ -134,7 +136,11 @@ class SendTransportInfoToController implements ShouldQueue
 
             if ($err) {
                 info("cURL Error #: " . $err);
-                $this->release(60);
+                if ($this->attempts() > 15) {
+                    $this->fail('Ошибка доставки данных контроллеру '. $controller->name .'. Причина: '. $err);
+                } else {
+                    $this->release(now()->addSeconds(1));
+                }
             } else {
                 //info($response);
             }
@@ -145,16 +151,16 @@ class SendTransportInfoToController implements ShouldQueue
     /**
      * Обработать провал задания.
      */
-    public function failed(Throwable $exception): void
+    public function failed(?Throwable $exception): void
     {
         // Отправляем пользователю уведомление об ошибке и т.д.
         $users = \App\Models\User::all()->filter(function ($value, $key) {
             return $value->isRoot();
         });
-        
+
         foreach ($users as $key => $user) {
             $user->notify(NovaNotification::make()
-                ->message('Ошибка доставки данный контроллеру: '.$exception->getMessage())
+                ->message($exception?->getMessage())
                 ->type('error')
             );
         }

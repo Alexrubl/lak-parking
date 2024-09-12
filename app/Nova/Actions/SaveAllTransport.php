@@ -29,12 +29,11 @@ class SaveAllTransport extends Action
     {
         foreach (Transport::all() as $key => $transport) {
             try {
-                $api = new Api;
-                $api->sendNewTransportToControllers($transport);            
+                \App\Jobs\SendTransportInfoToController::dispatch($transport)->onQueue('transports');
             } catch (\Throwable $th) {
                 info($th->getMessage());
                 continue;
-            } 
+            }
         }
         return Action::message('Обновление транспорта на контроллерах закончено!');
     }

@@ -16,7 +16,7 @@ class TransportObserver
             info('created Transport');
             // $api = new Api;
             // $api->sendNewTransportToControllers($transport);
-            \App\Jobs\SendTransportInfoToController::dispatch($transport);
+            \App\Jobs\SendTransportInfoToController::dispatch($transport)->onQueue('transports');
         } catch (\Throwable $th) {
             info($th->getMessage());
         }
@@ -31,7 +31,7 @@ class TransportObserver
             info('updated Transport');
             // $api = new Api;
             // $api->sendNewTransportToControllers($transport);
-            \App\Jobs\SendTransportInfoToController::dispatch($transport);
+            \App\Jobs\SendTransportInfoToController::dispatch($transport)->onQueue('transports');
         } catch (\Throwable $th) {
             info($th->getMessage());
         }

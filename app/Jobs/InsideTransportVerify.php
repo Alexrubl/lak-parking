@@ -36,7 +36,9 @@ class InsideTransportVerify implements ShouldQueue
             if (isset($last_history_entry) && Carbon::Now() > Carbon::parse($last_history_entry->created_at)->addHours(12)) {
                 info($transport->name . ' - '. $transport->number.' force inside out');
                 $transport->inside = 0;
-                $transport->access = 0;
+                if ($transport->guest) { // Если транспорт гостевой закрываем доступ
+                    $transport->access = 0;
+                }
                 $transport->save();
             } elseif (!isset($last_history_entry)) { # если в истории нет транспорта, то убираем что он на территории
                 $transport->inside = 0;
