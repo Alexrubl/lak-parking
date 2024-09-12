@@ -109,7 +109,7 @@ class SendTransportInfoToController implements ShouldQueue
                 ]
             ];
 
-            info($data);
+            //info($data);
             // dd();
 
             $curl = curl_init();
