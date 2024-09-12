@@ -107,7 +107,7 @@ class Transport extends Resource
                 ->sortable()
                 ->rules('required', 'max:255'),
 
-            MaskInput::make('Номер ТС', 'number')->mask('A###AA###')
+            MaskInput::make('Номер ТС', 'number')->mask('Z###ZZ###')
                 ->sortable()
                 ->rules('required', function($attribute, $value, $fail) {
                     if (!preg_match("/^([a-zA-Z])\s?(\d)\s?(\d{2})\s?([a-zA-Z]{2})\s?(\d{2,3})$/ui",$value)) {

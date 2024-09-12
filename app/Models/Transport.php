@@ -9,8 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\belongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
-
-
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Transport extends Model
 {
@@ -97,5 +96,11 @@ class Transport extends Model
     | MUTATORS
     |--------------------------------------------------------------------------
     */
+    protected function Number(): Attribute
+    {
+        return Attribute::make(
+            set: fn (string $value) => strtoupper($value),
+        );
+    }
 
 }

@@ -35,7 +35,7 @@ class CreateGuestTransport extends Action
      * @return mixed
      */
     public function handle(ActionFields $fields, Collection $models)
-    {        
+    {
         $model = Transport::withTrashed()->updateOrCreate(
             [
                 'number' => $fields->number
@@ -74,7 +74,7 @@ class CreateGuestTransport extends Action
         return [
             MaskInput::make('Номер ТС', 'number')
                 ->sortable()
-                ->mask('A###AA###')
+                ->mask('Z###ZZ###')
                 ->rules('required', function($attribute, $value, $fail) {
                     if (!preg_match("/^([a-zA-Z])\s?(\d)\s?(\d{2})\s?([a-zA-Z]{2})\s?(\d{2,3})$/ui",$value)) {
                         return $fail('Не правильный формат номера.');
@@ -88,8 +88,8 @@ class CreateGuestTransport extends Action
 
             // $request->user()->tenant->count() != 1 ? BelongsToForActions::make('Арендатор', 'tenant', 'App\Nova\Tenant')->default(($request->user()->tenant->count() == 1 && $request->user()->isTenant()) ? $request->user()->tenant[0]->id : null)
             //     ->withoutTrashed()->searchable(!$request->user()->isTenant()) : Hidden::make('Require Verification')->rules('required'),
-            
-            $request->user()->tenant->count() != 1  
+
+            $request->user()->tenant->count() != 1
                 ? Select::make('Арендатор', 'tenant')->options($request->user()->isTenant() ? $request->user()->tenant->pluck('name', 'id') : Tenant::all()->pluck('name', 'id'))->rules('required')->default(($request->user()->tenant->count() == 1 && $request->user()->isTenant()) ? $request->user()->tenant[0]->id : null)->searchable(!$request->user()->isTenant())
                 : Hidden::make('Require Verification'),
         ];

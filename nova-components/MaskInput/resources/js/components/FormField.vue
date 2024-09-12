@@ -15,7 +15,7 @@
         v-model="value"
         v-maska
         :data-maska="mask"
-        data-maska-tokens="A:[A-Z]|a:[a-z]|А:[А-Я]|а:[а-я]"
+        data-maska-tokens="A:[A-Z]|a:[a-z]|А:[А-Я]|а:[а-я]|Z:[a-zA-Z]"
       />
     </template>
   </DefaultField>
@@ -48,7 +48,7 @@ export default {
     },
   },
   computed: {
-    mask() {     
+    mask() {
       return this.field.mask;
     },
   },
