@@ -98,8 +98,8 @@ class SendTransportInfoToController implements ShouldQueue
                     'plate' => $this->transport->number,
                     'fio' => $this->transport->driver,
                     'access' => intval($this->transport->access),
-                    'authentication' => $this->transport->type_auth,
-                    'tid' => $this->transport->tid()
+                    // 'authentication' => $this->transport->type_auth,
+                    // 'tid' => $this->transport->tid()
                 ],
                 'access' => [
                     'time_limit' => $this->transport->restrictions ? intval($this->transport->time_limit) : 0,
@@ -109,7 +109,7 @@ class SendTransportInfoToController implements ShouldQueue
                 ]
             ];
 
-            // info($data);
+            info($data);
             // dd();
 
             $curl = curl_init();
@@ -143,7 +143,7 @@ class SendTransportInfoToController implements ShouldQueue
 
                     foreach ($users as $key => $user) {
                         $user->notify(NovaNotification::make()
-                            ->message($exception?->getMessage())
+                            ->message('Ошибка доставки данных контроллеру '. $controller->name .'. Причина: '. $err)
                             ->type('error')
                         );
                     }

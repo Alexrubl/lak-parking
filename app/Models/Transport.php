@@ -37,7 +37,7 @@ class Transport extends Model
     |--------------------------------------------------------------------------
     */
     public function tid() {
-        return str_replace([' ', ','], '', $this->uhf);
+        return isset($this->uhf) ? str_replace([' ', ','], '', $this->uhf) : NULL;
     }
 
     /*
