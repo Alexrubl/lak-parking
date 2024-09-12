@@ -50,7 +50,7 @@ class SendTransportInfoToController implements ShouldQueue
     *
     * @return array<int, int>
     */
-    public function backoff(): array
+    public function backoff(): int | array
     {
         return 10;
     }
