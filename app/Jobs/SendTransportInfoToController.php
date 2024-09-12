@@ -24,7 +24,7 @@ class SendTransportInfoToController implements ShouldQueue
      *
      * @var int
      */
-    public $tries = 10;
+    public $tries = 3;
 
     public $timeout = 15;
 
@@ -52,7 +52,7 @@ class SendTransportInfoToController implements ShouldQueue
     */
     public function backoff(): array
     {
-        return [10, 30, 60];
+        return 10;
     }
 
     protected $transport;
@@ -136,8 +136,18 @@ class SendTransportInfoToController implements ShouldQueue
 
             if ($err) {
                 info("cURL Error #: " . $err);
-                if ($this->attempts() > 15) {
-                    $this->fail('Ошибка доставки данных контроллеру '. $controller->name .'. Причина: '. $err);
+                if ($this->attempts() > 3) {
+                    $users = \App\Models\User::all()->filter(function ($value, $key) {
+                        return $value->isRoot();
+                    });
+
+                    foreach ($users as $key => $user) {
+                        $user->notify(NovaNotification::make()
+                            ->message($exception?->getMessage())
+                            ->type('error')
+                        );
+                    }
+                    //$this->fail('Ошибка доставки данных контроллеру '. $controller->name .'. Причина: '. $err);
                 } else {
                     $this->release(now()->addSeconds(1));
                 }

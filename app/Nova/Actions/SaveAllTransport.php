@@ -35,7 +35,7 @@ class SaveAllTransport extends Action
                 continue;
             }
         }
-        return Action::message('Обновление транспорта на контроллерах закончено!');
+        return Action::message('Запуск процедуры обновления транспорта на контроллерах!');
     }
 
     /**
