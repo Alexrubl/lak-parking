@@ -27,17 +27,8 @@ Route::get('getchannels', [ApiController::class, 'sigurGetChannels']);
 Route::post('pay/ckassa', [CkassaController::class, 'callback']);
 
 Route::get('/abc', function() {
-    $users = \App\Models\User::all()->filter(function ($value, $key) {
-        return $value->isRoot();
-    });
-
-    foreach ($users as $key => $user) {
-        $user->notify(NovaNotification::make()
-            ->message('Сообщение')
-            ->type('error')
-        );
-    }
-
+    info('abc');
+    \App\Jobs\DemoJob::dispatch()->onQueue('transports');
 });
 
 

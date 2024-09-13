@@ -17,7 +17,7 @@ use Throwable;
 
 class SendTransportInfoToController implements ShouldQueue
 {
-    use Queueable;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
      * Количество попыток выполнения задания.
@@ -26,7 +26,9 @@ class SendTransportInfoToController implements ShouldQueue
      */
     public $tries = 3;
 
-    public $timeout = 15;
+    public $timeout = 30;
+
+    public $sleep = 1;
 
     /**
      * Задать временной предел попыток выполнить задания.
@@ -35,7 +37,7 @@ class SendTransportInfoToController implements ShouldQueue
      */
     public function retryUntil(): DateTime
     {
-        return now()->addMinutes(5);
+        return now()->addSeconds(30);
     }
 
     /**
@@ -43,7 +45,7 @@ class SendTransportInfoToController implements ShouldQueue
      *
      * @var int
      */
-    public $maxExceptions = 3;
+    public $maxExceptions = 2;
 
     /**
     * Рассчитать количество секунд ожидания перед повторной попыткой выполнения задания.
@@ -75,8 +77,8 @@ class SendTransportInfoToController implements ShouldQueue
         $controllers = Controller::all(['apikey', 'active' ,'id', 'name', 'ip']);
         foreach ($controllers as $key => $controller) {
             if (!$controller->active)  continue;
-            info('SendTransportInfoToController: отправляем транспорт "'. $this->transport->number .'" на контроллер "'.$controller->name.'"');
-            echo 'SendTransportInfoToController: отправляем транспорт "'. $this->transport->number .'" на контроллер "'.$controller->name.'"' . PHP_EOL;
+            info('SendTransportInfoToController ('.$this->attempts().'): отправляем транспорт "'. $this->transport->number .'" на контроллер "'.$controller->name.'"');
+            echo 'SendTransportInfoToController ('.$this->attempts().'): отправляем транспорт "'. $this->transport->number .'" на контроллер "'.$controller->name.'"' . PHP_EOL;
             $week = '';
             if ($this->transport->week) {
                 foreach ($this->transport->week as $key => $value) {
@@ -170,7 +172,7 @@ class SendTransportInfoToController implements ShouldQueue
 
         foreach ($users as $key => $user) {
             $user->notify(NovaNotification::make()
-                ->message($exception?->getMessage())
+                ->message(isset($exception) ? $exception?->getMessage() : 'Ошибка выполнения заданияпо отправке транспорта на контроллер!')
                 ->type('error')
             );
         }
