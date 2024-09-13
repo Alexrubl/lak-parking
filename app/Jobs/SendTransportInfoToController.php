@@ -111,18 +111,21 @@ class SendTransportInfoToController implements ShouldQueue
                 ]
             ];
 
-            //info($data);
-            // dd();
+            // info($data);
+            // // dd();
+            // $client = new \GuzzleHttp\Client();
+            // $response = $client->request('POST', $controller->ip. '/api/plate/srv');
+            // info(collect($response));
 
             $curl = curl_init();
-
+            //info($controller->ip. '/api/plate/srv');
             curl_setopt_array($curl, [
             //CURLOPT_PORT => "8082",
             CURLOPT_URL => $controller->ip. '/api/plate/srv',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 5,
+            CURLOPT_MAXREDIRS => 100,
+            CURLOPT_TIMEOUT => 15,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => "POST",
             CURLOPT_POSTFIELDS => json_encode($data), //http_build_query($data),
@@ -134,11 +137,13 @@ class SendTransportInfoToController implements ShouldQueue
             $response = curl_exec($curl);
             $err = curl_error($curl);
 
+            //info($response);
+
             curl_close($curl);
 
             if ($err) {
                 info("cURL Error #: " . $err);
-                if ($this->attempts() > 3) {
+                if ($this->attempts() >= 3) {
                     $users = \App\Models\User::all()->filter(function ($value, $key) {
                         return $value->isRoot();
                     });
