@@ -28,8 +28,6 @@ class SendTransportInfoToController implements ShouldQueue
 
     public $timeout = 30;
 
-    public $sleep = 1;
-
     /**
      * Задать временной предел попыток выполнить задания.
      *
@@ -156,7 +154,7 @@ class SendTransportInfoToController implements ShouldQueue
                     }
                     //$this->fail('Ошибка доставки данных контроллеру '. $controller->name .'. Причина: '. $err);
                 } else {
-                    $this->release(now()->addSeconds(1));
+                    $this->release(now()->addSeconds(3));
                 }
             } else {
                 //info($response);

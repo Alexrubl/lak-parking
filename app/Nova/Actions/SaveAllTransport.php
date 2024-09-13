@@ -29,7 +29,7 @@ class SaveAllTransport extends Action
     {
         foreach (Transport::all() as $key => $transport) {
             try {
-                \App\Jobs\SendTransportInfoToController::dispatch($transport)->onQueue('transports');
+                \App\Jobs\SendTransportInfoToController::dispatch($transport)->onQueue('transports')->delay(now()->addSeconds(3));;
             } catch (\Throwable $th) {
                 info($th->getMessage());
                 continue;
