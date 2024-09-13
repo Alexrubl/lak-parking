@@ -29,9 +29,9 @@ class TransportObserver
     {
         try {
             info('updated Transport');
-            // $api = new Api;
-            // $api->sendNewTransportToControllers($transport);
-            \App\Jobs\SendTransportInfoToController::dispatch($transport)->onQueue('transports');
+            $api = new Api;
+            $api->sendNewTransportToControllers($transport);
+            //\App\Jobs\SendTransportInfoToController::dispatch($transport)->onQueue('transports');
         } catch (\Throwable $th) {
             info($th->getMessage());
         }
