@@ -24,6 +24,8 @@
         "intervention/image-laravel": "^1.3",
         "laravel/framework": "^11.9",
         "laravel/nova": "^4.33",
+        "laravel/pulse": "^1.2",
+        "laravel/reverb": "^1.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "maatwebsite/laravel-nova-excel": "^1.3",
@@ -38,10 +40,10 @@
         "fakerphp/faker": "^1.23",
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.26",
+        "laravel/telescope": "^5.2",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.0",
-        "phpunit/phpunit": "^11.0.1",
-        "ryoluo/sail-ssl": "^1.3"
+        "phpunit/phpunit": "^11.0.1"
     },
     "autoload": {
         "psr-4": {
@@ -77,7 +79,9 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": []
+            "dont-discover": [
+                "laravel/telescope"
+            ]
         }
     },
     "config": {

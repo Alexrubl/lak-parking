@@ -2,11 +2,10 @@
 
 namespace App\Nova\Metrics;
 
+use App\Models\History;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Laravel\Nova\Metrics\Trend;
 use Laravel\Nova\Metrics\Value;
 use Laravel\Nova\Nova;
-use App\Models\History;
 
 class HistorySum extends Value
 {
@@ -23,7 +22,6 @@ class HistorySum extends Value
     /**
      * Calculate the value of the metric.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @return mixed
      */
     public function calculate(NovaRequest $request)
@@ -48,7 +46,7 @@ class HistorySum extends Value
             'MTD' => Nova::__('Month To Date'),
             'QTD' => Nova::__('Quarter To Date'),
             'YTD' => Nova::__('Year To Date'),
-            'ALL' => Nova::__('All Time')
+            'ALL' => Nova::__('All Time'),
         ];
     }
 

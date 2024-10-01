@@ -96,6 +96,8 @@ services:
             XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
             XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
             IGNITION_LOCAL_SITES_PATH: '${PWD}'
+        ports:
+            - "6001:6001"
         volumes:
             -   ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}${APP_CODE_CONTAINER_FLAG}
         networks:
@@ -104,6 +106,33 @@ services:
             - "9000"
         depends_on:
             - mysql
+
+    oven-media-engine:
+        build:
+            context: "./docker/ovenmediaengine"
+        environment:
+            - OME_HOST_IP=localhost
+            - OME_ORIGIN_PORT=9000
+            - OME_RTMP_PROV_PORT=1935
+            - OME_SRT_PROV_PORT=9999
+            - OME_LLHLS_STREAM_PORT=3333
+            - OME_WEBRTC_SIGNALLING_PORT=3333
+            - OME_WEBRTC_TCP_RELAY_PORT=3478
+            - OME_WEBRTC_CANDIDATE_PORT=10000-10004/udp
+        volumes:
+            - ${OME_CONFIG}:/opt/ovenmediaengine/bin/origin_conf
+        ports:
+            - "8081:8081/tcp" # API
+            - "9000:9000/tcp" # OVT(Origin)
+            - "1935:1935/tcp" # RTMP Provider
+            - "9999:9999/udp" # SRT
+            - "3333:3333/tcp" # WebRTC Signaling / LLHLS
+            - "3478:3478/tcp" # WebRTC TURN
+            - "10000-10004:10000-10004/udp" # WebRTC Candidate
+        restart: always
+        command: /opt/ovenmediaengine/bin/OvenMediaEngine -c origin_conf
+        networks:
+            - sail
 
 networks:
     sail:

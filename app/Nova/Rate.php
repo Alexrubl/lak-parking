@@ -3,11 +3,10 @@
 namespace App\Nova;
 
 use Illuminate\Http\Request;
-use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Fields\Number;
-use Laravel\Nova\Fields\Repeater;
 use Laravel\Nova\Fields\Boolean;
+use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Repeater;
+use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use NormanHuth\NovaRadioField\Radio;
 
@@ -16,6 +15,7 @@ class Rate extends Resource
     public static $group = '  Справочники';
 
     public static $priority = 3;
+
     /**
      * The model the resource corresponds to.
      *
@@ -30,11 +30,13 @@ class Rate extends Resource
      */
     public static $title = 'name';
 
-    public static function label() {
+    public static function label()
+    {
         return 'Тарифы';
     }
 
-    public static function singularlabel() {
+    public static function singularlabel()
+    {
         return 'Тариф';
     }
 
@@ -49,7 +51,7 @@ class Rate extends Resource
 
     public static function indexQuery(NovaRequest $request, $query)
     {
-        if (!$request->user()->isAdmin()) {       
+        if (! $request->user()->isAdmin()) {
             $query->where('type', '<>', 'Постоянный');
         }
     }
@@ -57,7 +59,6 @@ class Rate extends Resource
     /**
      * Get the fields displayed by the resource.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @return array
      */
     public function fields(NovaRequest $request)
@@ -73,27 +74,28 @@ class Rate extends Resource
                 ->options([
                     'Разовый' => 'Разовый',
                     'Постоянный' => 'Постоянный (свой)',
+                    'ПостоянныйМесяц' => 'Списание раз в месяц',
                 ])
                 ->radioHelpTexts([
                     'Разовый' => 'при въезде',
                     'Постоянный' => 'раз в день',
+                    'ПостоянныйМесяц' => 'раз в месяц',
                 ])->inline()->rules('required'),
-            
+
             Boolean::make('Использовать по умолчанию для Гостевого', 'default_guest')->default(0),
-            
+
             Repeater::make('Тариф', 'items')
                 ->repeatables([
                     \App\Nova\Repeater\RateItem::make(),
                 ])
                 ->asJson()->rules('required'),
-            
+
         ];
     }
 
     /**
      * Get the cards available for the request.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @return array
      */
     public function cards(NovaRequest $request)
@@ -104,7 +106,6 @@ class Rate extends Resource
     /**
      * Get the filters available for the resource.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @return array
      */
     public function filters(NovaRequest $request)
@@ -115,7 +116,6 @@ class Rate extends Resource
     /**
      * Get the lenses available for the resource.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @return array
      */
     public function lenses(NovaRequest $request)
@@ -126,7 +126,6 @@ class Rate extends Resource
     /**
      * Get the actions available for the resource.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @return array
      */
     public function actions(NovaRequest $request)

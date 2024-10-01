@@ -2,39 +2,30 @@
 
 namespace App\Nova;
 
-use Illuminate\Http\Request;
-use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Http\Requests\NovaRequest;
-use Laravel\Nova\Fields\Boolean;
-use Laravel\Nova\Fields\BooleanGroup;
-use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Fields\Number;
-use SimpleSquid\Nova\Fields\AdvancedNumber\AdvancedNumber;
-use Laravel\Nova\Fields\Date;
-use Laravel\Nova\Fields\DateTime;
-use Laravel\Nova\Fields\Select;
-use Laravel\Nova\Fields\BelongsTo;
-use Laravel\Nova\Fields\FormData;
-use Laravel\Nova\Fields\HasOne;
+use Alexrubl\DateRange\DateRange;
+use Alexrubl\MaskInput\MaskInput;
+use Alexrubl\TimeRange\TimeRange;
+use Alexwenzel\DependencyContainer\DependencyContainer;
+use Alexwenzel\DependencyContainer\HasDependencies;
+use App\Nova\Metrics\inTransport;
+use Formfeed\DependablePanel\DependablePanel;
 use Ganyicz\NovaCallbacks\HasCallbacks;
 use Illuminate\Database\Eloquent\Builder;
-use App\Models\Controller;
-use Carbon\Carbon;
-use Carbon\CarbonInterval;
-use Laravel\Nova\Panel;
-use Laravel\Nova\Nova;
-use App\Nova\Metrics\inTransport;
-use Laravel\Nova\Actions\Action;
-use Formfeed\DependablePanel\DependablePanel;
-use Alexrubl\DateRange\DateRange;
-use Alexrubl\TimeRange\TimeRange;
-use App\Http\Controllers\ApiController as Api;
-use Laravel\Nova\Fields\ActionFields;
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Alexrubl\MaskInput\MaskInput;
-use Alexwenzel\DependencyContainer\HasDependencies;
-use Alexwenzel\DependencyContainer\DependencyContainer;
-
+use Laravel\Nova\Actions\Action;
+use Laravel\Nova\Fields\ActionFields;
+use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\Boolean;
+use Laravel\Nova\Fields\BooleanGroup;
+use Laravel\Nova\Fields\FormData;
+use Laravel\Nova\Fields\HasMany;
+use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Select;
+use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Http\Requests\NovaRequest;
+use Maatwebsite\LaravelNovaExcel\Actions\DownloadExcel;
+use SimpleSquid\Nova\Fields\AdvancedNumber\AdvancedNumber;
 
 class Transport extends Resource
 {
@@ -58,14 +49,15 @@ class Transport extends Resource
      */
     public static $title = 'name';
 
-    public static function label() {
+    public static function label()
+    {
         return 'Транспорты';
     }
 
-    public static function singularlabel() {
+    public static function singularlabel()
+    {
         return 'Транспорт';
     }
-
 
     /**
      * The columns that should be searched.
@@ -73,13 +65,13 @@ class Transport extends Resource
      * @var array
      */
     public static $search = [
-        'id', 'name', 'driver', 'number'
+        'id', 'name', 'driver', 'number',
     ];
 
     public static function indexQuery(NovaRequest $request, $query)
     {
-        if (!$request->user()->isAdmin() && !$request->user()->isSecurity()) {
-            $tenant_id = array();
+        if (! $request->user()->isAdmin() && ! $request->user()->isSecurity()) {
+            $tenant_id = [];
             foreach ($request->user()->tenant as $key => $value) {
                 $tenant_id[] = $value->id;
             }
@@ -87,11 +79,9 @@ class Transport extends Resource
         }
     }
 
-
     /**
      * Get the fields displayed by the resource.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @return array
      */
     public function fields(NovaRequest $request)
@@ -107,17 +97,18 @@ class Transport extends Resource
                 ->sortable()
                 ->rules('required', 'max:255'),
 
-            MaskInput::make('Номер ТС', 'number')->mask('Z###ZZ###')
+            MaskInput::make('Номер ТС', 'number')->mask("['Z ### ZZ ###', 'ZZ ### ###', 'Z #### ###']")
                 ->sortable()
-                ->rules('required', function($attribute, $value, $fail) {
-                    if (!preg_match("/^([a-zA-Z])\s?(\d)\s?(\d{2})\s?([a-zA-Z]{2})\s?(\d{2,3})$/ui",$value)) {
+                ->rules('required', function ($attribute, $value, $fail) {
+                    if (! preg_match("/^([a-zA-Z])\s?(\d)\s?(\d{2})\s?([a-zA-Z]{2})\s?(\d{2,3})$/ui", $value)) {
                         return $fail('Не правильный формат номера.');
                     }
+
                     return true;
                 })
                 ->help('на английской раскладке')
                 ->creationRules('unique:transports,number')
-                ->updateRules('alpha_num:ascii','unique:transports,number,{{resourceId}}'),
+                ->updateRules('unique:transports,number,{{resourceId}}'),
 
             MaskInput::make('UHF метка (TID)', 'uhf')->mask('########## ###,#####')->hideFromIndex(),
 
@@ -134,25 +125,25 @@ class Transport extends Resource
                 //     'belongsToId' => ($request->user()->tenant->count() == 1 && $request->user()->isTenant()) ? $request->user()->tenant[0]->id : null
                 // ])]
                 ->default(($request->user()->tenant->count() == 1 && $request->user()->isTenant()) ? $request->user()->tenant[0]->id : null)
-                ->withoutTrashed()->searchable(!$request->user()->isTenant()),
-                // ->fillUsing(function ($request, $model, $attribute, $requestAttribute) {
-                //     info($request);
-                //     info($model);
-                //     info($attribute);
-                //     info($requestAttribute);
-                //     if ($request->user()->tenant->count() == 1 && $request->user()->isTenant()) {
-                //         $model->{$attribute} = $request->user()->tenant[0]->id;
-                //     } else {
-                //         $model->{$attribute} = $request->tenant;
-                //     }
-                // })
+                ->withoutTrashed()->searchable(! $request->user()->isTenant()),
+            // ->fillUsing(function ($request, $model, $attribute, $requestAttribute) {
+            //     info($request);
+            //     info($model);
+            //     info($attribute);
+            //     info($requestAttribute);
+            //     if ($request->user()->tenant->count() == 1 && $request->user()->isTenant()) {
+            //         $model->{$attribute} = $request->user()->tenant[0]->id;
+            //     } else {
+            //         $model->{$attribute} = $request->tenant;
+            //     }
+            // })
 
-                // ->canSee(function ($request) {
-                //     if ($request->user()->tenant->count() == 1) {
-                //         return !$request->user()->isTenant();
-                //     }
-                //     return true;
-                // }),
+            // ->canSee(function ($request) {
+            //     if ($request->user()->tenant->count() == 1) {
+            //         return !$request->user()->isTenant();
+            //     }
+            //     return true;
+            // }),
 
             BelongsTo::make('Тариф', 'rate', 'App\Nova\Rate')->rules('required')
                 ->dependsOn('guest', function (BelongsTo $field, NovaRequest $request, FormData $formData) {
@@ -167,7 +158,7 @@ class Transport extends Resource
 
             Boolean::make('Доступ', 'access'),
 
-            Boolean::make('Гостевой', 'guest'),
+            Boolean::make('Гостевой', 'guest')->filterable(),
 
             Boolean::make('Ограничения', 'restrictions')->hideFromIndex(),
 
@@ -181,15 +172,15 @@ class Transport extends Resource
             //         }
             //     )->separatePanel(true),
 
-            DependencyContainer::make( $this->scheduleFields())
-                ->dependsOn('restrictions', 1)
+            DependencyContainer::make($this->scheduleFields())->dependsOn('restrictions', 1),
+
+            HasMany::make('История', 'history', 'App\Nova\History'),
         ];
     }
 
     /**
      * Get the cards available for the request.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @return array
      */
     public function cards(NovaRequest $request)
@@ -203,7 +194,6 @@ class Transport extends Resource
     /**
      * Get the filters available for the resource.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @return array
      */
     public function filters(NovaRequest $request)
@@ -216,7 +206,6 @@ class Transport extends Resource
     /**
      * Get the lenses available for the resource.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @return array
      */
     public function lenses(NovaRequest $request)
@@ -227,7 +216,6 @@ class Transport extends Resource
     /**
      * Get the actions available for the resource.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @return array
      */
     public function actions(NovaRequest $request)
@@ -235,7 +223,7 @@ class Transport extends Resource
         return [
             //(new \App\Nova\Actions\SaveAllTransport)->standalone()
             \App\Nova\Actions\CreateGuestTransport::make()->standalone()
-            ->icon('<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                ->icon('<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 0 1 0 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 0 1 0-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375Z" />
             </svg>'),
 
@@ -244,12 +232,17 @@ class Transport extends Resource
             })->icon('<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
             </svg>'),
+            (new DownloadExcel)->askForFilename()->askForWriterType()->withHeadings()
+                ->icon('<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-full" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>', label: 'Выгрузить'),
         ];
     }
 
     protected function scheduleFields()
     {
         $model = ['From', 'To'];
+
         return [
             // Boolean::make('Гостевой', 'guest'),
 
@@ -276,13 +269,9 @@ class Transport extends Resource
         ];
     }
 
-    public static function afterCreate(Request $request, $model) {
+    public static function afterCreate(Request $request, $model) {}
 
-    }
-
-    public static function afterSave(Request $request, $model) {
-
-    }
+    public static function afterSave(Request $request, $model) {}
 
     public static function redirectAfterCreate(NovaRequest $request, $resource)
     {

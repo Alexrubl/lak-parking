@@ -28,7 +28,7 @@ trait WithHeadings
     {
         $headings = \is_array($headings) ? $headings : \func_get_args();
 
-        if (0 === count($headings)) {
+        if (count($headings) === 0) {
             $this->headingCallback = $this->autoHeading();
         } else {
             $this->headingCallback = function () use ($headings) {
@@ -39,9 +39,6 @@ trait WithHeadings
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function headings(): array
     {
         return $this->headings;
@@ -49,19 +46,15 @@ trait WithHeadings
 
     /**
      * @param  Builder  $query
-     * @param  ExportActionRequest  $request
      */
     protected function handleHeadings($query, ExportActionRequest $request)
     {
         if (\is_callable($this->headingCallback)) {
-            $headingQuery   = clone $query;
+            $headingQuery = clone $query;
             $this->headings = ($this->headingCallback)($headingQuery, $request);
         }
     }
 
-    /**
-     * @return callable
-     */
     protected function autoHeading(): callable
     {
         return function ($query, ExportActionRequest $request) {
@@ -70,7 +63,7 @@ trait WithHeadings
              */
             $model = $query->first();
 
-            if (!$model) {
+            if (! $model) {
                 return [];
             }
 

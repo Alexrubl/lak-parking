@@ -350,6 +350,8 @@ export default {
     },
 
     clearResourceSelection() {
+      const id = this.selectedResourceId
+
       this.clearSelection()
 
       if (this.viaRelatedResource && !this.createdViaRelationModal) {
@@ -368,11 +370,19 @@ export default {
         })
       } else {
         if (this.createdViaRelationModal) {
+          this.selectedResourceId = id
           this.createdViaRelationModal = false
+          this.initializingWithExistingResource = true
+        } else if (this.editingExistingResource) {
           this.initializingWithExistingResource = false
         }
 
-        this.getAvailableResources()
+        if (
+          (!this.isSearchable || this.shouldLoadFirstResource) &&
+          this.currentlyIsVisible
+        ) {
+          this.getAvailableResources()
+        }
       }
     },
 

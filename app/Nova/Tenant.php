@@ -2,27 +2,25 @@
 
 namespace App\Nova;
 
-use Illuminate\Http\Request;
-use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Http\Requests\NovaRequest;
-use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Fields\Number;
-use Laravel\Nova\Fields\Boolean;
 use App\Nova\Actions\PayCkassa;
-use App\Nova\Actions\PayCkassaStatus;
-use Pavloniym\ActionButtons\ActionButton;
-use Laravel\Nova\Fields\Currency;
 use Ganyicz\NovaCallbacks\HasCallbacks;
-use Laravel\Nova\Fields\BelongsToMany;
+use Illuminate\Http\Request;
+use Laravel\Nova\Fields\Boolean;
+use Laravel\Nova\Fields\Currency;
 use Laravel\Nova\Fields\HasMany;
+use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Http\Requests\NovaRequest;
+use Pavloniym\ActionButtons\ActionButton;
 
 class Tenant extends Resource
 {
-     use HasCallbacks;
+    use HasCallbacks;
 
     public static $group = '  Справочники';
 
     public static $priority = 1;
+
     /**
      * The model the resource corresponds to.
      *
@@ -39,8 +37,8 @@ class Tenant extends Resource
 
     public static function indexQuery(NovaRequest $request, $query)
     {
-        if (!$request->user()->isAdmin()  && !$request->user()->isSecurity()) {
-            $tenant_id = array();
+        if (! $request->user()->isAdmin() && ! $request->user()->isSecurity()) {
+            $tenant_id = [];
             foreach ($request->user()->tenant as $key => $value) {
                 $tenant_id[] = $value->id;
             }
@@ -48,11 +46,13 @@ class Tenant extends Resource
         }
     }
 
-    public static function label() {
+    public static function label()
+    {
         return 'Арендаторы';
     }
 
-    public static function singularlabel() {
+    public static function singularlabel()
+    {
         return 'Арендатор';
     }
 
@@ -62,15 +62,12 @@ class Tenant extends Resource
      * @var array
      */
     public static $search = [
-        'id', 'name'
+        'id', 'name',
     ];
-
-
 
     /**
      * Get the fields displayed by the resource.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @return array
      */
     public function fields(NovaRequest $request)
@@ -91,9 +88,9 @@ class Tenant extends Resource
                 ->sortable()
                 ->rules('required', 'max:11'),
 
-            Currency::make('Баланс', 'balance')->default(0)->readonly(!$request->user()->isAdmin())->rules('required', function($attribute, $value, $fail) use ($request) {
+            Currency::make('Баланс', 'balance')->default(0)->readonly(! $request->user()->isAdmin())->rules('required', function ($attribute, $value, $fail) use ($request) {
                 $tenant = Tenant::find($this->id);
-                if (isset($tenant->balance) && $value < $tenant->balance && !$request->user()->isAdmin()) {
+                if (isset($tenant->balance) && $value < $tenant->balance && !$request->user()->isRoot()) {
                     return $fail('Вы не можете уменьшать баланс');
                 }
             }),
@@ -110,14 +107,13 @@ class Tenant extends Resource
                 ->action(new PayCkassa, $this->resource->id) // Provide action instance and resource id
                 ->asToolbarButton(), // Display as row toolbar button (optional)
 
-            HasMany::make('Транспорт', 'transport', 'App\Nova\Transport'),
+            HasMany::make('Транспорт', 'transports', 'App\Nova\Transport'),
         ];
     }
 
     /**
      * Get the cards available for the request.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @return array
      */
     public function cards(NovaRequest $request)
@@ -128,18 +124,16 @@ class Tenant extends Resource
     /**
      * Get the filters available for the resource.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @return array
      */
     public function filters(NovaRequest $request)
     {
-        return [ ];
+        return [];
     }
 
     /**
      * Get the lenses available for the resource.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @return array
      */
     public function lenses(NovaRequest $request)
@@ -150,7 +144,6 @@ class Tenant extends Resource
     /**
      * Get the actions available for the resource.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @return array
      */
     public function actions(NovaRequest $request)
@@ -162,31 +155,24 @@ class Tenant extends Resource
 
     public static function beforeUpdate(Request $request, $model)
     {
-        info($model->transport);
-        info(count($model->transport));
+        info_d(count($model->transports));
         if ($model->is_blocked != $request->is_blocked) {
-            foreach ($model->transport as $transport) {
-                $transport->access = $request->balance > 0 ? !$request->is_blocked : 0;
+            foreach ($model->transports as $transport) {
+                $transport->access = $request->balance > 0 ? ! $request->is_blocked : 0;
                 $transport->save();
             }
         }
         if ($model->balance != $request->balance) {
-            foreach ($model->transport as $transport) {
-                $transport->access = ($request->balance > 0 && $request->is_blocked == 0)? 1 : 0;
+            foreach ($model->transports as $transport) {
+                $transport->access = ($request->balance > 0 && $request->is_blocked == 0) ? 1 : 0;
                 $transport->save();
             }
         }
     }
 
-    public static function afterUpdate(Request $request, $model){
+    public static function afterUpdate(Request $request, $model) {}
 
-    }
+    public static function afterCreate(Request $request, $model) {}
 
-    public static function afterCreate(Request $request, $model) {
-
-    }
-
-    public static function afterSave(Request $request, $model) {
-
-    }
+    public static function afterSave(Request $request, $model) {}
 }

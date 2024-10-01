@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\History;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class HistoryPolicy
 {
@@ -29,7 +28,7 @@ class HistoryPolicy
     //  */
     public function create(User $user): bool
     {
-         return true;
+        return true;
     }
 
     // /**

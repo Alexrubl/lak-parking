@@ -10,7 +10,7 @@ use Spatie\Permission\Traits\HasPermissions;
 
 class RoleSelect extends Select
 {
-    public function __construct($name, $attribute = null, callable $resolveCallback = null, $labelAttribute = null)
+    public function __construct($name, $attribute = null, ?callable $resolveCallback = null, $labelAttribute = null)
     {
         parent::__construct(
             $name,
@@ -36,13 +36,12 @@ class RoleSelect extends Select
     {
         return $this->displayUsing(function ($value) {
             return collect($this->meta['options'])
-                    ->where('value', optional($value->first())->name)
-                    ->first()['label'] ?? optional($value->first())->name;
+                ->where('value', optional($value->first())->name)
+                ->first()['label'] ?? optional($value->first())->name;
         });
     }
 
     /**
-     * @param  NovaRequest  $request
      * @param  string  $requestAttribute
      * @param  HasPermissions  $model
      * @param  string  $attribute

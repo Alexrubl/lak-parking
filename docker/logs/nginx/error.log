@@ -1,2 +1,0 @@
-2024/07/14 15:56:14 [emerg] 13#13: host not found in upstream "php-fpm:8000" in /etc/nginx/conf.d/upstream.conf:1
-2024/07/15 03:32:47 [emerg] 13#13: cannot load certificate "/etc/nginx/certs/server.pem": BIO_new_file() failed (SSL: error:80000002:system library::No such file or directory:calling fopen(/etc/nginx/certs/server.pem, r) error:10000080:BIO routines::no such file)

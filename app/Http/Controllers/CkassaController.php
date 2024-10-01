@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\View\View;
-use Carbon\Carbon;
 use App\Jobs\CheckStatusCkassa;
-use App\Models\User;
+use App\Models\History;
 use App\Models\Tenant;
 use App\Models\Transport;
-use App\Models\History;
-use Laravel\Nova\Notifications\NovaNotification;
+use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\View\View;
+use Laravel\Nova\Notifications\NovaNotification;
 
 class CkassaController extends Controller
 {
@@ -22,110 +22,110 @@ class CkassaController extends Controller
 
     public static function invoice($models, $fields, User $user)
     {
-        // $vars = [ 
-            //     "servCode" => "111-18298-1",
-            //     "tgInvPayer" => "444-123456789012",
-            //     "startPaySelect" => "false",
-            //     "invType" => "READ_ONLY",
-            //     "amount" => "1000",
-            //     "bestBefore" => "17-12-2023 19:50:07 +0500",
-            //     "nodeName" => "ACQ4I",
-            //     "startPaySelect" => true,
-            //     "properties" => [
-            //         "Л/СЧЕТ",
-            //         "12345678"
-            //     ]
-            // ];
-            // $url = "https://demo.ckassa.ru/api-shop/rs/open/invoice/create2";
-            // $ch = curl_init();
-            // curl_setopt($ch, CURLOPT_URL, $url);
-            // curl_setopt($ch, CURLOPT_HEADER, [
-            //     'accept: text/plain',
-            //     'ApiLoginAuthorization: Tech_LacquerCoating',
-            //     'ApiAuthorization: SVO7RIR0H-HAOO-NPJ-5E4XL-FGXY6SBYLDN',
-            //     'Content-Type: application/json'
-            // ]);
-            // curl_setopt($ch, CURLOPT_POST, 1);
-            // curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($vars));
-            // curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-            // $head = curl_exec($ch);
-            // $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            // curl_close($ch);
-            // dd($head) ;
+        // $vars = [
+        //     "servCode" => "111-18298-1",
+        //     "tgInvPayer" => "444-123456789012",
+        //     "startPaySelect" => "false",
+        //     "invType" => "READ_ONLY",
+        //     "amount" => "1000",
+        //     "bestBefore" => "17-12-2023 19:50:07 +0500",
+        //     "nodeName" => "ACQ4I",
+        //     "startPaySelect" => true,
+        //     "properties" => [
+        //         "Л/СЧЕТ",
+        //         "12345678"
+        //     ]
+        // ];
+        // $url = "https://demo.ckassa.ru/api-shop/rs/open/invoice/create2";
+        // $ch = curl_init();
+        // curl_setopt($ch, CURLOPT_URL, $url);
+        // curl_setopt($ch, CURLOPT_HEADER, [
+        //     'accept: text/plain',
+        //     'ApiLoginAuthorization: Tech_LacquerCoating',
+        //     'ApiAuthorization: SVO7RIR0H-HAOO-NPJ-5E4XL-FGXY6SBYLDN',
+        //     'Content-Type: application/json'
+        // ]);
+        // curl_setopt($ch, CURLOPT_POST, 1);
+        // curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($vars));
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        // $head = curl_exec($ch);
+        // $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        // curl_close($ch);
+        // dd($head) ;
 
-            //return view('ckassa', []);
+        //return view('ckassa', []);
 
-            // info('{
-            //         "servCode": "'.(nova_get_setting('test_ckassa') ? nova_get_setting('test_servCode') : nova_get_setting('servCode')).'",
-            //         "amount": "'.($fields->sum * 100).'",
-            //         "tgInvPayer": "'.$models[0]->id.'", 
-            //         "startPaySelect": "true",
-            //         "bestBefore": "'. Carbon::now()->addminutes(10)->format('d-m-Y H:i:s O') . '",
-            //         "invType": "READ_ONLY",
-            //         "properties": [
-            //                 "Технопарк",   
-            //                 "22222"
-            //         ]
-            //     }');
-            //  info(
-            //     array(
-            //         'ApiLoginAuthorization: '.(nova_get_setting('test_ckassa') ? nova_get_setting('test_ApiLoginAuthorization') : nova_get_setting('ApiLoginAuthorization')).'',
-            //         'ApiAuthorization: '.(nova_get_setting('test_ckassa') ? nova_get_setting('test_ApiAuthorization') : nova_get_setting('ApiAuthorization')).'',
-            //         'Content-Type: application/json'
-            //     ),
-            //  );
+        // info('{
+        //         "servCode": "'.(nova_get_setting('test_ckassa') ? nova_get_setting('test_servCode') : nova_get_setting('servCode')).'",
+        //         "amount": "'.($fields->sum * 100).'",
+        //         "tgInvPayer": "'.$models[0]->id.'",
+        //         "startPaySelect": "true",
+        //         "bestBefore": "'. Carbon::now()->addminutes(10)->format('d-m-Y H:i:s O') . '",
+        //         "invType": "READ_ONLY",
+        //         "properties": [
+        //                 "Технопарк",
+        //                 "22222"
+        //         ]
+        //     }');
+        //  info(
+        //     array(
+        //         'ApiLoginAuthorization: '.(nova_get_setting('test_ckassa') ? nova_get_setting('test_ApiLoginAuthorization') : nova_get_setting('ApiLoginAuthorization')).'',
+        //         'ApiAuthorization: '.(nova_get_setting('test_ckassa') ? nova_get_setting('test_ApiAuthorization') : nova_get_setting('ApiAuthorization')).'',
+        //         'Content-Type: application/json'
+        //     ),
+        //  );
 
-            // $curl = curl_init();
+        // $curl = curl_init();
 
-                // $url = nova_get_setting('test_ckassa') ? 'https://demo.ckassa.ru/api-shop/rs/open' : 'https://api2.ckassa.ru/api-shop/rs/open';
-                // info(nova_get_setting('test_ckassa'));
-                // info($url);
+        // $url = nova_get_setting('test_ckassa') ? 'https://demo.ckassa.ru/api-shop/rs/open' : 'https://api2.ckassa.ru/api-shop/rs/open';
+        // info(nova_get_setting('test_ckassa'));
+        // info($url);
 
-                // curl_setopt_array($curl, array(
-                //     CURLOPT_URL => $url. '/invoice/create2',
-                //     CURLOPT_RETURNTRANSFER => true,
-                //     CURLOPT_ENCODING => '',
-                //     CURLOPT_MAXREDIRS => 10,
-                //     CURLOPT_TIMEOUT => 10,
-                //     CURLOPT_FOLLOWLOCATION => true,
-                //     CURLOPT_SSL_VERIFYPEER => false,
-                //     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                //     CURLOPT_CUSTOMREQUEST => 'POST',
-                //     CURLOPT_POSTFIELDS =>'{
-                //         "servCode": "'.(nova_get_setting('test_ckassa') ? nova_get_setting('test_servCode') : nova_get_setting('servCode')).'",
-                //         "amount": "'.($fields->sum * 100).'",
-                //         "tgInvPayer": "'.$models[0]->id.'", 
-                //         "startPaySelect": true,
-                //         "bestBefore": "'. Carbon::now()->addminutes(10)->format('d-m-Y H:i:s O') . '",
-                //         "invType": "READ_ONLY",
-                //         "properties": [
-                //                 "'.$models[0]->name.'",
-                //                 "'.$models[0]->id.'"
-                //         ]
-                //     }',
-                //     CURLOPT_HTTPHEADER => array(
-                //         'ApiLoginAuthorization: '.(nova_get_setting('test_ckassa') ? nova_get_setting('test_ApiLoginAuthorization') : nova_get_setting('ApiLoginAuthorization')).'',
-                //         'ApiAuthorization: '.(nova_get_setting('test_ckassa') ? nova_get_setting('test_ApiAuthorization') : nova_get_setting('ApiAuthorization')).'',
-                //         'Content-Type: application/json'
-                //     ),
-                // ));
+        // curl_setopt_array($curl, array(
+        //     CURLOPT_URL => $url. '/invoice/create2',
+        //     CURLOPT_RETURNTRANSFER => true,
+        //     CURLOPT_ENCODING => '',
+        //     CURLOPT_MAXREDIRS => 10,
+        //     CURLOPT_TIMEOUT => 10,
+        //     CURLOPT_FOLLOWLOCATION => true,
+        //     CURLOPT_SSL_VERIFYPEER => false,
+        //     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        //     CURLOPT_CUSTOMREQUEST => 'POST',
+        //     CURLOPT_POSTFIELDS =>'{
+        //         "servCode": "'.(nova_get_setting('test_ckassa') ? nova_get_setting('test_servCode') : nova_get_setting('servCode')).'",
+        //         "amount": "'.($fields->sum * 100).'",
+        //         "tgInvPayer": "'.$models[0]->id.'",
+        //         "startPaySelect": true,
+        //         "bestBefore": "'. Carbon::now()->addminutes(10)->format('d-m-Y H:i:s O') . '",
+        //         "invType": "READ_ONLY",
+        //         "properties": [
+        //                 "'.$models[0]->name.'",
+        //                 "'.$models[0]->id.'"
+        //         ]
+        //     }',
+        //     CURLOPT_HTTPHEADER => array(
+        //         'ApiLoginAuthorization: '.(nova_get_setting('test_ckassa') ? nova_get_setting('test_ApiLoginAuthorization') : nova_get_setting('ApiLoginAuthorization')).'',
+        //         'ApiAuthorization: '.(nova_get_setting('test_ckassa') ? nova_get_setting('test_ApiAuthorization') : nova_get_setting('ApiAuthorization')).'',
+        //         'Content-Type: application/json'
+        //     ),
+        // ));
 
-                // $response = curl_exec($curl);
-                // $info = curl_getinfo($curl);
-                // curl_close($curl);
-                // CheckStatusCkassa::dispatch($user);
-                // return $response;
+        // $response = curl_exec($curl);
+        // $info = curl_getinfo($curl);
+        // curl_close($curl);
+        // CheckStatusCkassa::dispatch($user);
+        // return $response;
 
-            // ShopToken: 3ccfa0a3-1ee1-470e-89e9-1930fe58d1d3
-            // secKey: fefb5624-3d3c-4894-a070-33bfcb91811a
-            // servCode: 111-18298-1
-            // callbackUrl: https://auto.npolkp.ru/api/ckassa/callback
+        // ShopToken: 3ccfa0a3-1ee1-470e-89e9-1930fe58d1d3
+        // secKey: fefb5624-3d3c-4894-a070-33bfcb91811a
+        // servCode: 111-18298-1
+        // callbackUrl: https://auto.npolkp.ru/api/ckassa/callback
 
         $curl = curl_init();
 
         $url = nova_get_setting('test_ckassa') ? 'https://demo-api2.ckassa.ru/api-shop/do/payment/anonymous' : 'https://api2.ckassa.ru/api-shop/do/payment/anonymous';
 
-        curl_setopt_array($curl, array(
+        curl_setopt_array($curl, [
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
@@ -134,7 +134,7 @@ class CkassaController extends Controller
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS =>'{
+            CURLOPT_POSTFIELDS => '{
                 "serviceCode": "'.(nova_get_setting('test_ckassa') ? nova_get_setting('test_servCode') : nova_get_setting('servCode')).'",
                 "amount": "'.($fields->sum * 100).'",
                 "comission": "0",
@@ -150,27 +150,28 @@ class CkassaController extends Controller
                     }
             ]
             }',
-            CURLOPT_HTTPHEADER => array(
+            CURLOPT_HTTPHEADER => [
                 'Content-Type: application/json',
-                'Authorization: Basic '.base64_encode(nova_get_setting('test_ckassa') ? nova_get_setting('test_ShopToken').':'.nova_get_setting('test_secKey') : nova_get_setting('ShopToken').':'.nova_get_setting('secKey')).'', 
-            ),
-        ));
+                'Authorization: Basic '.base64_encode(nova_get_setting('test_ckassa') ? nova_get_setting('test_ShopToken').':'.nova_get_setting('test_secKey') : nova_get_setting('ShopToken').':'.nova_get_setting('secKey')).'',
+            ],
+        ]);
 
         $response = curl_exec($curl);
 
         curl_close($curl);
-       // info('invoice ответ ');
-       // info(json_decode($response));
+
+        // info('invoice ответ ');
+        // info(json_decode($response));
         return $response;
     }
 
-    public static function status() 
-    {        
+    public static function status()
+    {
         $curl = curl_init();
 
         $url = nova_get_setting('test_ckassa') ? 'https://demo.ckassa.ru/api-shop/rs/open' : 'https://api2.ckassa.ru/api-shop/rs/open';
         info($url);
-        curl_setopt_array($curl, array(
+        curl_setopt_array($curl, [
             CURLOPT_URL => $url.'/payments/new',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
@@ -180,24 +181,26 @@ class CkassaController extends Controller
             CURLOPT_SSL_VERIFYPEER => false,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'GET',
-            CURLOPT_HTTPHEADER => array(
+            CURLOPT_HTTPHEADER => [
                 'ApiLoginAuthorization: '.(nova_get_setting('test_ckassa') ? nova_get_setting('test_ApiLoginAuthorization') : nova_get_setting('ApiLoginAuthorization')).'',
                 'ApiAuthorization: '.(nova_get_setting('test_ckassa') ? nova_get_setting('test_ApiAuthorization') : nova_get_setting('ApiAuthorization')).'',
-                'Content-Type: application/json'
-            ),
-        ));
+                'Content-Type: application/json',
+            ],
+        ]);
 
         $response = curl_exec($curl);
         $info = curl_getinfo($curl);
         curl_close($curl);
         info('Pay Status:');
         info($response);
+
         return $response;
     }
 
-    public function callback(Request $request) {
+    public function callback(Request $request)
+    {
         info('==========callback==========');
-        info($request->map['НАЗВАНИЕ_ОРГ']. ' / '.intval($request->amount) / 100);
+        info($request->map['НАЗВАНИЕ_ОРГ'].' / '.intval($request->amount) / 100);
         info(collect($request));
         // (
         //     'regPayNum' => '131016599825',
@@ -216,7 +219,7 @@ class CkassaController extends Controller
         if ($request->state == 'payed' || $request->state == 'processed') {
 
             $tenant = Tenant::find(intval($request->map['ИДЕНТИФИКАТОР']));
-            $tenant->balance = $tenant->balance + (intval($request->amount) / 100);                    
+            $tenant->balance = $tenant->balance + (intval($request->amount) / 100);
             $tenant->save();
 
             foreach (Transport::where('tenant_id', $tenant->id)->get() as $key => $transport) {
@@ -229,24 +232,25 @@ class CkassaController extends Controller
             $history->price = intval($request->amount) / 100;
             $history->comment = 'Пополнение';
             $history->save();
-            logist('Пополнен баланс '.$tenant->name. ' на сумму '.(intval($request->amount) / 100). ' руб.');
+            logist('Пополнен баланс '.$tenant->name.' на сумму '.(intval($request->amount) / 100).' руб.');
 
             foreach ($tenant->contacts as $key => $user) {
                 info(collect($tenant->contacts));
                 Notification::send(
                     $user,
                     NovaNotification::make()
-                        ->message('Оплачен счёт '. $request->regPayNum .' на сумму '. (intval($request->amount) / 100) .' р.')
+                        ->message('Оплачен счёт '.$request->regPayNum.' на сумму '.(intval($request->amount) / 100).' р.')
                         ->type('info')
-                    
+
                 );
                 if ($user->email) {
-                    $data['text'] = 'Оплачен счёт '. $request->regPayNum .' на сумму '. (intval($request->amount) / 100) .' р.';
+                    $data['text'] = 'Оплачен счёт '.$request->regPayNum.' на сумму '.(intval($request->amount) / 100).' р.';
                     $data['email'] = $user->email;
                     dispatch(new \App\Jobs\sendMail($data));
                 }
-            }  
+            }
         }
-        return response()->json(['message' => 'success'], 200);        
+
+        return response()->json(['message' => 'success'], 200);
     }
 }

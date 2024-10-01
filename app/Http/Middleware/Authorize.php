@@ -18,6 +18,7 @@ class Authorize
         if (\Auth::user()->isTenant()) {
             Nova::initialPath('/resources/transports');
         }
+
         return Nova::check($request) ? $next($request) : abort(403);
     }
 }

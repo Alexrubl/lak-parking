@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\Models\User;
 use App\Models\Log;
+use App\Models\User;
 
 class LogPolicy
 {
@@ -15,7 +15,7 @@ class LogPolicy
         //
     }
 
-        // /**
+    // /**
     //  * Determine whether the user can view any models.
     //  */
     public function viewAny(User $user): bool
@@ -58,7 +58,7 @@ class LogPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, History $history): bool
+    public function restore(User $user, Log $log): bool
     {
         return $user->isAdmin();
     }

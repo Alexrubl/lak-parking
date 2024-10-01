@@ -2,21 +2,19 @@
 
 namespace App\Nova;
 
+use Alexrubl\NovaPermission\RoleSelect;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules;
+use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\Gravatar;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\MorphToMany;
 use Laravel\Nova\Fields\Password;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Laravel\Nova\Fields\MorphToMany;
-use Alexrubl\NovaPermission\PermissionBooleanGroup;
-use Alexrubl\NovaPermission\RoleBooleanGroup;
-use Alexrubl\NovaPermission\RoleSelect;
-use Laravel\Nova\Fields\BelongsToMany;
 
 class User extends Resource
-{    
+{
     /**
      * The model the resource corresponds to.
      *
@@ -38,11 +36,13 @@ class User extends Resource
      */
     public static $title = 'name';
 
-    public static function label() {
+    public static function label()
+    {
         return 'Пользователи';
     }
 
-    public static function singularlabel() {
+    public static function singularlabel()
+    {
         return 'Пользователя';
     }
 
@@ -57,7 +57,7 @@ class User extends Resource
 
     public static function indexQuery(NovaRequest $request, $query)
     {
-        if (!$request->user()->isAdmin()) {
+        if (! $request->user()->isAdmin()) {
             $query->where('name', $request->user()->name);
         }
     }
@@ -65,7 +65,6 @@ class User extends Resource
     /**
      * Get the fields displayed by the resource.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @return array
      */
     public function fields(NovaRequest $request)
@@ -89,11 +88,11 @@ class User extends Resource
                 ->onlyOnForms()
                 ->creationRules('required', Rules\Password::defaults()->min(6))
                 ->updateRules('nullable', Rules\Password::defaults()->min(6)),
-            
-            BelongsToMany::make('Арендатор', 'tenant', 'App\Nova\Tenant')->canSee(fn () => $request->user()->isAdmin())->searchable(!$request->user()->isTenant()),
+
+            BelongsToMany::make('Арендатор', 'tenant', 'App\Nova\Tenant')->canSee(fn () => $request->user()->isAdmin())->searchable(! $request->user()->isTenant()),
 
             RoleSelect::make('Роль', 'roles')->canSee(fn () => $request->user()->isAdmin()),
-            
+
             // MorphToMany::make('Roles', 'roles', \Alexrubl\NovaPermission\Role::class)->canSee(fn () => $request->user()->isAdmin()),
             // MorphToMany::make('Permissions', 'permissions', \Alexrubl\NovaPermission\Permission::class)->canSee(fn () => $request->user()->isAdmin()),
 
@@ -103,7 +102,6 @@ class User extends Resource
     /**
      * Get the cards available for the request.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @return array
      */
     public function cards(NovaRequest $request)
@@ -114,7 +112,6 @@ class User extends Resource
     /**
      * Get the filters available for the resource.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @return array
      */
     public function filters(NovaRequest $request)
@@ -125,7 +122,6 @@ class User extends Resource
     /**
      * Get the lenses available for the resource.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @return array
      */
     public function lenses(NovaRequest $request)
@@ -136,7 +132,6 @@ class User extends Resource
     /**
      * Get the actions available for the resource.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @return array
      */
     public function actions(NovaRequest $request)

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Alexrubl\IconActionToolbar;
 
@@ -30,8 +30,8 @@ class IconActionToolbarServiceProvider extends ServiceProvider
                 'icon_action_toolbar' => config('nova.vendors.icon_action_toolbar'),
             ]);
 
-            Nova::script('icon-action-toolbar', __DIR__ . '/../dist/js/tool.js');
-            Nova::style('icon-action-toolbar', __DIR__ . '/../dist/css/tool.css');
+            Nova::script('icon-action-toolbar', __DIR__.'/../dist/js/tool.js');
+            Nova::style('icon-action-toolbar', __DIR__.'/../dist/css/tool.css');
 
         });
     }
@@ -39,7 +39,7 @@ class IconActionToolbarServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(
-            __DIR__ . '/../config/nova.php', 'nova.vendors.icon_action_toolbar',
+            __DIR__.'/../config/nova.php', 'nova.vendors.icon_action_toolbar',
         );
     }
 }

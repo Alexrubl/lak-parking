@@ -92,7 +92,6 @@ class LoginController extends Controller
      */
     public function redirectPath(Request $request)
     {
-        info('kjjkhhkljhiuyuiyyit65656756');
         return Nova::url(Nova::resolveInitialPath($request));
     }
 

@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\Models\User;
 use App\Models\Transport;
+use App\Models\User;
 
 class TransportPolicy
 {
@@ -15,7 +15,7 @@ class TransportPolicy
         //
     }
 
-        /**
+    /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
@@ -44,6 +44,7 @@ class TransportPolicy
                 break;
             }
         }
+
         return $user->isAdmin() || ($user->isTenant() && $access);
     }
 
@@ -54,12 +55,12 @@ class TransportPolicy
     {
         $access = false;
 
-        #После того, как был зафиксирован факт проезда гостевого ТС, необходимо убрать возможность редактирования данной заявки
+        //После того, как был зафиксирован факт проезда гостевого ТС, необходимо убрать возможность редактирования данной заявки
         if (($transport->guest && $transport->access == 0)) {
             return $user->isRoot() || false;
         }
 
-        # Баланс меньше нуля запрещаем редактировать
+        // Баланс меньше нуля запрещаем редактировать
         foreach ($user->tenant as $key => $tenant) {
             $access = true;
             if ($tenant->balance < 1 && $tenant->id == $transport->tenant_id) {
@@ -67,6 +68,7 @@ class TransportPolicy
                 break;
             }
         }
+
         return $user->isAdmin() || $user->isRoot() || ($user->isTenant() && $access);
     }
 
@@ -83,6 +85,7 @@ class TransportPolicy
                 break;
             }
         }
+
         return $user->isAdmin() || ($user->isTenant() && $access);
     }
 
@@ -99,6 +102,7 @@ class TransportPolicy
                 break;
             }
         }
+
         return $user->isAdmin() || ($user->isTenant() && $access);
     }
 

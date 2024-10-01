@@ -10,9 +10,11 @@ use Laravel\Nova\Tool;
 class NovaPermissionTool extends Tool
 {
     public string $roleResource = Role::class;
+
     public string $permissionResource = Permission::class;
 
     public string $rolePolicy = RolePolicy::class;
+
     public string $permissionPolicy = PermissionPolicy::class;
 
     /**
@@ -34,7 +36,6 @@ class NovaPermissionTool extends Tool
     /**
      * Build the menu that renders the navigation links for the tool.
      *
-     * @param  Request  $request
      * @return mixed
      */
     public function menu(Request $request)

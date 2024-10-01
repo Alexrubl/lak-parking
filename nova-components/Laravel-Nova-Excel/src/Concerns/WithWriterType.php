@@ -12,27 +12,20 @@ trait WithWriterType
     protected $writerType;
 
     /**
-     * @param  string|null  $writerType
      * @return $this
      */
-    public function withWriterType(string $writerType = null)
+    public function withWriterType(?string $writerType = null)
     {
         $this->writerType = $writerType;
 
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     protected function getWriterType(): ?string
     {
         return $this->writerType;
     }
 
-    /**
-     * @param  ActionRequest  $request
-     */
     protected function handleWriterType(ActionRequest $request)
     {
         $fields = $request->resolveFields();

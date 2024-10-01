@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class TypeTransport extends Model
 {
-
     use HasFactory;
 
     /*
@@ -17,6 +16,7 @@ class TypeTransport extends Model
     */
 
     protected $table = 'type_transport';
+
     // protected $primaryKey = 'id';
     // public $timestamps = false;
     protected $guarded = ['id'];

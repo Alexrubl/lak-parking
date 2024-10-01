@@ -13,7 +13,7 @@ class BelongsToForActions extends BelongsTo
         $attribute = $this->attribute;
 
         if ($request->exists($attribute)) {
-            $value = $request[ $attribute ];
+            $value = $request[$attribute];
 
             $model->{$attribute} = $this->isNullValue($value) ? null : $value;
         }

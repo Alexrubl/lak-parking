@@ -2,10 +2,10 @@
 
 namespace Alexrubl\ReloadResources;
 
-use Laravel\Nova\Nova;
-use Laravel\Nova\Events\ServingNova;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Nova\Events\ServingNova;
+use Laravel\Nova\Nova;
 
 class CardServiceProvider extends ServiceProvider
 {
@@ -26,7 +26,7 @@ class CardServiceProvider extends ServiceProvider
         });
     }
 
-        /**
+    /**
      * Register the card's routes.
      *
      * @return void
@@ -38,8 +38,8 @@ class CardServiceProvider extends ServiceProvider
         }
 
         Route::middleware(['nova'])
-                ->prefix('nova-vendor/reload-resources')
-                ->group(__DIR__.'/../routes/api.php');
+            ->prefix('nova-vendor/reload-resources')
+            ->group(__DIR__.'/../routes/api.php');
     }
 
     /**

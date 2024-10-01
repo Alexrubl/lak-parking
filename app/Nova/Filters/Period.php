@@ -1,9 +1,10 @@
 <?php
+
 namespace App\Nova\Filters;
 
 use Alexrubl\Daterangefilter\Daterangefilter;
-use Laravel\Nova\Http\Requests\NovaRequest;
 use Carbon\Carbon;
+use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Period extends Daterangefilter
 {
@@ -17,7 +18,6 @@ class Period extends Daterangefilter
     /**
      * Apply the filter to the given query.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @param  mixed  $value
      * @return \Illuminate\Database\Eloquent\Builder

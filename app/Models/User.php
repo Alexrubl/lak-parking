@@ -3,16 +3,16 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\belongsTo;
 use Illuminate\Database\Eloquent\Relations\belongsToMany;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, HasRoles, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -23,7 +23,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'tenant_id'
+        'tenant_id',
     ];
 
     /**
@@ -46,8 +46,7 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-
-    public function tenant() : belongsToMany
+    public function tenant(): belongsToMany
     {
         return $this->belongsToMany('App\Models\Tenant', 'user_tenant', 'user_id', 'tenant_id');
     }
@@ -62,6 +61,7 @@ class User extends Authenticatable
         if (in_array('Администраторы', $this->getRoleNames()->toArray()) || in_array('Root', $this->getRoleNames()->toArray()) || User::all()->count() == 1) {
             return true;
         }
+
         return false;
     }
 
@@ -70,6 +70,7 @@ class User extends Authenticatable
         if (in_array('Root', $this->getRoleNames()->toArray()) || User::all()->count() == 1) {
             return true;
         }
+
         return false;
     }
 
@@ -78,6 +79,7 @@ class User extends Authenticatable
         if (in_array('Арендаторы', $this->getRoleNames()->toArray())) {
             return true;
         }
+
         return false;
     }
 
@@ -86,6 +88,7 @@ class User extends Authenticatable
         if (in_array('Охрана', $this->getRoleNames()->toArray())) {
             return true;
         }
+
         return false;
     }
 

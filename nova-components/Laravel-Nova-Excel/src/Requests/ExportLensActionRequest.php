@@ -9,8 +9,8 @@ use Laravel\Nova\Resource;
 
 class ExportLensActionRequest extends LensActionRequest implements ExportActionRequest
 {
-    use WithIndexFields;
     use WithHeadingFinder;
+    use WithIndexFields;
 
     /**
      * @var \Laravel\Nova\Resource
@@ -22,24 +22,23 @@ class ExportLensActionRequest extends LensActionRequest implements ExportActionR
      */
     public function toExportQuery()
     {
-        return $this->toQuery()->when(!$this->forAllMatchingResources(), function ($query) {
+        return $this->toQuery()->when(! $this->forAllMatchingResources(), function ($query) {
             $groups = $query->getQuery()->groups;
 
-            is_array($groups) && 1 === count($groups)
+            is_array($groups) && count($groups) === 1
                 ? $query->whereIn($groups[0], explode(',', $this->resources))
                 : $query->whereKey(explode(',', $this->resources));
         });
     }
 
     /**
-     * @param  \Laravel\Nova\Resource  $resource
      * @return Collection|Field[]
      */
     public function resourceFields(Resource $resource): Collection
     {
         $this->resourceInstance = $resource;
 
-        $lens           = $this->lens();
+        $lens = $this->lens();
         $lens->resource = $resource->model();
 
         return $lens->resolveFields($this)
@@ -54,7 +53,7 @@ class ExportLensActionRequest extends LensActionRequest implements ExportActionR
      */
     public function availableLenses()
     {
-        if (!$this->resourceInstance) {
+        if (! $this->resourceInstance) {
             $this->resourceInstance = $this->newResource();
         }
 

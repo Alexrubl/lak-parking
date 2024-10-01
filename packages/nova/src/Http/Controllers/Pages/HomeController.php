@@ -16,7 +16,6 @@ class HomeController extends Controller
      */
     public function __invoke(Request $request)
     {
-        info('HomeController');
         return redirect(Nova::url(Nova::resolveInitialPath($request)));
     }
 }

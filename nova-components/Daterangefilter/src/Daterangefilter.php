@@ -1,13 +1,14 @@
 <?php
+
 namespace Alexrubl\Daterangefilter;
 
+use Alexrubl\Daterangefilter\Enums\Config;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Laravel\Nova\Http\Requests\NovaRequest;
 use InvalidArgumentException;
 use Laravel\Nova\Filters\Filter;
-use Alexrubl\Daterangefilter\Enums\Config;
+use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Daterangefilter extends Filter
 {
@@ -41,10 +42,9 @@ class Daterangefilter extends Filter
     }
 
     /**
-     * @param Request $request
-     * @param Builder $query
-     * @param mixed   $value
-     *
+     * @param  Request  $request
+     * @param  Builder  $query
+     * @param  mixed  $value
      * @return Builder
      */
     public function apply(NovaRequest $request, $query, $value)
@@ -68,8 +68,8 @@ class Daterangefilter extends Filter
         }
 
         foreach ($this->config as $property => $value) {
-            if (!in_array($property, Config::getProperties(), true)) {
-                throw new InvalidArgumentException('Invalid property: ' . $property);
+            if (! in_array($property, Config::getProperties(), true)) {
+                throw new InvalidArgumentException('Invalid property: '.$property);
             }
 
             $this->withMeta([$property => $value]);
@@ -83,7 +83,7 @@ class Daterangefilter extends Filter
 
     public function key(): string
     {
-        return parent::key() . '_' . $this->column;
+        return parent::key().'_'.$this->column;
     }
 
     /**

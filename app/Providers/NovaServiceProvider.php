@@ -2,36 +2,34 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Auth;
-use Laravel\Nova\Nova;
-use Laravel\Nova\Panel;
-use Laravel\Nova\NovaApplicationServiceProvider;
-use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Fields\Number;
-use Laravel\Nova\Fields\Boolean;
-use Laravel\Nova\Fields\Password;
-use Illuminate\Support\Facades\Blade;
-use App\Policies\RolePolicy;
-use App\Policies\PermissionPolicy;
-use Illuminate\Http\Request;
+use Alexrubl\NovaPermission\Permission;
+use Alexrubl\NovaPermission\Role;
+use App\Nova\Controller;
 use App\Nova\Dashboards\Main;
-use Laravel\Nova\Menu\Menu;
-use Laravel\Nova\Menu\MenuGroup;
-use Laravel\Nova\Menu\MenuItem;
-use Laravel\Nova\Menu\MenuSection;
-use App\Nova\Tenant;
-use App\Nova\Transport;
 use App\Nova\History;
 use App\Nova\Log;
-use App\Nova\User;
-use App\Nova\TypeTransport;
 use App\Nova\Rate;
-use App\Nova\Controller;
-use Alexrubl\NovaPermission\Role;
-use Alexrubl\NovaPermission\Permission;
+use App\Nova\Tenant;
+use App\Nova\Transport;
+use App\Nova\TypeTransport;
+use App\Nova\User;
+use App\Nova\Journal;
+use App\Policies\PermissionPolicy;
+use App\Policies\RolePolicy;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Gate;
+use Laravel\Nova\Fields\Boolean;
+use Laravel\Nova\Fields\Number;
+use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Controllers\LoginController;
 use Laravel\Nova\Http\Middleware\Authorize;
+use Laravel\Nova\Menu\MenuItem;
+use Laravel\Nova\Menu\MenuSection;
+use Laravel\Nova\Nova;
+use Laravel\Nova\NovaApplicationServiceProvider;
+use Laravel\Nova\Panel;
 
 class NovaServiceProvider extends NovaApplicationServiceProvider
 {
@@ -49,7 +47,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
         });
 
         //if (Auth::user()) {
-           //Nova::initialPath('/resources/transports');
+        //Nova::initialPath('/resources/transports');
         //}
 
         //Nova::withBreadcrumbs();
@@ -75,17 +73,18 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                     // MenuItem::resource(Report::class),
                     MenuItem::resource(History::class),
                     MenuItem::resource(Log::class),
+                    MenuItem::resource(Journal::class),
                 ])->collapsable()->icon('document-report'),
                 MenuSection::make('Настройки ', [
                     MenuItem::make('Основные')->path('/settings/general'),
                     MenuItem::make('Эквайринг Ckassa')->path('/settings/ekvairing-ckassa'),
-                    MenuItem::make('Эквайринг Ckassa')->path('/settings/uvedomleniia'),
+                    MenuItem::make('Уведомления')->path('/settings/uvedomleniia'),
                 ])->collapsable()->icon('adjustments')->canSee(fn ($request) => $request->user()->isAdmin()),
                 MenuSection::make('Учётные записи', [
                     MenuItem::resource(User::class),
                     MenuItem::resource(Role::class),
                     MenuItem::resource(Permission::class),
-                ])->collapsable()->icon('user')
+                ])->collapsable()->icon('user'),
             ];
         });
 
@@ -126,7 +125,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                 Text::make('Эл.почта', 'smtp_email'),
                 Text::make('Логин', 'smtp_username'),
                 Text::make('Пароль', 'smtp_password')->withMeta(['type' => 'password']),
-            ])
+            ]),
         ], [], 'Уведомления');
     }
 
@@ -138,9 +137,9 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     protected function routes()
     {
         Nova::routes()
-                ->withAuthenticationRoutes()
-                ->withPasswordResetRoutes()
-                ->register();
+            ->withAuthenticationRoutes()
+            ->withPasswordResetRoutes()
+            ->register();
     }
 
     /**
@@ -153,8 +152,24 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     protected function gate()
     {
         Gate::define('viewNova', function ($user) {
+            if(!is_null(nova_get_setting('smtp_server'))) {
+                $config = array(
+                    'transport'     =>     'smtp',
+                    'url'        =>     null,
+                    'host'       =>     nova_get_setting('smtp_server'),
+                    'port'       =>     intval(nova_get_setting('smtp_port')),
+                    'username'   =>     nova_get_setting('smtp_username'),
+                    'password'   =>     nova_get_setting('smtp_password'),
+                    'encryption' =>     nova_get_setting('smtp_encryption'),
+                    'timeout'    =>     null,
+                    'local_domain' =>   null,
+                    'from'       =>     array('address' => nova_get_setting('smtp_email'), 'name' => env('APP_NAME')),
+                );
+                Config::set('mail.mailers.smtp', $config);
+                Config::set('mail.from', $config['from']);
+            }
             return in_array($user->email, [
-                'alexrubl@mail.ru'
+                'alexrubl@mail.ru',
             ]);
         });
     }
@@ -196,7 +211,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
      */
     public function register()
     {
-       $this->app->bind(LoginController::class, \App\Http\Controllers\LoginController::class);
-       $this->app->bind(Authorize::class, \App\Http\Middleware\Authorize::class);
+        $this->app->bind(LoginController::class, \App\Http\Controllers\LoginController::class);
+        $this->app->bind(Authorize::class, \App\Http\Middleware\Authorize::class);
     }
 }

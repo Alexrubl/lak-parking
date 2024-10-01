@@ -51,7 +51,7 @@ class LaravelNovaExcelServiceProvider extends ServiceProvider
             return $this
                 // This way we decide to hide it on exports
                 ->showOnIndex(function (Request $request) {
-                    return !$request instanceof ExportActionRequest;
+                    return ! $request instanceof ExportActionRequest;
                 });
         });
     }
@@ -68,7 +68,7 @@ class LaravelNovaExcelServiceProvider extends ServiceProvider
         }
 
         Route::middleware(['nova'])
-             ->prefix('nova-vendor/maatwebsite/laravel-nova-excel')
-             ->group(__DIR__ . '/../routes/api.php');
+            ->prefix('nova-vendor/maatwebsite/laravel-nova-excel')
+            ->group(__DIR__.'/../routes/api.php');
     }
 }

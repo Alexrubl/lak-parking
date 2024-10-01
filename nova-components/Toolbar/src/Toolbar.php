@@ -12,6 +12,7 @@ class Toolbar extends Card
      * @var string
      */
     public $width = 'full';
+
     public $height = 'dynamic';
 
     /**

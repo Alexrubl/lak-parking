@@ -10,6 +10,7 @@ class Sigur extends Model
     use HasFactory;
 
     protected $table = 'sigur_temp';
+
     // protected $primaryKey = 'id';
     // public $timestamps = false;
     protected $guarded = ['id'];

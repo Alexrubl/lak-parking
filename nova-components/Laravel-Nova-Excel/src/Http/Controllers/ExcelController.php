@@ -15,16 +15,12 @@ class ExcelController extends Controller
     use ValidatesRequests;
 
     /**
-     * @param  Request  $request
-     * @param  ResponseFactory  $response
-     * @return Response
-     *
      * @throws ValidationException
      */
     public function download(Request $request, ResponseFactory $response): Response
     {
         $data = $this->validate($request, [
-            'path'     => 'required',
+            'path' => 'required',
             'filename' => 'required',
         ]);
 

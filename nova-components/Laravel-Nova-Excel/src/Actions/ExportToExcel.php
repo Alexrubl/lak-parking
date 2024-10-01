@@ -75,7 +75,6 @@ class ExportToExcel extends Action implements FromQuery, WithCustomChunkSize, Wi
     /**
      * Execute the action for the given request.
      *
-     * @param  \Laravel\Nova\Http\Requests\ActionRequest  $request
      * @return mixed
      */
     public function handleRequest(ActionRequest $request)
@@ -84,7 +83,7 @@ class ExportToExcel extends Action implements FromQuery, WithCustomChunkSize, Wi
         $this->handleFilename($request);
 
         $this->resource = $request->resource();
-        $this->request  = ExportActionRequestFactory::make($request);
+        $this->request = ExportActionRequestFactory::make($request);
 
         $query = $this->request->toExportQuery();
         $this->handleOnly($this->request);
@@ -94,8 +93,6 @@ class ExportToExcel extends Action implements FromQuery, WithCustomChunkSize, Wi
     }
 
     /**
-     * @param  ActionRequest  $request
-     * @param  Action  $exportable
      * @return mixed
      */
     public function handle(ActionRequest $request, Action $exportable)
@@ -107,7 +104,7 @@ class ExportToExcel extends Action implements FromQuery, WithCustomChunkSize, Wi
             $this->getWriterType()
         );
 
-        if (false === $response) {
+        if ($response === false) {
             return \is_callable($this->onFailure)
                 ? ($this->onFailure)($request, $response)
                 : Action::danger(__('Resource could not be exported.'));
@@ -119,7 +116,6 @@ class ExportToExcel extends Action implements FromQuery, WithCustomChunkSize, Wi
     }
 
     /**
-     * @param  callable  $callback
      * @return $this
      */
     public function onSuccess(callable $callback)
@@ -130,7 +126,6 @@ class ExportToExcel extends Action implements FromQuery, WithCustomChunkSize, Wi
     }
 
     /**
-     * @param  callable  $callback
      * @return $this
      */
     public function onFailure(callable $callback)
@@ -149,7 +144,6 @@ class ExportToExcel extends Action implements FromQuery, WithCustomChunkSize, Wi
     }
 
     /**
-     * @param  NovaRequest  $request
      * @return Field[]
      */
     public function fields(NovaRequest $request)
@@ -159,18 +153,17 @@ class ExportToExcel extends Action implements FromQuery, WithCustomChunkSize, Wi
 
     /**
      * @param  Model|mixed  $row
-     * @return array
      */
     public function map($row): array
     {
-        $only   = $this->getOnly();
+        $only = $this->getOnly();
         $except = $this->getExcept();
 
         if ($row instanceof Model) {
             // If user didn't specify a custom except array, use the hidden columns.
             // User can override this by passing an empty array ->except([])
             // When user specifies with only(), ignore if the column is hidden or not.
-            if (!$this->onlyIndexFields && $except === null && (!is_array($only) || count($only) === 0)) {
+            if (! $this->onlyIndexFields && $except === null && (! is_array($only) || count($only) === 0)) {
                 $except = $row->getHidden();
             }
 
@@ -204,27 +197,19 @@ class ExportToExcel extends Action implements FromQuery, WithCustomChunkSize, Wi
         return $this;
     }
 
-    /**
-     * @return string
-     */
     protected function getDefaultExtension(): string
     {
         return $this->getWriterType() ? strtolower($this->getWriterType()) : 'xlsx';
     }
 
-    /**
-     * @param  Model  $model
-     * @param  array  $only
-     * @return array
-     */
     protected function replaceFieldValuesWhenOnResource(Model $model, array $only = []): array
     {
         $resource = $this->resolveResource($model);
-        $fields   = $this->resourceFields($resource);
+        $fields = $this->resourceFields($resource);
 
         $row = [];
         foreach ($fields as $field) {
-            if (!$this->isExportableField($field)) {
+            if (! $this->isExportableField($field)) {
                 continue;
             }
 
@@ -252,7 +237,6 @@ class ExportToExcel extends Action implements FromQuery, WithCustomChunkSize, Wi
     }
 
     /**
-     * @param  \Laravel\Nova\Resource  $resource
      * @return Collection
      */
     protected function resourceFields(Resource $resource)
@@ -260,10 +244,6 @@ class ExportToExcel extends Action implements FromQuery, WithCustomChunkSize, Wi
         return $this->request->resourceFields($resource);
     }
 
-    /**
-     * @param  Model  $model
-     * @return \Laravel\Nova\Resource
-     */
     protected function resolveResource(Model $model): Resource
     {
         $resource = $this->resource;
@@ -271,12 +251,8 @@ class ExportToExcel extends Action implements FromQuery, WithCustomChunkSize, Wi
         return new $resource($model);
     }
 
-    /**
-     * @param  Field  $field
-     * @return bool
-     */
     protected function isExportableField(Field $field): bool
     {
-        return !$field instanceof Gravatar;
+        return ! $field instanceof Gravatar;
     }
 }

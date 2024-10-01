@@ -1,5 +1,9 @@
 /*!
- * Programatically add the following
+ * Pusher JavaScript Library v8.4.0-rc2
+ * https://pusher.com/
+ *
+ * Copyright 2020, Pusher
+ * Released under the MIT licence.
  */
 
 /*!
@@ -9,15 +13,15 @@
  * @license  MIT
  */
 
-/*! @name @videojs/http-streaming @version 3.6.0 @license Apache-2.0 */
+/*! @name @videojs/http-streaming @version 3.13.3 @license Apache-2.0 */
 
 /*! @name aes-decrypter @version 4.0.1 @license Apache-2.0 */
 
-/*! @name m3u8-parser @version 6.2.0 @license Apache-2.0 */
+/*! @name m3u8-parser @version 7.2.0 @license Apache-2.0 */
 
 /*! @name pkcs7 @version 1.0.4 @license Apache-2.0 */
 
-/*! @name videojs-contrib-quality-levels @version 4.0.0 @license Apache-2.0 */
+/*! @name videojs-contrib-quality-levels @version 4.1.0 @license Apache-2.0 */
 
 /*! ieee754. BSD-3-Clause License. Feross Aboukhadijeh <https://feross.org/opensource> */
 

@@ -9,11 +9,9 @@ class UserPolicy
     /**
      * Create a new policy instance.
      */
-    public function __construct()
-    {
-    
-    }
-            /**
+    public function __construct() {}
+
+    /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
@@ -29,7 +27,7 @@ class UserPolicy
         return true;
     }
 
-        public function replicate(User $user): bool
+    public function replicate(User $user): bool
     {
         return false;
     }

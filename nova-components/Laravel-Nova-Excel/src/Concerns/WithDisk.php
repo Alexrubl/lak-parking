@@ -10,19 +10,15 @@ trait WithDisk
     protected $disk;
 
     /**
-     * @param  string|null  $disk
      * @return $this
      */
-    public function withDisk(string $disk = null)
+    public function withDisk(?string $disk = null)
     {
         $this->disk = $disk;
 
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     protected function getDisk(): ?string
     {
         return $this->disk;

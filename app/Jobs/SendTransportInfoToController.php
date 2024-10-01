@@ -2,17 +2,16 @@
 
 namespace App\Jobs;
 
+use App\Models\Controller;
+use App\Models\Transport;
+use DateTime;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use App\Models\Controller;
-use App\Models\Transport;
 use Illuminate\Support\Carbon;
-use DateTime;
 use Laravel\Nova\Notifications\NovaNotification;
-use App\Models\User;
 use Throwable;
 
 class SendTransportInfoToController implements ShouldQueue
@@ -30,8 +29,6 @@ class SendTransportInfoToController implements ShouldQueue
 
     /**
      * Задать временной предел попыток выполнить задания.
-     *
-     * @return \DateTime
      */
     public function retryUntil(): DateTime
     {
@@ -46,16 +43,17 @@ class SendTransportInfoToController implements ShouldQueue
     public $maxExceptions = 2;
 
     /**
-    * Рассчитать количество секунд ожидания перед повторной попыткой выполнения задания.
-    *
-    * @return array<int, int>
-    */
-    public function backoff(): int | array
+     * Рассчитать количество секунд ожидания перед повторной попыткой выполнения задания.
+     *
+     * @return array<int, int>
+     */
+    public function backoff(): int|array
     {
         return 10;
     }
 
     protected $transport;
+
     protected $tenant;
 
     /**
@@ -72,15 +70,17 @@ class SendTransportInfoToController implements ShouldQueue
      */
     public function handle(): void
     {
-        $controllers = Controller::all(['apikey', 'active' ,'id', 'name', 'ip']);
+        $controllers = Controller::all(['apikey', 'active', 'id', 'name', 'ip']);
         foreach ($controllers as $key => $controller) {
-            if (!$controller->active)  continue;
-            info('SendTransportInfoToController ('.$this->attempts().'): отправляем транспорт "'. $this->transport->number .'" на контроллер "'.$controller->name.'"');
-            echo 'SendTransportInfoToController ('.$this->attempts().'): отправляем транспорт "'. $this->transport->number .'" на контроллер "'.$controller->name.'"' . PHP_EOL;
+            if (! $controller->active) {
+                continue;
+            }
+            info('SendTransportInfoToController ('.$this->attempts().'): отправляем транспорт "'.$this->transport->number.'" на контроллер "'.$controller->name.'"');
+            echo 'SendTransportInfoToController ('.$this->attempts().'): отправляем транспорт "'.$this->transport->number.'" на контроллер "'.$controller->name.'"'.PHP_EOL;
             $week = '';
             if ($this->transport->week) {
                 foreach ($this->transport->week as $key => $value) {
-                    $week .= ($value == 1) ? '1':'0';
+                    $week .= ($value == 1) ? '1' : '0';
                 }
             } else {
                 $week = '0000000';
@@ -88,7 +88,9 @@ class SendTransportInfoToController implements ShouldQueue
             $data = [
                 'apikey' => $controller->apikey,
                 'request_id' => Carbon::now()->format('Ymdhms'),
-                'ev_date' => Carbon::now()->format('Y.m.d H:m:s'),
+                'ev_date' => Carbon::now()->format('Y.m.d H:m:s')
+            ];
+            $data['items'][] = [
                 'create' => [
                     'parent' => [
                         'name' => $this->tenant->name,
@@ -98,18 +100,18 @@ class SendTransportInfoToController implements ShouldQueue
                     'plate' => $this->transport->number,
                     'fio' => $this->transport->driver,
                     'access' => intval($this->transport->access),
-                    // 'authentication' => $this->transport->type_auth,
-                    // 'tid' => $this->transport->tid()
+                    'authentication' => $this->transport->type_auth ? $this->transport->type_auth : 'number',
+                    'tid' => $this->transport->tid() ? (string) $this->transport->tid() : '0'
                 ],
                 'access' => [
                     'time_limit' => $this->transport->restrictions ? intval($this->transport->time_limit) : 0,
                     'week' => $this->transport->restrictions ? $week : '1111111',
-                    'time_interval' => $this->transport->restrictions ? str_replace([':'], '', isset($this->transport->fromTime)? $this->transport->fromTime : '00:00') .'-'.str_replace([':'], '', isset($this->transport->toTime)? $this->transport->toTime : '23:59') : '0000-2359',
-                    'date_interval' => $this->transport->restrictions ? (isset($this->transport->fromDate) ? Carbon::parse($this->transport->fromDate)->format('Ymd') : Carbon::now()->format('Ymd')).'-'. (isset($this->transport->toDate) ? Carbon::parse($this->transport->toDate)->format('Ymd') : '21191231') : Carbon::now()->format('Ymd').'-21191231',
+                    'time_interval' => $this->transport->restrictions ? str_replace([':'], '', isset($this->transport->fromTime) ? $this->transport->fromTime : '00:00').'-'.str_replace([':'], '', isset($this->transport->toTime) ? $this->transport->toTime : '23:59') : '0000-2359',
+                    'date_interval' => $this->transport->restrictions ? (isset($this->transport->fromDate) ? Carbon::parse($this->transport->fromDate)->format('Ymd') : Carbon::now()->format('Ymd')).'-'.(isset($this->transport->toDate) ? Carbon::parse($this->transport->toDate)->format('Ymd') : '21191231') : Carbon::now()->format('Ymd').'-21191231',
                 ]
             ];
 
-            // info($data);
+            //info($data);
             // // dd();
             // $client = new \GuzzleHttp\Client();
             // $response = $client->request('POST', $controller->ip. '/api/plate/srv');
@@ -118,18 +120,18 @@ class SendTransportInfoToController implements ShouldQueue
             $curl = curl_init();
             //info($controller->ip. '/api/plate/srv');
             curl_setopt_array($curl, [
-            //CURLOPT_PORT => "8082",
-            CURLOPT_URL => $controller->ip. '/api/plate/srv',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 100,
-            CURLOPT_TIMEOUT => 15,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "POST",
-            CURLOPT_POSTFIELDS => json_encode($data), //http_build_query($data),
-            CURLOPT_HTTPHEADER => [
-                "Content-Type: application/json"
-            ],
+                //CURLOPT_PORT => "8082",
+                CURLOPT_URL => $controller->ip.'/api/plate/srv',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 100,
+                CURLOPT_TIMEOUT => 15,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => json_encode($data), //http_build_query($data),
+                CURLOPT_HTTPHEADER => [
+                    'Content-Type: application/json',
+                ],
             ]);
 
             $response = curl_exec($curl);
@@ -140,7 +142,7 @@ class SendTransportInfoToController implements ShouldQueue
             curl_close($curl);
 
             if ($err) {
-                info("cURL Error #: " . $err);
+                info('cURL Error #: '.$err);
                 if ($this->attempts() >= 3) {
                     $users = \App\Models\User::all()->filter(function ($value, $key) {
                         return $value->isRoot();
@@ -148,7 +150,7 @@ class SendTransportInfoToController implements ShouldQueue
 
                     foreach ($users as $key => $user) {
                         $user->notify(NovaNotification::make()
-                            ->message('Ошибка доставки данных контроллеру '. $controller->name .'. Причина: '. $err)
+                            ->message('Ошибка доставки данных контроллеру '.$controller->name.'. Причина: '.$err)
                             ->type('error')
                         );
                     }

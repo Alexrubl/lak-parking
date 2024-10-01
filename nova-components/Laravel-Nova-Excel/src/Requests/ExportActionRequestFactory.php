@@ -7,10 +7,6 @@ use Laravel\Nova\Http\Requests\LensActionRequest;
 
 class ExportActionRequestFactory
 {
-    /**
-     * @param  ActionRequest  $request
-     * @return ExportActionRequest
-     */
     public static function make(ActionRequest $request): ExportActionRequest
     {
         if ($request instanceof LensActionRequest) {

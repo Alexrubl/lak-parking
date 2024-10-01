@@ -2,30 +2,29 @@
 
 namespace App\Nova\Repeater;
 
-use Laravel\Nova\Fields\Repeater\Repeatable;
-use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Boolean;
-use Laravel\Nova\Fields\Heading;
-use NormanHuth\NovaRadioField\Radio;
+use Laravel\Nova\Fields\Repeater\Repeatable;
 use Laravel\Nova\Fields\Select;
+use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Camera extends Repeatable
 {
     public static $title = 'name';
 
-    public static function label() {
+    public static function label()
+    {
         return 'Камеры';
     }
 
-    public static function singularlabel() {
+    public static function singularlabel()
+    {
         return 'Камера';
     }
 
     /**
      * Get the fields displayed by the repeatable.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @return array
      */
     public function fields(NovaRequest $request)
@@ -47,8 +46,8 @@ class Camera extends Repeatable
             Select::make('Смотрит', 'entry')
                 ->options([
                     'in' => 'in',
-                    'out' => 'out'
-                ])->rules('required')           
+                    'out' => 'out',
+                ])->rules('required'),
         ];
     }
 }

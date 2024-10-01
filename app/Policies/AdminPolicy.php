@@ -9,11 +9,9 @@ class AdminPolicy
     /**
      * Create a new policy instance.
      */
-    public function __construct()
-    {
-    
-    }
-            /**
+    public function __construct() {}
+
+    /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool

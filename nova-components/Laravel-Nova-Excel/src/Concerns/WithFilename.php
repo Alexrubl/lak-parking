@@ -15,27 +15,20 @@ trait WithFilename
     protected $filename;
 
     /**
-     * @param  string|null  $filename
      * @return $this
      */
-    public function withFilename(string $filename = null)
+    public function withFilename(?string $filename = null)
     {
         $this->filename = $filename;
 
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     protected function getFilename(): ?string
     {
         return $this->filename;
     }
 
-    /**
-     * @param  ActionRequest  $request
-     */
     protected function withDefaultFilename(ActionRequest $request)
     {
         /** @var resource $resource */
@@ -44,31 +37,25 @@ trait WithFilename
 
         // Append the lens name to the filename
         if ($request instanceof LensActionRequest) {
-            $filename .= '-' . $request->lens()->uriKey();
+            $filename .= '-'.$request->lens()->uriKey();
         }
 
-        $this->withFilename($filename . '.' . $this->getDefaultExtension());
+        $this->withFilename($filename.'.'.$this->getDefaultExtension());
     }
 
-    /**
-     * @return string
-     */
     abstract protected function getDefaultExtension(): string;
 
-    /**
-     * @param  ActionRequest  $request
-     */
     protected function handleFilename(ActionRequest $request): void
     {
         $fields = $request->resolveFields();
 
         if ($filename = $fields->get('filename', $this->filename)) {
-            if (!Str::contains($filename, '.')) {
-                $filename .= '.' . $this->getDefaultExtension();
+            if (! Str::contains($filename, '.')) {
+                $filename .= '.'.$this->getDefaultExtension();
             }
 
             $this->withFilename($filename);
-        } elseif (!$this->getFilename()) {
+        } elseif (! $this->getFilename()) {
             $this->withDefaultFilename($request);
         }
     }

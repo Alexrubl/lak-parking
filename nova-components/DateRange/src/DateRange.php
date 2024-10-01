@@ -2,17 +2,20 @@
 
 namespace Alexrubl\DateRange;
 
-use DateTimeInterface;
+use Carbon\Carbon;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Carbon\Carbon;
 
 class DateRange extends Field
 {
     const DEFAULT_SEPERATOR = '-';
+
     const DEFAULT_MODE = 'range';
+
     protected $seperator;
+
     protected $mode;
+
     protected $format = 'd.m.Y';
 
     /**
@@ -24,8 +27,12 @@ class DateRange extends Field
 
     public function __construct($name, $attribute = null, $resolveCallback = null)
     {
-        if (is_array($name)) $name = implode('-', $name);
-        if (is_array($attribute)) $attribute = implode('-', $attribute);
+        if (is_array($name)) {
+            $name = implode('-', $name);
+        }
+        if (is_array($attribute)) {
+            $attribute = implode('-', $attribute);
+        }
 
         $this->seperator(static::DEFAULT_SEPERATOR);
         $this->mode(static::DEFAULT_MODE);
@@ -61,16 +68,17 @@ class DateRange extends Field
     public function format($format)
     {
         $this->format = $format;
+
         return $this->withMeta(['format' => $format]);
     }
 
-    	/**
-	 * Indicate that the field should be nullable.
-	 *
-	 * @param  bool $nullable
-	 * @param  array|Closure $values
-	 * @return $this
-	 */
+    /**
+     * Indicate that the field should be nullable.
+     *
+     * @param  bool  $nullable
+     * @param  array|Closure  $values
+     * @return $this
+     */
     public function nullable($nullable = true, $values = null)
     {
         return $this->withMeta(['nullable' => $nullable]);
@@ -79,12 +87,12 @@ class DateRange extends Field
     /**
      * Set the seperator for the field's dates
      *
-     * @param $seperator
      * @return $this
      */
     public function seperator($seperator)
     {
         $this->seperator = $seperator;
+
         return $this->withMeta(['seperator' => $seperator]);
     }
 
@@ -101,6 +109,7 @@ class DateRange extends Field
     public function mode($mode)
     {
         $this->mode = $mode;
+
         return $this->withMeta(['mode' => $mode]);
     }
 
@@ -118,18 +127,16 @@ class DateRange extends Field
     /**
      * Parse the attribute name to retrieve the affected model attributes
      *
-     * @param $attribute
      * @return array
      */
     protected function parseAttribute($attribute)
-    {   
+    {
         return explode('-', $attribute);
     }
 
     /**
      * Parse the response to retrieve the raw values
      *
-     * @param $attribute
      * @return array
      */
     protected function parseResponse($attribute)
@@ -138,7 +145,7 @@ class DateRange extends Field
             return [null, null];
         }
         $attribute = explode(" $this->seperator ", $attribute);
+
         return array_pad([Carbon::parse($attribute[0]), Carbon::parse($attribute[1])], 2, null);
     }
-
 }

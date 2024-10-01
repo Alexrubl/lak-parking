@@ -2,18 +2,14 @@
 
 namespace App\Models;
 
-
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\belongsToMany;
-use Illuminate\Database\Eloquent\Relations\belongsTo;
 use Illuminate\Database\Eloquent\Relations\hasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-
 class Tenant extends Model
 {
-
     use HasFactory, SoftDeletes;
 
     /*
@@ -23,6 +19,7 @@ class Tenant extends Model
     */
 
     protected $table = 'tenants';
+
     // protected $primaryKey = 'id';
     // public $timestamps = false;
     protected $guarded = ['id'];
@@ -45,11 +42,15 @@ class Tenant extends Model
         return $this->belongsToMany('App\Models\User', 'user_tenant', 'tenant_id', 'user_id');
     }
 
-    public function transport(): hasMany
+    public function transports(): hasMany
     {
         return $this->hasMany('App\Models\Transport');
     }
 
+    public function users(): belongsToMany
+    {
+        return $this->belongsToMany('App\Models\User', 'user_tenant', 'tenant_id', 'user_id');
+    }
 
     /*
     |--------------------------------------------------------------------------

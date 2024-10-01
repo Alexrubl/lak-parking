@@ -2,11 +2,11 @@
 
 namespace App\Nova\Metrics;
 
+use App\Models\Transport;
+use DB;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Metrics\Value;
-use App\Models\Transport;
 use Laravel\Nova\Nova;
-use DB;
 
 class inTransport extends Value
 {
@@ -23,12 +23,12 @@ class inTransport extends Value
     /**
      * Calculate the value of the metric.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @return mixed
      */
     public function calculate(NovaRequest $request)
     {
-        $timezone = Nova::resolveUserTimezone($request) ?? $request->timezone;      
+        $timezone = Nova::resolveUserTimezone($request) ?? $request->timezone;
+
         //return $this->result(DB::table('transports')->whereBetween( 'created_at', $this->currentRange($request->range, $timezone))->count());
         return $this->count($request, $request->user()->isTenant() ? Transport::currentTenant()->inside() : Transport::inside(), null, 'updated_at')->suffix('шт.');
     }
@@ -40,17 +40,17 @@ class inTransport extends Value
      */
     public function ranges()
     {
-        
+
         return [
             'TODAY' => Nova::__('Today'),
             'YESTERDAY' => Nova::__('Yesterday'),
-            30 => Nova::__('30 Days'),                       
+            30 => Nova::__('30 Days'),
             60 => Nova::__('60 Days'),
-            365 => Nova::__('365 Days'),            
+            365 => Nova::__('365 Days'),
             'MTD' => Nova::__('Month To Date'),
             'QTD' => Nova::__('Quarter To Date'),
             'YTD' => Nova::__('Year To Date'),
-            'ALL' => Nova::__('All Time')
+            'ALL' => Nova::__('All Time'),
         ];
     }
 
@@ -61,7 +61,7 @@ class inTransport extends Value
      */
     public function cacheFor()
     {
-       //return now()->addMinutes(5);
+        //return now()->addMinutes(5);
     }
 
     /**

@@ -105,6 +105,29 @@
       'Nova' => 'Laravel\\Nova\\Nova',
     ),
   ),
+  'laravel/pulse' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Laravel\\Pulse\\PulseServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Pulse' => 'Laravel\\Pulse\\Facades\\Pulse',
+    ),
+  ),
+  'laravel/reverb' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Laravel\\Reverb\\ApplicationManagerServiceProvider',
+      1 => 'Laravel\\Reverb\\ReverbServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Output' => 'Laravel\\Reverb\\Output',
+    ),
+  ),
   'laravel/sail' => 
   array (
     'providers' => 
@@ -131,6 +154,17 @@
     'providers' => 
     array (
       0 => 'Laravel\\Ui\\UiServiceProvider',
+    ),
+  ),
+  'livewire/livewire' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Livewire\\LivewireServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Livewire' => 'Livewire\\Livewire',
     ),
   ),
   'maatwebsite/excel' => 
@@ -228,13 +262,6 @@
     'providers' => 
     array (
       0 => 'Rap2hpoutre\\FastExcel\\Providers\\FastExcelServiceProvider',
-    ),
-  ),
-  'ryoluo/sail-ssl' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Ryoluo\\SailSsl\\SailSslServiceProvider',
     ),
   ),
   'simplesquid/nova-advanced-number-field' => 

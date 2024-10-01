@@ -2,7 +2,4 @@
 
 namespace App\Observers;
 
-class LogObserver
-{
-
-}
+class LogObserver {}

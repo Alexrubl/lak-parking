@@ -67,7 +67,7 @@ trait Only
 
         if ($this->onlyIndexFields && count($this->only) === 0) {
             $this->only = $indexFields;
-        } elseif (!$this->onlyIndexFields) {
+        } elseif (! $this->onlyIndexFields) {
             $modelAttributes = optional($request->toQuery()->first())->attributesToArray() ?: [];
 
             $this->only = array_merge(array_keys($modelAttributes), $indexFields);

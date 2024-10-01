@@ -16,8 +16,12 @@ class TimeRange extends Field
 
     public function __construct($name, $attribute = null, $resolveCallback = null)
     {
-        if (is_array($name)) $name = implode('-', $name);
-        if (is_array($attribute)) $attribute = implode('-', $attribute);
+        if (is_array($name)) {
+            $name = implode('-', $name);
+        }
+        if (is_array($attribute)) {
+            $attribute = implode('-', $attribute);
+        }
 
         parent::__construct($name, $attribute, $resolveCallback);
     }
@@ -37,11 +41,12 @@ class TimeRange extends Field
         [$from, $to] = $this->parseAttribute($attribute);
         $fromValue = data_get($resource, $from);
         $toValue = data_get($resource, $to);
-        return ($fromValue ? $fromValue : null) .' - '. ($toValue? $toValue: null) ;
+
+        return ($fromValue ? $fromValue : null).' - '.($toValue ? $toValue : null);
     }
 
     protected function parseAttribute($attribute)
-    {   
+    {
         return explode('-', $attribute);
     }
 
@@ -50,8 +55,7 @@ class TimeRange extends Field
         if ($attribute === null) {
             return [null, null];
         }
+
         return explode(',', $attribute);
     }
-
-
 }

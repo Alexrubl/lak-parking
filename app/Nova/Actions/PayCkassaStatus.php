@@ -2,14 +2,13 @@
 
 namespace App\Nova\Actions;
 
+use App\Http\Controllers\CkassaController as Ckassa;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Collection;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Fields\ActionFields;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use App\Http\Controllers\CkassaController as Ckassa;
 
 class PayCkassaStatus extends Action
 {
@@ -18,8 +17,6 @@ class PayCkassaStatus extends Action
     /**
      * Perform the action on the given models.
      *
-     * @param  \Laravel\Nova\Fields\ActionFields  $fields
-     * @param  \Illuminate\Support\Collection  $models
      * @return mixed
      */
     public function handle(ActionFields $fields, Collection $models)
@@ -27,6 +24,7 @@ class PayCkassaStatus extends Action
         info($fields);
         $resp = Ckassa::status();
         info($resp);
+
         // return Action::openInNewTab('https://example.com');
         //return Action::redirect('https://example.com');
         return Action::message($resp);
@@ -35,7 +33,6 @@ class PayCkassaStatus extends Action
     /**
      * Get the fields available on the action.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @return array
      */
     public function fields(NovaRequest $request)

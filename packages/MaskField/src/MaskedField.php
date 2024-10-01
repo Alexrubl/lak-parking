@@ -19,7 +19,6 @@ class MaskedField extends Field
     /**
      * Define field mask
      *
-     * @param string $mask
      * @return $this
      */
     public function mask(string $mask = '')

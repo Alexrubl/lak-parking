@@ -2,10 +2,10 @@
 
 namespace App\Nova\Metrics;
 
+use App\Models\History;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Metrics\Trend;
 use Laravel\Nova\Nova;
-use App\Models\History;
 
 class HistorySumPerDay extends Trend
 {
@@ -22,7 +22,6 @@ class HistorySumPerDay extends Trend
     /**
      * Calculate the value of the metric.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @return mixed
      */
     public function calculate(NovaRequest $request)

@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\belongsTo;
-use Carbon\Carbon;
 
 class Log extends Model
 {
@@ -16,7 +15,7 @@ class Log extends Model
     protected $guarded = ['id'];
 
     protected $casts = [
-    // 'created_at' => 'datetime:d-m-Y H:i',
+        // 'created_at' => 'datetime:d-m-Y H:i',
     ];
 
     public function tenant(): belongsTo
@@ -28,5 +27,4 @@ class Log extends Model
     {
         return $this->belongsTo(Transport::class);
     }
-
 }

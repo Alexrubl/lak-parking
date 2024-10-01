@@ -13,22 +13,15 @@ interface ExportActionRequest
      */
     public function toExportQuery();
 
-    /**
-     * @param  \Laravel\Nova\Resource  $resource
-     * @return array
-     */
     public function indexFields(Resource $resource): array;
 
     /**
-     * @param  \Laravel\Nova\Resource  $resource
      * @return Collection|Field[]
      */
     public function resourceFields(Resource $resource): Collection;
 
     /**
-     * @param  string  $attribute
-     * @param  string|null  $default
      * @return string|null
      */
-    public function findHeading(string $attribute, string $default = null);
+    public function findHeading(string $attribute, ?string $default = null);
 }

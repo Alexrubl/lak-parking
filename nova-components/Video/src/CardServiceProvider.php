@@ -23,6 +23,14 @@ class CardServiceProvider extends ServiceProvider
         Nova::serving(function (ServingNova $event) {
             Nova::script('video', __DIR__.'/../dist/js/card.js');
             Nova::style('video', __DIR__.'/../dist/css/card.css');
+            Nova::provideToScript([
+                'env' => [
+                    'appkey' => config('reverb.apps.apps.0.key'),
+                    'host' => config('reverb.apps.apps.0.options.host'),
+                    'port' => config('reverb.apps.apps.0.options.port'),
+                    'scheme' => config('reverb.apps.apps.0.options.scheme'),
+                ],
+            ]);
         });
     }
 
@@ -38,8 +46,8 @@ class CardServiceProvider extends ServiceProvider
         }
 
         Route::middleware(['nova'])
-                ->prefix('nova-vendor/video')
-                ->group(__DIR__.'/../routes/api.php');
+            ->prefix('nova-vendor/video')
+            ->group(__DIR__.'/../routes/api.php');
     }
 
     /**

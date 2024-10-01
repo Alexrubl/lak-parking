@@ -21,7 +21,7 @@ class QueuedExport extends ExportToExcel implements ShouldQueue
      */
     public function __sleep()
     {
-        if (!$this->request instanceof SerializedRequest) {
+        if (! $this->request instanceof SerializedRequest) {
             $this->request = SerializedRequest::serialize($this->request);
         }
 

@@ -1,9 +1,9 @@
 <?php
 
+use App\Http\Controllers\ApiController;
+use App\Models\TypeTransport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Models\TypeTransport;
-use App\Http\Controllers\ApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,7 +24,7 @@ use App\Http\Controllers\ApiController;
 //     info('kjhjhjhj');
 // });
 
-Route::get('getTypeTransport', function(Request $request) {
+Route::get('getTypeTransport', function (Request $request) {
     return response()->json(TypeTransport::all('id', 'name'), 200);
 });
 
